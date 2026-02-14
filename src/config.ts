@@ -54,7 +54,7 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.About,
 		{
 			name: "状态",
-			url: "https://status.tianhw.top/", // 这是一个外部状态监控页
+			url: "https://status.ishaohao.cn/", // 这是一个外部状态监控页
 			external: true,
 		},
 	],

@@ -1,25 +1,225 @@
 ---
-
-import { getEntry, render } from "astro:content";
-import Markdown from "@components/misc/Markdown.astro";
-import I18nKey from "../i18n/i18nKey";
-import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
-
-const aboutPost = await getEntry("spec", "about");
-
-if (!aboutPost) {
-	throw new Error("About page content not found");
-}
-
-const { Content } = await render(aboutPost);
+import { Icon } from "astro-icon/components";
 ---
-<MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
-    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-        <div class="card-base z-10 px-9 py-6 relative w-full ">
-            <Markdown class="mt-2">
-                <Content />
-            </Markdown>
+
+<MainGridLayout title="关于我">
+    <div
+        class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-[70vh]"
+    >
+        <div
+            class="card-base z-10 px-6 py-16 sm:px-16 relative w-full bg-white/70 dark:bg-zinc-900/70 backdrop-blur-3xl"
+        >
+            <div
+                class="absolute top-0 left-0 w-full h-10 bg-black/[0.03] dark:bg-white/[0.03] flex items-center px-6 gap-2 border-b border-black/5 dark:border-white/5"
+            >
+                <div class="flex gap-1.5">
+                    <div class="w-3 h-3 rounded-full bg-red-400/50"></div>
+                    <div class="w-3 h-3 rounded-full bg-amber-400/50"></div>
+                    <div class="w-3 h-3 rounded-full bg-emerald-400/50"></div>
+                </div>
+                <span
+                    class="ml-4 text-[10px] font-mono opacity-30 tracking-widest uppercase"
+                    >AboutMe.tsx</span
+                >
+            </div>
+
+            <div class="relative flex flex-col items-center mb-28 mt-10">
+                <div class="relative group">
+                    <div
+                        class="absolute -inset-8 bg-grid-[var(--primary)]/[0.05] [mask-image:radial-gradient(white,transparent)] pointer-events-none"
+                    >
+                    </div>
+                    <img
+                        src="https://github.com/ISHAOHAO.png"
+                        class="relative w-44 h-44 rounded-[2.5rem] border-2 border-[var(--primary)]/20 shadow-2xl object-cover transition-all duration-700 group-hover:rounded-[1rem]"
+                        alt="Avatar"
+                    />
+                    <div
+                        class="absolute -bottom-4 -right-4 bg-white dark:bg-zinc-800 px-4 py-2 rounded-2xl shadow-xl border border-black/5 dark:border-white/10 flex items-center gap-2"
+                    >
+                        <div
+                            class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+                        >
+                        </div>
+                        <span
+                            class="text-xs font-bold opacity-80 uppercase tracking-tighter"
+                            >CS Freshman</span
+                        >
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <h1
+                        class="text-6xl font-black tracking-tighter text-zinc-900 dark:text-zinc-100 mb-4 font-mono"
+                    >
+                        <span class="text-[var(--primary)] opacity-50"
+                            >&lt;</span
+                        >ISHAOHAO<span class="text-[var(--primary)] opacity-50">
+                            /&gt;</span
+                        >
+                    </h1>
+                    <p
+                        class="text-zinc-400 dark:text-zinc-500 font-medium tracking-[0.2em] text-sm uppercase"
+                    >
+                        从 0 到 1 的技术探险者
+                    </p>
+                </div>
+            </div>
+
+            <div class="max-w-3xl mx-auto space-y-32">
+                <section class="reveal-slide">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div
+                            class="h-px flex-1 bg-gradient-to-r from-transparent to-zinc-200 dark:to-zinc-800"
+                        >
+                        </div>
+                        <h2
+                            class="text-xs font-black text-[var(--primary)] uppercase tracking-[0.5em]"
+                        >
+                            Console.log("WhoAmI")
+                        </h2>
+                        <div
+                            class="h-px flex-1 bg-gradient-to-l from-transparent to-zinc-200 dark:to-zinc-800"
+                        >
+                        </div>
+                    </div>
+                    <div
+                        class="text-lg leading-loose text-zinc-600 dark:text-zinc-300 font-medium text-center"
+                    >
+                        一名大一在读的计算机系学生。目前正在努力驯服 <span
+                            class="text-zinc-900 dark:text-white font-bold"
+                            >Vue/JavaScript</span
+                        >、深入探索 <span
+                            class="text-zinc-900 dark:text-white font-bold"
+                            >前端美学</span
+                        >。
+                        对我来说，编程不仅是完成作业的工具，它是构建想象空间的魔法。
+                        <div
+                            class="mt-8 py-6 px-8 rounded-3xl bg-zinc-900/5 dark:bg-white/5 border-dashed border-2 border-zinc-900/10 dark:border-white/10 text-base italic opacity-80"
+                        >
+                            “比起成为大神，我更享受在这个数字世界里横冲直撞的乐趣。”
+                        </div>
+                    </div>
+                </section>
+
+                <section class="reveal-slide">
+                    <h2
+                        class="text-xs font-black text-[var(--primary)] uppercase tracking-[0.5em] text-center mb-12"
+                    >
+                        正在学习的项目
+                    </h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        {
+                            [
+                                {
+                                    title: "编程语言",
+                                    list: "HTML, CSS, JavaScript, Python",
+                                    color: "bg-blue-500",
+                                },
+                                {
+                                    title: "开发工具",
+                                    list: "VS Code, Git, GitHub, PyCharm, IntelliJ IDEA",
+                                    color: "bg-emerald-500",
+                                },
+                                {
+                                    title: "当前研究",
+                                    list: "数据结构, 现代网页设计",
+                                    color: "bg-purple-500",
+                                },
+                                {
+                                    title: "生活兴趣",
+                                    list: "数码硬件, 摄影, 旅行",
+                                    color: "bg-amber-500",
+                                },
+                            ].map((item) => (
+                                <div class="group p-8 rounded-[2rem] bg-white dark:bg-zinc-800/50 border border-zinc-200 dark:border-white/5 shadow-sm hover:shadow-xl transition-all duration-500">
+                                    <div
+                                        class={`w-2 h-12 ${item.color} rounded-full mb-6`}
+                                    />
+                                    <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+                                        {item.title}
+                                    </h3>
+                                    <p class="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed tracking-wide">
+                                        {item.list}
+                                    </p>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </section>
+
+                <section class="reveal-slide pb-20">
+                    <div
+                        class="relative p-1 bg-gradient-to-r from-blue-500 via-[var(--primary)] to-purple-500 rounded-[3rem] overflow-hidden group"
+                    >
+                        <div
+                            class="bg-white dark:bg-zinc-900 px-8 py-14 rounded-[2.9rem] flex flex-col items-center"
+                        >
+                            <h2
+                                class="text-4xl font-black text-zinc-900 dark:text-zinc-100 mb-6 italic tracking-tighter"
+                            >
+                                Build with me.
+                            </h2>
+                            <p
+                                class="text-zinc-500 dark:text-zinc-400 text-center mb-10 max-w-sm"
+                            >
+                                既然路过，不如留个联系方式？无论是技术交流还是吐槽高数，我都随时在线。
+                            </p>
+                            <div class="flex flex-wrap justify-center gap-4">
+                                <a
+                                    href="mailto:me@ishaohao.cn"
+                                    class="px-10 py-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black font-bold rounded-2xl hover:scale-105 transition-transform active:scale-95"
+                                >
+                                    发送邮件
+                                </a>
+                                <a
+                                    href="https://github.com/ISHAOHAO"
+                                    target="_blank"
+                                    class="p-4 bg-zinc-100 dark:bg-white/5 rounded-2xl hover:bg-[var(--primary)] hover:text-white transition-all"
+                                >
+                                    <Icon
+                                        name="fa6-brands:github"
+                                        class="w-6 h-6"
+                                    />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
     </div>
 </MainGridLayout>
+
+<style is:global>
+    /* 极致的背景网格 */
+    .bg-grid-primary {
+        background-image: radial-gradient(var(--primary) 1px, transparent 0);
+        background-size: 30px 30px;
+    }
+
+    /* 优雅的入场动画 */
+    .reveal-slide {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: revealIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes revealIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    section:nth-child(1) {
+        animation-delay: 0.2s;
+    }
+    section:nth-child(2) {
+        animation-delay: 0.4s;
+    }
+    section:nth-child(3) {
+        animation-delay: 0.6s;
+    }
+</style>
