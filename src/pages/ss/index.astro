@@ -1,0 +1,221 @@
+---
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import ssData from "../../data/ss.json";
+
+// 精准时间转换函数
+function getRelativeTime(dateString: string) {
+    const now = new Date();
+    const past = new Date(dateString);
+    const diffInMs = now.getTime() - past.getTime();
+    const diffInSecs = Math.floor(diffInMs / 1000);
+    const diffInMins = Math.floor(diffInSecs / 60);
+    const diffInHours = Math.floor(diffInMins / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInSecs < 60) return "刚刚";
+    if (diffInMins < 60) return `${diffInMins}分钟前`;
+    if (diffInHours < 24) return `${diffInHours}小时前`;
+    if (diffInDays === 1) return "昨天";
+    if (diffInDays === 2) return "前天";
+    if (diffInDays < 7) return `${diffInDays}天前`;
+    return dateString; // 超过一周显示原日期
+}
+---
+
+<MainGridLayout title="说说">
+    <div
+        class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-[60vh]"
+    >
+        <div
+            class="card-base z-10 px-6 py-10 relative w-full bg-white/50 dark:bg-zinc-900/50 backdrop-blur-xl"
+        >
+            <div class="relative mb-12 text-center">
+                <h1
+                    class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-[var(--primary)] to-blue-400 dark:from-[var(--primary)] dark:to-purple-400"
+                >
+                    MOMENTS
+                </h1>
+                <p
+                    class="text-sm text-black/30 dark:text-white/30 tracking-[0.2em] mt-2 uppercase font-medium"
+                >
+                    碎片记忆
+                </p>
+                <div
+                    class="w-12 h-1 bg-[var(--primary)] mx-auto mt-4 rounded-full opacity-50"
+                >
+                </div>
+            </div>
+
+            <div
+                class="max-w-2xl mx-auto relative border-l-[1px] border-black/5 dark:border-white/10 ml-6 sm:ml-auto"
+            >
+                {
+                    ssData.map((item, index) => (
+                        <div
+                            class="mb-16 ml-10 relative onload-animation"
+                            style={`animation-delay: ${index * 120}ms`}
+                        >
+                            <div class="absolute -left-[49px] top-1 w-4 h-4 rounded-full bg-white dark:bg-zinc-900 border-2 border-[var(--primary)] shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]" />
+
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="inline-block px-3 py-1 rounded-md bg-[var(--primary)]/10 text-[var(--primary)] text-[10px] font-bold tracking-tighter border border-[var(--primary)]/20">
+                                    {item.date}
+                                </div>
+                                <span class="text-[10px] font-medium text-black/20 dark:text-white/20 uppercase tracking-widest">
+                                    {getRelativeTime(item.date)}
+                                </span>
+                            </div>
+
+                            <div class="group relative">
+                                <p class="text-[15px] text-black/70 dark:text-white/80 leading-[1.8] font-medium transition-colors group-hover:text-black dark:group-hover:text-white whitespace-pre-wrap">
+                                    {item.content}
+                                </p>
+
+                                {item.images && item.images.length > 0 && (
+                                    <div
+                                        class={`mt-6 grid gap-3 ${item.images.length === 1 ? "max-w-[80%]" : "grid-cols-2 sm:grid-cols-3"}`}
+                                    >
+                                        {item.images.map((img) => (
+                                            <div class="relative aspect-square overflow-hidden rounded-2xl border border-black/5 dark:border-white/5 shadow-sm group/img cursor-zoom-in">
+                                                <img
+                                                    src={img}
+                                                    onclick={`openModal('${img}')`}
+                                                    class="ss-image object-cover w-full h-full transition-all duration-700 group-hover/img:scale-110 group-hover/img:rotate-1"
+                                                    loading="lazy"
+                                                    alt="Moments"
+                                                />
+                                                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/10 opacity-0 group-hover/img:opacity-100 transition-opacity pointer-events-none" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <div class="mt-6 flex flex-wrap gap-3">
+                                    {item.tags &&
+                                        item.tags.map((tag) => (
+                                            <span
+                                                class="text-[12px] font-bold tracking-tight
+            text-black/40 dark:text-white/40 
+            hover:text-black dark:hover:text-white 
+            transition-all duration-300 cursor-default"
+                                            >
+                                                # {tag}
+                                            </span>
+                                        ))}
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+
+    <div
+        id="image-modal"
+        class="fixed inset-0 z-[100] hidden bg-zinc-950/90 backdrop-blur-2xl transition-all duration-500 flex items-center justify-center p-4 md:p-10 opacity-0"
+        onclick="closeModal()"
+    >
+        <img
+            id="modal-img"
+            src=""
+            class="max-w-full max-h-full object-contain rounded-lg shadow-2xl scale-95 transition-transform duration-500"
+        />
+        <div
+            class="absolute top-10 right-10 text-white/50 hover:text-white cursor-pointer transition-colors"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-8 h-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </div>
+    </div>
+</MainGridLayout>
+
+<script is:inline>
+    function initModal() {
+        const modal = document.getElementById("image-modal");
+        if (!modal) return;
+
+        // 把 Modal 移到 body 根部，脱离任何可能有 transform 的父容器
+        if (modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+    }
+
+    function openModal(src) {
+        initModal(); // 再次确保位置正确
+        const modal = document.getElementById("image-modal");
+        const modalImg = document.getElementById("modal-img");
+
+        modalImg.src = src;
+        modal.classList.remove("hidden");
+
+        // 强制触发重排以启动动画
+        requestAnimationFrame(() => {
+            modal.classList.add("opacity-100");
+            modalImg.classList.add("scale-100");
+            modalImg.classList.remove("scale-90");
+        });
+
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("image-modal");
+        const modalImg = document.getElementById("modal-img");
+
+        modal.classList.remove("opacity-100");
+        modalImg.classList.remove("scale-100");
+        modalImg.classList.add("scale-90");
+
+        setTimeout(() => {
+            modal.classList.add("hidden");
+            document.body.style.overflow = "";
+        }, 300);
+    }
+
+    // 初始化和 Swup 适配
+    initModal();
+    document.addEventListener("swup:contentReplaced", initModal);
+    document.addEventListener("swup:pageView", initModal);
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+    });
+</script>
+
+<style is:global>
+    /* 极致丝滑的加载动画 */
+    .onload-animation {
+        animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    @keyframes slideUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .cursor-zoom-in {
+        cursor: zoom-in;
+    }
+
+    #modal-img {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        /* 只有在图片真正加载后才显示 */
+        background-color: transparent;
+    }
+</style>

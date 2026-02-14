@@ -1,0 +1,101 @@
+---
+import { profileConfig } from "../config";
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="mt-10 mb-6">
+    <div
+        class="h-px bg-gradient-to-r from-transparent via-black/15 dark:via-white/15 to-transparent mx-8"
+    >
+    </div>
+
+    <div class="mt-6 mx-auto max-w-3xl px-6">
+        <div
+            class="bg-gradient-to-r from-[oklch(97%_0.01_var(--hue))] to-[oklch(95%_0.02_var(--hue))]
+                    dark:from-[oklch(18%_0.02_var(--hue))] dark:to-[oklch(15%_0.03_var(--hue))]
+                    rounded-xl p-5 border border-black/5 dark:border-white/10 shadow-sm"
+        >
+            <div
+                class="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm"
+            >
+                <div
+                    class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-black/70 dark:text-white/70"
+                >
+                    <span>&copy; {currentYear} {profileConfig.name}</span>
+                    <span class="text-black/30 dark:text-white/30">•</span>
+                    <a
+                        class="hover:text-[var(--primary)] transition-colors font-medium"
+                        target="_blank"
+                        href="/rss.xml">RSS</a
+                    >
+                    <span class="text-black/30 dark:text-white/30">•</span>
+                    <a
+                        class="hover:text-[var(--primary)] transition-colors font-medium"
+                        target="_blank"
+                        href="/sitemap-index.xml">Sitemap</a
+                    >
+                </div>
+
+                <div
+                    class="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity"
+                >
+                    <p
+                        class="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-widest"
+                    >
+                        Made with Fuwari
+                    </p>
+                </div>
+            </div>
+
+            <div
+                class="mt-2 pt-2 border-t border-black/10 dark:border-white/10
+                        flex flex-wrap justify-center items-center gap-2 text-xs text-black/50 dark:text-white/50"
+            >
+                <span>Powered by</span>
+                <a
+                    class="text-orange-600 dark:text-orange-400 hover:underline font-medium"
+                    target="_blank"
+                    href="https://astro.build">Astro</a
+                >
+                <span>&</span>
+                <a
+                    class="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                    target="_blank"
+                    href="https://github.com/saicaca/fuwari">Fuwari</a
+                >
+
+                <span class="mx-1">|</span>
+
+                <a
+                    class="flex items-center gap-1 hover:text-[var(--primary)] transition-colors font-medium"
+                    target="_blank"
+                    href="https://beian.miit.gov.cn/"
+                >
+                    <img
+                        class="h-[14px] w-auto shrink-0 relative top-[0px] dark:brightness-110"
+                        src="/footer/beian.png"
+                        alt="备案"
+                    />
+                    <span>京ICP备2025123644号-1</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    footer {
+        animation: onload-animation 0.8s ease-out;
+    }
+
+    @keyframes onload-animation {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

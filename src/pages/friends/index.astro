@@ -1,0 +1,28 @@
+---
+import { i18n } from "../../i18n/translation";
+import I18nKey from "../../i18n/i18nKey";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import FriendCard from "../../components/FriendCard.astro";
+import friendsData from "../../data/friends.json";
+---
+
+<MainGridLayout title="友情链接">
+    <div
+        class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative"
+    >
+        <div class="card-base z-10 px-9 py-6 relative w-full">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-1.5 h-8 bg-[var(--primary)] rounded-full"></div>
+                <h1
+                    class="text-3xl font-black text-black/90 dark:text-white/90"
+                >
+                    友情链接
+                </h1>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {friendsData.map((friend) => <FriendCard {...friend} />)}
+            </div>
+        </div>
+    </div>
+</MainGridLayout>
