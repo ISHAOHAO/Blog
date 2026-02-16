@@ -1,0 +1,179 @@
+---
+/* 评论组件 */
+---
+
+<div class="comment-container mt-12 mb-20 relative">
+    <div
+        class="absolute -inset-2 bg-gradient-to-b from-[var(--primary)]/10 to-transparent rounded-[2.5rem] blur-2xl opacity-50 pointer-events-none"
+    >
+    </div>
+
+    <div
+        class="relative card-base overflow-hidden bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl border border-black/5 dark:border-white/5 shadow-2xl shadow-black/5 rounded-[2rem] transition-all duration-500"
+    >
+        <div
+            class="relative px-6 py-8 sm:px-10 border-b border-black/[0.03] dark:border-white/[0.03]"
+        >
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <div
+                            class="w-2 h-8 bg-gradient-to-b from-[var(--primary)] to-blue-500 rounded-full shadow-[0_0_15px_rgba(var(--primary-rgb),0.4)]"
+                        >
+                        </div>
+                        <div
+                            class="absolute -right-1 -top-1 w-2 h-2 bg-[var(--primary)] rounded-full animate-ping opacity-40"
+                        >
+                        </div>
+                    </div>
+                    <div>
+                        <h2
+                            class="text-2xl font-black text-zinc-800 dark:text-zinc-100 tracking-tighter italic flex items-baseline gap-2"
+                        >
+                            COMMENTS
+                            <span
+                                class="text-[10px] not-italic font-bold tracking-[0.3em] text-[var(--primary)] opacity-60 uppercase hidden sm:inline"
+                            >
+                                / 互动讨论区
+                            </span>
+                        </h2>
+                        <p
+                            class="text-[10px] text-zinc-400 dark:text-zinc-500 font-medium mt-0.5 tracking-wider uppercase"
+                        >
+                            Welcome to the conversation
+                        </p>
+                    </div>
+                </div>
+
+                <div class="hidden sm:block opacity-10 dark:opacity-20">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-12 h-12"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1"
+                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                        ></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-4 py-8 sm:px-10 sm:py-10">
+            <section
+                class="giscus mx-auto w-full transition-opacity duration-300"
+            >
+            </section>
+        </div>
+
+        <div
+            class="h-1.5 w-full bg-gradient-to-r from-transparent via-[var(--primary)]/20 to-transparent opacity-30"
+        >
+        </div>
+    </div>
+</div>
+
+<style is:global>
+    /* 位移 + 缩放 + 模糊消除 */
+    @keyframes comment-entrance {
+        from {
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            filter: blur(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+    }
+
+    .comment-container {
+        /* 初始隐藏，由动画完成显示 */
+        opacity: 0;
+        animation: comment-entrance 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation-delay: 0.3s;
+    }
+
+    /* 当用户在手机端快速滑动时，确保性能 */
+    @media (prefers-reduced-motion: reduce) {
+        .comment-container {
+            animation: none;
+            opacity: 1;
+        }
+    }
+</style>
+
+<script
+    is:inline
+    src="https://giscus.app/client.js"
+    data-repo="ISHAOHAO/Blog"
+    data-repo-id="R_kgDORP8JwA"
+    data-category="Announcements"
+    data-category-id="DIC_kwDORP8JwM4C2Zb7"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async></script>
+
+<script is:inline>
+    function getGiscusTheme() {
+        const isDark =
+            document.documentElement.getAttribute("data-theme") === "dark" ||
+            document.documentElement.classList.contains("dark");
+        // 使用 transparent_dark 能够更好地融入毛玻璃背景
+        return isDark ? "transparent_dark" : "light";
+    }
+
+    function updateGiscus() {
+        const theme = getGiscusTheme();
+        const iframe = document.querySelector("iframe.giscus-frame");
+        if (!iframe) return;
+
+        iframe.contentWindow.postMessage(
+            {
+                giscus: {
+                    setConfig: {
+                        theme: theme,
+                        term: window.location.pathname,
+                    },
+                },
+            },
+            "https://giscus.app",
+        );
+    }
+
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (
+                mutation.type === "attributes" &&
+                mutation.attributeName === "data-theme"
+            ) {
+                updateGiscus();
+            }
+        });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    document.addEventListener("swup:contentReplaced", () => {
+        setTimeout(updateGiscus, 600);
+    });
+
+    window.addEventListener("message", (event) => {
+        if (event.origin !== "https://giscus.app") return;
+        if (!(typeof event.data === "object" && event.data.giscus)) return;
+        updateGiscus();
+    });
+</script>

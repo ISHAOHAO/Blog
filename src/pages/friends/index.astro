@@ -4,6 +4,9 @@ import I18nKey from "../../i18n/i18nKey";
 import MainGridLayout from "../../layouts/MainGridLayout.astro";
 import FriendCard from "../../components/FriendCard.astro";
 import friendsData from "../../data/friends.json";
+
+// 评论组件
+import Comment from "../../components/Comment.astro";
 ---
 
 <MainGridLayout title="友情链接">
@@ -25,4 +28,5 @@ import friendsData from "../../data/friends.json";
             </div>
         </div>
     </div>
+    <Comment />
 </MainGridLayout>

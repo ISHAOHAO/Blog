@@ -20,6 +20,9 @@ function getRelativeTime(dateString: string) {
     if (diffInDays < 7) return `${diffInDays}天前`;
     return dateString; // 超过一周显示原日期
 }
+
+// 评论组件
+import Comment from "../../components/Comment.astro";
 ---
 
 <MainGridLayout title="说说">
@@ -139,6 +142,7 @@ function getRelativeTime(dateString: string) {
             </svg>
         </div>
     </div>
+    <Comment />
 </MainGridLayout>
 
 <script is:inline>

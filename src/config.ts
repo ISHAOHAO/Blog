@@ -13,10 +13,10 @@ export const siteConfig: SiteConfig = {
 	lang: "zh_CN", // 语言设置为简体中文
 	themeColor: {
 		hue: 250, // 深蓝紫色调对应的 hue 值为 250
-		fixed: true, // 是否允许访客手动调整主题色
+		fixed: true, // 允许访客手动调整主题色
 	},
 	banner: {
-		enable: false, // 参考站首页关闭了 Banner，显得更简洁
+		enable: false, // 首页关闭了 Banner，显得更简洁
 		src: "assets/images/demo-banner.png",
 		position: "center",
 		credit: {
@@ -54,7 +54,7 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.About,
 		{
 			name: "状态",
-			url: "https://status.ishaohao.cn/", // 这是一个外部状态监控页
+			url: "https://status.ishaohao.cn/", // 外部状态监控页
 			external: true,
 		},
 	],
