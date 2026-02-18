@@ -42,7 +42,7 @@ draft: false              # 设置为 true 则不发布
 
 ### ✅ 发布说说 (Moments)
 
-打开：👉 [`src/data/ss.json`](https://www.google.com/search?q=./src/data/ss.json)
+打开：👉 [`src/data/ss.json`](./src/data/ss.json)
 将新内容插入数组**最上方**。
 
 ---
@@ -86,7 +86,7 @@ draft: false              # 设置为 true 则不发布
 
 ## ✅ 维护建议与版本管理
 
-* **版本记录**：所有重大更新需记录在 [`CHANGELOG.md`](https://www.google.com/search?q=./CHANGELOG.md)。
+* **版本记录**：所有重大更新需记录在 [`CHANGELOG.md`](./CHANGELOG.md)。
 * **资源引用**：文章图片优先使用相对路径 `./`，全局公共资源存放在 `/public/`。
 * **本地预览**：推送至 GitHub 前，务必运行 `npm run dev` 检查广告位与评论区的加载状态。
 
@@ -96,8 +96,8 @@ draft: false              # 设置为 true 则不发布
 
 | 操作 | 直达位置 |
 | --- | --- |
-| **写新文章** | [`src/content/posts/`](https://www.google.com/search?q=./src/content/posts/) |
-| **发布说说** | [`ss.json`](https://www.google.com/search?q=./src/data/ss.json) |
-| **管理友链** | [`friends.json`](https://www.google.com/search?q=./src/data/friends.json) |
-| **调整广告** | [`AdSidebar.astro`](https://www.google.com/search?q=./src/components/AdSidebar.astro) |
-| **调整评论** | [`Comment.astro`](https://www.google.com/search?q=./src/components/Comment.astro) |
+| **写新文章** | [`src/content/posts/`](./src/content/posts/) |
+| **发布说说** | [`ss.json`](./src/data/ss.json) |
+| **管理友链** | [`friends.json`](./src/data/friends.json) |
+| **调整广告** | [`AdSidebar.astro`](./src/components/AdSidebar.astro) |
+| **调整评论** | [`Comment.astro`](./src/components/Comment.astro) |
