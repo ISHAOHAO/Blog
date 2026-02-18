@@ -1,5 +1,6 @@
 ---
 import type { MarkdownHeading } from "astro";
+import AdSidebar from "../AdSidebar.astro"; // 赞助组件
 import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
 // import Tag from "./Tags.astro"; // 标签组件
@@ -24,5 +25,9 @@ const className = Astro.props.class;
         <Categories class="onload-animation" style="animation-delay: 150ms" />
         <!-- 统计组件 -->
         <Statistics class="onload-animation" style="animation-delay: 200ms" />
+        <!-- 赞助组件 -->
+        <div class="onload-animation" style="animation-delay: 250ms">
+            <AdSidebar />
+        </div>
     </div>
 </div>

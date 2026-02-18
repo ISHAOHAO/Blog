@@ -1,0 +1,75 @@
+---
+/* 侧边栏广告组件 */
+---
+
+<div
+    class="ad-card card-base p-3 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-xl border border-black/5 dark:border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-[var(--primary)]/5"
+>
+    <div class="flex items-center gap-2 mb-3 opacity-60">
+        <div class="w-1 h-4 bg-[var(--primary)] rounded-full"></div>
+        <span
+            class="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400"
+        >
+            Sponsorship / 赞助
+        </span>
+    </div>
+
+    <div
+        class="ad-content-wrapper min-h-[100px] flex items-center justify-center bg-black/5 dark:bg-white/5 rounded-xl overflow-hidden relative"
+    >
+        <div id="ad-script-container" class="w-full h-full"></div>
+
+        <div
+            class="absolute inset-0 flex items-center justify-center -z-10 text-[10px] text-zinc-400 italic"
+        >
+            Ad Loading...
+        </div>
+    </div>
+
+    <div class="mt-2 text-right">
+        <span class="text-[9px] text-zinc-400 dark:text-zinc-600 opacity-50">
+            赞助信息由第三方提供
+        </span>
+    </div>
+</div>
+
+<script is:inline>
+    // 封装广告脚本加载逻辑
+    function loadSidebarAd() {
+        const container = document.getElementById("ad-script-container");
+        if (!container) return;
+
+        // 清空容器防止重复加载（针对 Swup 跳转）
+        container.innerHTML = "";
+
+        const s = document.createElement("script");
+        s.src =
+            "//polished-hook.com/b/XUV.sNdXG_lX0GY-WtcM/meNmf9OulZGU/lckbPNTdYg4FMpTlAsxqOEDskzt/NIj/gJxgM/DDEW5yMfwy";
+        s.async = true;
+        s.referrerPolicy = "no-referrer-when-downgrade";
+        s.settings = {};
+
+        container.appendChild(s);
+    }
+
+    // 初始加载
+    loadSidebarAd();
+
+    // 兼容 Swup 页面切换
+    document.addEventListener("swup:contentReplaced", loadSidebarAd);
+</script>
+
+<style>
+    .ad-card {
+        /* 稍微减弱卡片在大屏幕上的视觉压迫 */
+        max-width: 100%;
+    }
+    /* 确保注入的广告图片或 iframe 宽度自适应 */
+    #ad-script-container :global(img),
+    #ad-script-container :global(iframe),
+    #ad-script-container :global(div) {
+        max-width: 100% !important;
+        height: auto !important;
+        border-radius: 8px;
+    }
+</style>
