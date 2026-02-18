@@ -1,24 +1,24 @@
 ---
-import MainGridLayout from "../../layouts/MainGridLayout.astro";
 import ssData from "../../data/ss.json";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
 
 // 精准时间转换函数
 function getRelativeTime(dateString: string) {
-    const now = new Date();
-    const past = new Date(dateString);
-    const diffInMs = now.getTime() - past.getTime();
-    const diffInSecs = Math.floor(diffInMs / 1000);
-    const diffInMins = Math.floor(diffInSecs / 60);
-    const diffInHours = Math.floor(diffInMins / 60);
-    const diffInDays = Math.floor(diffInHours / 24);
+	const now = new Date();
+	const past = new Date(dateString);
+	const diffInMs = now.getTime() - past.getTime();
+	const diffInSecs = Math.floor(diffInMs / 1000);
+	const diffInMins = Math.floor(diffInSecs / 60);
+	const diffInHours = Math.floor(diffInMins / 60);
+	const diffInDays = Math.floor(diffInHours / 24);
 
-    if (diffInSecs < 60) return "刚刚";
-    if (diffInMins < 60) return `${diffInMins}分钟前`;
-    if (diffInHours < 24) return `${diffInHours}小时前`;
-    if (diffInDays === 1) return "昨天";
-    if (diffInDays === 2) return "前天";
-    if (diffInDays < 7) return `${diffInDays}天前`;
-    return dateString; // 超过一周显示原日期
+	if (diffInSecs < 60) return "刚刚";
+	if (diffInMins < 60) return `${diffInMins}分钟前`;
+	if (diffInHours < 24) return `${diffInHours}小时前`;
+	if (diffInDays === 1) return "昨天";
+	if (diffInDays === 2) return "前天";
+	if (diffInDays < 7) return `${diffInDays}天前`;
+	return dateString; // 超过一周显示原日期
 }
 
 // 评论组件
