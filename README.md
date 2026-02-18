@@ -1,173 +1,103 @@
-# 🚀 博客自定义功能维护指南
 
-本文档用于记录博客中额外添加的自定义页面与组件结构，包括：
+# 🚀 博客指南 (v1.3.x)
 
-* 说说（Moments）页面
-* 友情链接页面
-* 卡片组件
+本文档记录了基于 Fuwari 深度定制后的功能模块与维护指南。
 
-所有数据与页面逻辑均遵循 Astro 项目推荐的 **数据与视图分离** 设计。
+## 📂 新增功能模块索引
 
----
-
-## 📂 项目目录结构
-
-以下路径均支持在 Markdown 预览或 GitHub 中点击跳转（基于当前项目根目录）。
-
-| 功能模块     | 数据文件（更新内容）                                         | 页面模板（修改样式）                                                             |
-| -------- | -------------------------------------------------- | ---------------------------------------------------------------------- |
-| **友情链接** | [`src/data/friends.json`](./src/data/friends.json) | [`src/pages/friends/index.astro`](./src/pages/friends/index.astro)     |
-| **我的说说** | [`src/data/ss.json`](./src/data/ss.json)           | [`src/pages/ss/index.astro`](./src/pages/ss/index.astro)               |
-| **卡片组件** | —                                                  | [`src/components/FriendCard.astro`](./src/components/FriendCard.astro) |
-| **导航配置** | —                                                  | [`src/config.ts`](./src/config.ts)                                     |
-
-> 💡 提示：路径基于当前 Markdown 文件与 `src` 同级目录。如果你的目录结构不同，请相应调整 `./` 层级。
+| 功能模块 | 配置文件/数据路径 | 核心组件/页面 |
+| --- | --- | --- |
+| **文章发布** | `src/content/posts/` | `src/pages/posts/[...slug].astro` |
+| **评论系统** | Giscus (GitHub Discussions) | `src/components/Comment.astro` |
+| **赞助/广告** | 脚本注入逻辑 | `src/components/AdSidebar.astro` |
 
 ---
 
-## 📝 内容更新说明
+## 📝 内容发布指南
 
+### ✅ 发布正式文章
+
+文章存储在 `src/content/posts/`。建议采用“文件夹”模式管理资源：
+
+1. 在 `posts` 下新建文件夹（如 `my-blog/`）。
+2. 在文件夹内新建 `index.md`。
+3. 将图片放在同级目录下。
+
+**Front-matter 标准配置：**
+
+```yaml
+---
+title: 文章标题
+published: 2026-02-18
+description: "简短的文章描述"
+image: "./cover.jpg"      # 指向同级目录下的图片
+tags: ["标签1", "标签2"]
+category: 分类名称
+draft: false              # 设置为 true 则不发布
 ---
 
-### ✅ 更新友情链接
-
-打开：
-
-👉 [`src/data/friends.json`](./src/data/friends.json)
-
-按以下格式添加：
-
-```json
-{
-  "name": "好友名字",
-  "url": "https://好友博客链接",
-  "avatar": "https://头像图片链接",
-  "bio": "好友的简短描述"
-}
 ```
 
-说明：
+---
 
-* 支持添加多个对象
-* 推荐保持字段完整，避免渲染异常
+### ✅ 发布说说 (Moments)
+
+打开：👉 [`src/data/ss.json`](https://www.google.com/search?q=./src/data/ss.json)
+将新内容插入数组**最上方**。
 
 ---
 
-### ✅ 更新说说内容
+## 🛠 核心组件说明
 
-打开：
+### 💬 评论系统 (Giscus)
 
-👉 [`src/data/ss.json`](./src/data/ss.json)
+项目已集成基于 **GitHub Discussions** 的评论系统。
 
-最新内容放在数组最上方：
+* **独立性**：基于 `pathname` 映射，确保每篇文章、说说、关于页的评论互不干扰。
+* **实时同步**：支持全站主题（亮/暗）实时联动，无缝切换。
+* **入场动画**：组件自带淡淡的位移淡入效果，提升视觉质感。
 
-```json
-{
-  "date": "2026-02-13 22:30:00",
-  "content": "这里是说说的文字内容，支持换行。",
-  "images": [
-    "https://图片链接1",
-    "https://图片链接2"
-  ],
-  "tags": ["生活", "代码"]
-}
-```
+**维护注意：**
+如果更换了 GitHub 仓库，需修改 `src/components/Comment.astro` 中的 `data-repo-id` 和 `data-category-id`。
 
-字段说明：
+### 💰 侧边栏赞助 (AdSidebar)
 
-| 字段        | 说明                |
-| --------- | ----------------- |
-| `date`    | 建议完整时间格式，便于相对时间计算 |
-| `content` | 文本内容，支持多行         |
-| `images`  | 没有图片时保持 `[]`      |
-| `tags`    | 可选标签数组            |
+模仿 `tianhw.top` 风格的侧边栏组件。
+
+* **位置**：固定于左侧边栏底部。
+* **加载逻辑**：支持异步加载与 Swup 无刷新页面跳转兼容。
+* **自定义**：如需修改广告源，请更新 `src/components/AdSidebar.astro` 中的 `s.src` 链接。
 
 ---
 
-## 🛠 功能逻辑说明
+## 🎨 视觉与交互规范
+
+### 动画效果
+
+* **页面切换**：使用 Swup 实现丝滑过渡。
+* **组件入场**：评论区采用 `cubic-bezier(0.16, 1, 0.3, 1)` 曲线的位移淡入动画。
+* **主题切换**：支持手动切换与系统偏好跟随，评论区与广告位均已做适配。
+
+### 相对时间（说说页）
+
+系统自动将 `ss.json` 中的时间戳转换为“几分钟前”、“昨天”等可读格式。
 
 ---
 
-### 🕒 相对时间显示（说说页）
+## ✅ 维护建议与版本管理
 
-系统会自动计算时间差：
-
-* 小于 1 分钟 → **刚刚**
-* 小于 1 小时 → **X分钟前**
-* 小于 24 小时 → **X小时前**
-* 昨天 / 前天 → 直接显示
-* 超过一周 → 显示原始日期
-
-无需人工干预。
-
----
-
-### 🖼 图片放大预览
-
-实现方式：
-
-* 原生 JavaScript
-* 动态 Modal 层挂载到 `<body>`
-* 保证居中与层级安全
-
-交互：
-
-* 点击图片 → 放大
-* 点击背景 / `Esc` → 关闭
-
-无需外部依赖。
-
----
-
-### 🎨 深浅色模式自适应
-
-基于 Tailwind：
-
-* 使用 `dark:` 前缀控制样式
-* 自动适配系统主题
-
-视觉策略：
-
-* 亮色模式 → 深色文字 + 半透明
-* 暗色模式 → 浅色文字 + 半透明
-* Hover → 提高不透明度与颜色对比
-
----
-
-## 🔗 导航栏配置
-
-菜单名称或路径修改：
-
-👉 [`src/config.ts`](./src/config.ts)
-
-默认路径：
-
-* 友情链接 → `/friends/`
-* 我的说说 → `/ss/`
-
-修改后需重新构建项目。
-
----
-
-## ✅ 维护建议
-
-* 所有内容更新优先修改 `data` 文件
-* 页面样式修改集中在 `.astro` 模板
-* 保持 JSON 格式规范，避免构建错误
-* 推荐每次修改后本地预览确认效果
+* **版本记录**：所有重大更新需记录在 [`CHANGELOG.md`](https://www.google.com/search?q=./CHANGELOG.md)。
+* **资源引用**：文章图片优先使用相对路径 `./`，全局公共资源存放在 `/public/`。
+* **本地预览**：推送至 GitHub 前，务必运行 `npm run dev` 检查广告位与评论区的加载状态。
 
 ---
 
 ## 🎯 快速维护入口
 
-| 操作     | 直达位置                                      |
-| ------ | ----------------------------------------- |
-| 添加友情链接 | [`friends.json`](./src/data/friends.json) |
-| 发布说说   | [`ss.json`](./src/data/ss.json)           |
-| 页面样式调整 | [`pages`](./src/pages)                    |
-| 组件修改   | [`components`](./src/components)          |
-| 菜单配置   | [`config.ts`](./src/config.ts)            |
-
----
-
-> 📌 本文档旨在降低长期维护成本，建议与项目一同版本管理。
+| 操作 | 直达位置 |
+| --- | --- |
+| **写新文章** | [`src/content/posts/`](https://www.google.com/search?q=./src/content/posts/) |
+| **发布说说** | [`ss.json`](https://www.google.com/search?q=./src/data/ss.json) |
+| **管理友链** | [`friends.json`](https://www.google.com/search?q=./src/data/friends.json) |
+| **调整广告** | [`AdSidebar.astro`](https://www.google.com/search?q=./src/components/AdSidebar.astro) |
+| **调整评论** | [`Comment.astro`](https://www.google.com/search?q=./src/components/Comment.astro) |
