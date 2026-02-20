@@ -1,1 +1,4 @@
-export default new Map();
+
+import __ASTRO_IMAGE_IMPORT_Z1jbUcJ from "./iplink.png?astroContentImageFlag=&importer=src%2Fcontent%2Fposts%2FPanther-X2+%E7%8E%A9%E6%9C%BA%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%8E%9F%E7%94%9F+WireGuard+%E7%BB%84%E7%BD%91%E4%B8%8E%E8%B7%A8%E7%BD%91%E6%AE%B5%E8%BD%AC%E5%8F%91%E5%85%A8%E8%AE%B0%E5%BD%95%2Findex.md";
+export default new Map([["./iplink.png?astroContentImageFlag=&importer=src%2Fcontent%2Fposts%2FPanther-X2+%E7%8E%A9%E6%9C%BA%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%8E%9F%E7%94%9F+WireGuard+%E7%BB%84%E7%BD%91%E4%B8%8E%E8%B7%A8%E7%BD%91%E6%AE%B5%E8%BD%AC%E5%8F%91%E5%85%A8%E8%AE%B0%E5%BD%95%2Findex.md", __ASTRO_IMAGE_IMPORT_Z1jbUcJ]]);
+		

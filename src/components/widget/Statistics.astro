@@ -1,162 +1,290 @@
 ---
-import WidgetLayout from "./WidgetLayout.astro";
 import { Icon } from "astro-icon/components";
+import WidgetLayout from "./WidgetLayout.astro";
 ---
 
 <WidgetLayout name="统计" icon="material-symbols:analytics-outline">
-    <div class="flex flex-col gap-4 px-2 py-3">
-        <script
-            async
-            src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    <div class="flex flex-col gap-4 px-2 py-3 relative group">
+        <script async src="https://vercount.one/js" id="vercount-loader"
         ></script>
 
         <div
-            class="flex flex-col items-center justify-center p-3 rounded-xl bg-gradient-to-br from-[oklch(98%_0.01_var(--hue))] to-[oklch(94%_0.02_var(--hue))] dark:from-white/5 dark:to-white/[0.02] border border-black/5 dark:border-white/10 shadow-inner"
+            class="stat-card main-card relative overflow-hidden p-4 rounded-2xl bg-gradient-to-br from-[oklch(99%_0.01_var(--hue))] to-[oklch(95%_0.02_var(--hue))] dark:from-zinc-900 dark:to-zinc-950 border border-black/5 dark:border-white/10 shadow-sm transition-all duration-500 hover:shadow-xl hover:shadow-[var(--primary)]/10 hover:-translate-y-1"
         >
             <div
-                class="text-[0.65rem] text-black/40 dark:text-white/40 uppercase tracking-[0.2em] mb-1 font-bold"
+                class="absolute -right-4 -bottom-4 text-[var(--primary)] opacity-[0.05] rotate-12 transition-transform duration-700 group-hover:scale-125 group-hover:rotate-[30deg]"
             >
-                总浏览量
+                <Icon name="material-symbols:analytics-outline" size={88} />
             </div>
-            <div class="flex items-baseline gap-1">
-                <span
-                    id="busuanzi_container_site_pv"
-                    class="text-3xl font-black text-[var(--primary)] drop-shadow-sm font-mono"
+
+            <div class="relative z-10">
+                <div
+                    class="text-[0.65rem] text-black/40 dark:text-white/40 uppercase tracking-[0.2em] mb-1 font-bold"
                 >
-                    <span id="busuanzi_value_site_pv" class="counter-value"
-                        >0</span
+                    Total Views / 总浏览量
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <div class="flex items-baseline gap-1">
+                        <span
+                            id="busuanzi_container_site_pv"
+                            class="text-4xl font-black text-[var(--primary)] drop-shadow-sm font-mono transition-all duration-500"
+                        >
+                            <span
+                                id="busuanzi_value_site_pv"
+                                class="counter-value">0</span
+                            >
+                        </span>
+                        <span
+                            class="text-[var(--primary)] opacity-40 text-xs font-bold tracking-tighter"
+                            >PV</span
+                        >
+                    </div>
+
+                    <button
+                        id="stat-error-btn"
+                        class="hidden flex items-center justify-center w-5 h-5 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 shadow-sm"
                     >
-                </span>
-                <span class="text-[var(--primary)] opacity-50 text-xs">PV</span>
+                        <Icon
+                            name="material-symbols:priority-high-rounded"
+                            class="text-[10px]"
+                        />
+                    </button>
+                </div>
+            </div>
+
+            <div
+                class="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[var(--primary)] to-transparent opacity-20"
+            >
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-3">
             <div
-                class="flex flex-col items-center p-2 rounded-lg bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5"
+                class="stat-sub-card group/sub flex flex-col items-center p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 hover:bg-[var(--primary)]/[0.05] transition-colors duration-300"
             >
                 <div
-                    class="flex items-center gap-1 text-[0.6rem] text-black/40 dark:text-white/40 mb-1"
+                    class="flex items-center gap-1.5 text-[0.6rem] text-black/40 dark:text-white/40 mb-1 font-bold"
                 >
-                    <Icon name="material-symbols:person-outline-rounded" />
+                    <Icon
+                        name="material-symbols:person-outline-rounded"
+                        class="group-hover/sub:text-[var(--primary)] transition-colors"
+                    />
                     <span>访客数</span>
                 </div>
                 <span
                     id="busuanzi_container_site_uv"
-                    class="text-lg font-bold text-black/70 dark:text-white/80 font-mono"
+                    class="text-xl font-bold text-zinc-700 dark:text-zinc-200 font-mono transition-all"
                 >
                     <span
                         id="busuanzi_value_site_uv"
-                        class="counter-value text-sm">0</span
+                        class="counter-value text-base">0</span
                     >
                 </span>
             </div>
 
             <div
-                class="flex flex-col items-center p-2 rounded-lg bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5"
+                class="stat-sub-card flex flex-col items-center p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/5"
             >
                 <div
-                    class="text-[0.6rem] text-black/40 dark:text-white/40 mb-1 tracking-tighter"
+                    class="text-[0.6rem] text-black/40 dark:text-white/40 mb-2 font-bold tracking-tighter uppercase"
                 >
-                    运行状态
+                    Status / 状态
                 </div>
-                <div class="flex items-center gap-1.5 mt-1">
-                    <div class="relative flex h-2 w-2">
+                <div
+                    class="flex items-center gap-2 bg-white/50 dark:bg-black/20 px-2 py-0.5 rounded-full border border-black/5 dark:border-white/5"
+                >
+                    <span class="relative flex h-2 w-2">
                         <span
                             class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
                         ></span>
                         <span
-                            class="relative inline-flex rounded-full h-2 w-2 bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"
+                            class="relative inline-flex rounded-full h-2 w-2 bg-green-500"
                         ></span>
-                    </div>
+                    </span>
                     <span
-                        class="text-[0.7rem] font-bold text-green-600 dark:text-green-400 uppercase"
+                        class="text-[0.6rem] font-black text-green-600 dark:text-green-400 uppercase tracking-widest"
                         >Active</span
                     >
                 </div>
             </div>
         </div>
     </div>
+
+    <dialog
+        id="stat-modal"
+        class="backdrop:bg-black/60 backdrop:backdrop-blur-md bg-transparent p-0 m-auto rounded-3xl overflow-hidden shadow-2xl transition-all duration-300"
+    >
+        <div
+            class="bg-white dark:bg-zinc-900 w-[300px] p-6 text-center border border-white/10"
+        >
+            <div
+                class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+                <Icon name="material-symbols:error-outline-rounded" size={32} />
+            </div>
+            <h3 class="text-lg font-bold text-zinc-800 dark:text-zinc-100 mb-2">
+                统计加载异常
+            </h3>
+            <div
+                class="space-y-3 text-sm text-zinc-500 dark:text-zinc-400 text-left mb-6"
+            >
+                <p class="flex gap-2">
+                    <span>•</span>
+                    <span>浏览器广告拦截插件过滤了脚本。</span>
+                </p>
+                <p class="flex gap-2">
+                    <span>•</span>
+                    <span>当前处于无痕模式或隐私保护浏览器。</span>
+                </p>
+                <p class="flex gap-2 text-[var(--primary)] font-medium">
+                    <span>✓</span>
+                    <span>建议切换 Chrome/Edge 或关闭拦截。</span>
+                </p>
+            </div>
+            <button
+                id="close-modal"
+                class="w-full py-3 bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-xl font-bold transition-all active:scale-95"
+            >
+                确认并刷新
+            </button>
+        </div>
+    </dialog>
 </WidgetLayout>
 
 <script>
-    // 数字单位转换函数
     function formatNumber(num: number): string {
-        if (num >= 1000000) {
+        if (num >= 1000000)
             return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
-        }
-        if (num >= 1000) {
+        if (num >= 1000)
             return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
-        }
         return num.toString();
     }
 
-    // 数字滚动动画函数
     function animateCounter(el: HTMLElement, target: number) {
-        let start = 0;
-        const duration = 1500;
         const startTime = performance.now();
-
-        function update(currentTime: number) {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-
-            // 缓动函数
-            const easeProgress = 1 - Math.pow(2, -10 * progress);
-            const currentValue = Math.floor(easeProgress * target);
-
-            // 应用单位转换逻辑
-            el.innerText = formatNumber(currentValue);
-
-            if (progress < 1) {
-                requestAnimationFrame(update);
-            }
-        }
+        const duration = 2000; // 增长时间稍微拉长，更有感觉
+        const update = (currentTime: number) => {
+            const progress = Math.min((currentTime - startTime) / duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 4); // Quartic ease out
+            el.innerText = formatNumber(Math.floor(ease * target));
+            if (progress < 1) requestAnimationFrame(update);
+        };
         requestAnimationFrame(update);
     }
 
-    // 监测不蒜子数据加载
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === "childList") {
-                const target = mutation.target as HTMLElement;
-                // 从注入的文本中提取纯数字
-                const rawText = target.innerText.replace(/,/g, "");
-                const value = parseInt(rawText);
+    function handleLoadError() {
+        const errorBtn = document.getElementById("stat-error-btn");
+        const modal = document.getElementById(
+            "stat-modal",
+        ) as HTMLDialogElement;
+        const closeBtn = document.getElementById("close-modal");
+        const containers = [
+            document.getElementById("busuanzi_container_site_pv"),
+            document.getElementById("busuanzi_container_site_uv"),
+        ];
 
-                if (!isNaN(value) && value > 0) {
-                    animateCounter(target, value);
-                    observer.disconnect();
-                }
-            }
-        });
-    });
-
-    function initStats() {
-        const pvEl = document.getElementById("busuanzi_value_site_pv");
-        const uvEl = document.getElementById("busuanzi_value_site_uv");
-        if (pvEl) observer.observe(pvEl, { childList: true });
-        if (uvEl) observer.observe(uvEl, { childList: true });
+        if (errorBtn && modal) {
+            errorBtn.classList.remove("hidden");
+            errorBtn.onclick = () => modal.showModal();
+            closeBtn!.onclick = () => {
+                modal.close();
+                window.location.reload();
+            };
+            // 点击外部关闭
+            modal.onclick = (e) => {
+                if (e.target === modal) modal.close();
+            };
+        }
+        containers.forEach((c) => c && (c.style.opacity = "0.3"));
     }
 
-    initStats();
-    document.addEventListener("astro:after-swap", initStats);
+    function initVercount() {
+        const pvEl = document.getElementById("busuanzi_value_site_pv");
+        const uvEl = document.getElementById("busuanzi_value_site_uv");
+        if (!pvEl || !uvEl) return;
+
+        const timeout = setTimeout(() => {
+            if (pvEl.innerText === "0") handleLoadError();
+        }, 4500);
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === "childList") {
+                    const target = mutation.target as HTMLElement;
+                    const val = parseInt(target.innerText.replace(/,/g, ""));
+                    if (!isNaN(val) && val > 0) {
+                        clearTimeout(timeout);
+                        animateCounter(target, val);
+                        // 数据加载成功后恢复透明度
+                        const container = target.parentElement;
+                        if (container) container.style.opacity = "1";
+                        observer.disconnect();
+                    }
+                }
+            });
+        });
+
+        observer.observe(pvEl, { childList: true });
+        observer.observe(uvEl, { childList: true });
+    }
+
+    initVercount();
+    document.addEventListener("astro:after-swap", initVercount);
 </script>
 
 <style>
     .font-mono {
         font-variant-numeric: tabular-nums;
     }
-    /* 醒目数字的微光掠过动画 */
-    @keyframes shine {
-        0% {
-            background-position: -200% center;
+
+    /* 流光掠过效果 */
+    .main-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            120deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+        );
+        transition: 0.6s;
+    }
+    .main-card:hover::before {
+        left: 100%;
+    }
+
+    /* 模态框打开动画 */
+    dialog[open] {
+        animation: modal-show 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes modal-show {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
         }
-        100% {
-            background-position: 200% center;
+        to {
+            transform: scale(1);
+            opacity: 1;
         }
     }
-    .counter-value {
-        transition: all 0.5s ease-out;
+
+    #stat-error-btn {
+        animation: pulse-red 2s infinite;
+    }
+    @keyframes pulse-red {
+        0% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        }
     }
 </style>
