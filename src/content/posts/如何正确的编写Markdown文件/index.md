@@ -3,7 +3,7 @@
 title: 如何编写 Markdown 文件
 published: 2026-02-17
 description: "如何使用这个博客模板。"
-image: "https://markdown-here.com/img/icon256.png"
+image: "./markdown-icon256.png"
 tags: ["Markdown", "教程", "指南"]
 category: 教程
 draft: false
