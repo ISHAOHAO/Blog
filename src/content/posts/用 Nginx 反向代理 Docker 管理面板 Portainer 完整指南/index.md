@@ -1,10 +1,10 @@
 ---
 
 title: 用 Nginx 反向代理 Docker 管理面板 Portainer 完整指南
-published: 2026-03-07
+published: 2026-03-08
 description: "本文详细介绍如何在 ArmBian 系统上使用 Docker Compose 部署 Portainer，并通过 Nginx 反向代理实现通过域名访问，打造干净可扩展的容器管理架构。"
-image: "./portainer-nginx-cover.png"
-tags: ["Panther-X2", "Docker", "Portainer", "Nginx", "反向代理"]
+image: "./portainer.jpg"
+tags: ["Panther-X2", "Docker", "Portainer", "Nginx", "反向代理", "ArmBian"]
 category: 教程
 draft: false
 
