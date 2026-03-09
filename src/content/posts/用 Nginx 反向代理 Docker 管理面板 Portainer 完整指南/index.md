@@ -10,6 +10,8 @@ draft: false
 
 ---
 
+> 封面图片来源：[portainer](https://www.portainer.io/)
+
 ## 1. 简介
 
 **Portainer** 是一个轻量级的 Docker 容器管理面板，通过 Web 界面让你像点外卖一样管理容器、镜像、网络和卷，再也不用背那些长长的 Docker 命令。
