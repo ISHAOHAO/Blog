@@ -1,7 +1,7 @@
 ---
 
-title: Panther-X2部署Portainer并实现完美汉化 | 附Nginx反代配置
-published: 2026-02-18
+title: Panther-X2部署Portainer并实现完美汉化 | 附Nginx反代配置和汉化补丁
+published: 2026-03-12
 description: "本文详解在Panther-X2 Armbian设备上部署Portainer容器管理工具，通过汉化补丁实现全界面中文，并配置Nginx反代解决端口访问与安全问题。"
 image: "./portainer.png"
 tags: ["Panther-X2", "Portainer", "Docker", "Armbian", "汉化", "Nginx反代"]
@@ -68,7 +68,7 @@ docker run -d \
 # 查看容器状态
 docker ps | grep portainer
 # 访问测试（替换为Panther-X2内网IP）
-curl http://192.168.1.111:9001
+curl http://192.168.1.x:9001
 ```
 
 如果返回`<!DOCTYPE html>`开头的内容，说明容器启动正常。
@@ -113,7 +113,7 @@ server {
     # 自定义反代端口（避开80/443，用8888）
     listen 8888;
     # 替换为你的DDNS域名（如portainer.example.com）
-    server_name portainer.example.com;
+    server_name your-domain.com;
 
     # 反代核心配置
     location / {
@@ -197,7 +197,7 @@ systemctl enable nginx
 * 排查步骤：
   1. 检查Panther-X2防火墙：`ufw allow 8888/tcp`
   2. 路由器端口转发：转发外网8888端口到Panther-X2内网IP的8888端口
-  3. 验证DDNS域名解析：`nslookup portainer.example.com`（确保指向当前公网IP）
+  3. 验证DDNS域名解析：`nslookup your-domain.com`（确保指向当前公网IP）
 
 ---
 
@@ -213,9 +213,4 @@ systemctl enable nginx
 
 如果你们在Panther-X2上部署Portainer遇到其他问题，欢迎评论区交流，一起避坑～
 
-```
-
-### 总结
-1. 核心流程：Panther-X2部署Portainer（自定义9001端口）→ 替换汉化补丁 → Nginx反代（8888端口+开启WebSocket），实现中文可视化管理。
-2. 关键坑点：汉化补丁需匹配Portainer版本，反代必须配置WebSocket，外网访问需放行路由器端口。
-3. 最终价值：用Panther-X2低功耗设备实现Docker可视化管理，中文界面降低操作门槛，反代优化访问体验。
+---
