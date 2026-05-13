@@ -39,7 +39,7 @@ draft: false
 sudo apt update && sudo apt install -y wireguard qrencode
 
 # 拉取自动化部署脚本（这个脚本可以搞定自动处理密钥生成这些）
-wget [https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh](https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh)
+wget https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh
 
 chmod +x wireguard-install.sh
 
