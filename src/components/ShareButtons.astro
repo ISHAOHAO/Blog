@@ -4,9 +4,9 @@ import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 
 interface Props {
-    title: string;
-    url: string;
-    class?: string;
+  title: string;
+  url: string;
+  class?: string;
 }
 
 const { title, url } = Astro.props;
@@ -15,44 +15,150 @@ const encodedUrl = encodeURIComponent(url);
 const encodedTitle = encodeURIComponent(title);
 const copiedText = i18n(I18nKey.shareCopied);
 const copyLinkText = i18n(I18nKey.shareCopyLink);
+const wechatScanHint = i18n(I18nKey.shareWechatScanHint);
+const xiaohongshuHint = i18n(I18nKey.shareXiaohongshuHint);
+const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedUrl}`;
 ---
+
 <div class:list={["share-buttons", className]}>
-    <div class="flex items-center gap-2 text-sm text-50 mb-2">
-        <Icon name="material-symbols:share-outline" class="text-base" />
-        <span>{i18n(I18nKey.shareText)}</span>
-    </div>
-    <div class="flex flex-wrap gap-2">
-        <a href={`https://service.weibo.com/share/share.php?url=${encodedUrl}&title=${encodedTitle}`}
-           target="_blank" rel="noopener noreferrer"
-           class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5">
-            <Icon name="fa6-brands:weibo" class="text-sm" />
-            <span>{i18n(I18nKey.shareViaWeibo)}</span>
-        </a>
-        <a href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
-           target="_blank" rel="noopener noreferrer"
-           class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5">
-            <Icon name="fa6-brands:twitter" class="text-sm" />
-            <span>{i18n(I18nKey.shareViaTwitter)}</span>
-        </a>
-        <button id="share-copy-btn"
-           class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5">
-            <Icon name="material-symbols:link" class="text-sm" />
-            <span id="share-copy-label">{copyLinkText}</span>
-        </button>
-    </div>
+  <div class="flex items-center gap-2 text-sm text-50 mb-2">
+    <Icon name="material-symbols:share-outline" class="text-base" />
+    <span>{i18n(I18nKey.shareText)}</span>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <button
+      id="share-wechat-btn"
+      class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5"
+    >
+      <Icon name="fa6-brands:weixin" class="text-sm" />
+      <span>{i18n(I18nKey.shareViaWechat)}</span>
+    </button>
+    <a
+      href={`https://service.weibo.com/share/share.php?url=${encodedUrl}&title=${encodedTitle}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5"
+    >
+      <Icon name="fa6-brands:weibo" class="text-sm" />
+      <span>{i18n(I18nKey.shareViaWeibo)}</span>
+    </a>
+    <a
+      href={`https://connect.qq.com/widget/shareqq/index.html?url=${encodedUrl}&title=${encodedTitle}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5"
+    >
+      <Icon name="fa6-brands:qq" class="text-sm" />
+      <span>{i18n(I18nKey.shareViaQQ)}</span>
+    </a>
+    <button
+      id="share-xhs-btn"
+      class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5"
+    >
+      <Icon name="material-symbols:edit-square-outline" class="text-sm" />
+      <span id="share-xhs-label">{i18n(I18nKey.shareViaXiaohongshu)}</span>
+    </button>
+    <a
+      href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5"
+    >
+      <Icon name="fa6-brands:twitter" class="text-sm" />
+      <span>{i18n(I18nKey.shareViaTwitter)}</span>
+    </a>
+    <button
+      id="share-copy-btn"
+      class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5"
+    >
+      <Icon name="material-symbols:link" class="text-sm" />
+      <span id="share-copy-label">{copyLinkText}</span>
+    </button>
+  </div>
 </div>
 
-<script define:vars={{ url, copiedText, copyLinkText }}>
-    const btn = document.getElementById('share-copy-btn');
-    const label = document.getElementById('share-copy-label');
-    if (btn && label) {
-        btn.addEventListener('click', () => {
-            navigator.clipboard.writeText(url).then(() => {
-                label.textContent = copiedText;
-                setTimeout(() => {
-                    label.textContent = copyLinkText;
-                }, 2000);
-            });
-        });
+<div
+  id="wechat-qr-modal"
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden"
+>
+  <div
+    class="bg-white dark:bg-[oklch(0.23_0.015_var(--hue))] rounded-2xl p-6 mx-4 max-w-sm w-full text-center shadow-2xl"
+  >
+    <div class="text-lg font-bold text-90 mb-1">
+      {i18n(I18nKey.shareViaWechat)}
+    </div>
+    <div class="text-sm text-50 mb-4">{wechatScanHint}</div>
+    <img
+      id="wechat-qr-img"
+      src={qrApiUrl}
+      alt="WeChat QR Code"
+      class="w-[200px] h-[200px] mx-auto rounded-xl"
+    />
+    <button
+      id="wechat-qr-close"
+      class="btn-regular rounded-lg w-full mt-4 py-2 text-sm font-medium"
+    >
+      关闭
+    </button>
+  </div>
+</div>
+
+<style>
+  #wechat-qr-modal {
+    animation: fadeIn 0.2s ease-out;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
     }
+    to {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script define:vars={{ url, copiedText, copyLinkText, xiaohongshuHint }}>
+  const copyBtn = document.getElementById("share-copy-btn");
+  const copyLabel = document.getElementById("share-copy-label");
+  if (copyBtn && copyLabel) {
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(url).then(() => {
+        copyLabel.textContent = copiedText;
+        setTimeout(() => {
+          copyLabel.textContent = copyLinkText;
+        }, 2000);
+      });
+    });
+  }
+
+  const xhsBtn = document.getElementById("share-xhs-btn");
+  const xhsLabel = document.getElementById("share-xhs-label");
+  if (xhsBtn && xhsLabel) {
+    const original = xhsLabel.textContent || "";
+    xhsBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(url).then(() => {
+        xhsLabel.textContent = xiaohongshuHint;
+        setTimeout(() => {
+          xhsLabel.textContent = original;
+        }, 2000);
+      });
+    });
+  }
+
+  const wechatBtn = document.getElementById("share-wechat-btn");
+  const wechatModal = document.getElementById("wechat-qr-modal");
+  const wechatClose = document.getElementById("wechat-qr-close");
+  if (wechatBtn && wechatModal) {
+    wechatBtn.addEventListener("click", () => {
+      wechatModal.classList.remove("hidden");
+    });
+    wechatModal.addEventListener("click", (e) => {
+      if (e.target === wechatModal) wechatModal.classList.add("hidden");
+    });
+    if (wechatClose) {
+      wechatClose.addEventListener("click", () =>
+        wechatModal.classList.add("hidden"),
+      );
+    }
+  }
 </script>

@@ -1,8 +1,8 @@
 ---
 import type { MarkdownHeading } from "astro";
 import AdSidebar from "../AdSidebar.astro"; // 赞助组件
-import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
+import PopularPosts from "../PopularPosts.astro";
 // import Tag from "./Tags.astro"; // 标签组件
 import Statistics from "./Statistics.astro"; // 统计组件
 
@@ -22,11 +22,11 @@ const className = Astro.props.class;
         id="sidebar-sticky"
         class="transition-all duration-700 flex flex-col w-full gap-4 top-4 sticky top-4"
     >
-        <Categories class="onload-animation" style="animation-delay: 150ms" />
+        <PopularPosts class="onload-animation" style="animation-delay: 150ms" />
         <!-- 统计组件 -->
-        <Statistics class="onload-animation" style="animation-delay: 200ms" />
+        <Statistics class="onload-animation" style="animation-delay: 175ms" />
         <!-- 赞助组件 -->
-        <div class="onload-animation" style="animation-delay: 250ms">
+        <div class="onload-animation" style="animation-delay: 200ms">
             <AdSidebar />
         </div>
     </div>

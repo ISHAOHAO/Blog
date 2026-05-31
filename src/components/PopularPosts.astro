@@ -2,39 +2,29 @@
 import { Icon } from "astro-icon/components";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
-import type { PostForList } from "../utils/content-utils";
+import { getSortedPostsList, type PostForList } from "../utils/content-utils";
 import { getPostUrlBySlug } from "../utils/url-utils";
+import WidgetLayout from "./widget/WidgetLayout.astro";
 
-interface Props {
-    posts: PostForList[];
-    class?: string;
-}
+const posts = await getSortedPostsList();
+const topPosts = posts.slice(0, 5);
 
-const { posts } = Astro.props;
-const className = Astro.props.class;
-
-if (posts.length === 0) return null;
+if (topPosts.length === 0) return null;
+const COLLAPSED_HEIGHT = "18rem";
+const isCollapsed = topPosts.length > 5;
 ---
-<div class:list={[className]}>
-    <div class="flex items-center gap-2 text-sm text-50 mb-3">
-        <Icon name="material-symbols:trending-up-outline" class="text-base" />
-        <span>{i18n(I18nKey.popularPosts)}</span>
-    </div>
-    <div class="flex flex-col gap-2">
-        {posts.map((post, idx) => (
+<WidgetLayout name={i18n(I18nKey.popularPosts)} id="popular-posts" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT}>
+    <div class="flex flex-col gap-1">
+        {topPosts.map((post, idx) => (
             <a href={getPostUrlBySlug(post.slug)}
-               class="btn-card rounded-xl px-4 py-3 flex items-center gap-3 group">
+               class="rounded-xl px-3 py-2.5 flex items-center gap-3 transition text-sm hover:bg-[var(--btn-plain-bg-hover)] group">
                 <span class="w-6 h-6 rounded-lg bg-[var(--primary)]/10 text-[var(--primary)] flex items-center justify-center text-xs font-bold shrink-0">
                     {idx + 1}
                 </span>
-                <div class="flex-1 min-w-0">
-                    <div class="text-sm font-medium text-90 truncate group-hover:text-[var(--primary)] transition">
-                        {post.data.title}
-                    </div>
-                </div>
-                <Icon name="material-symbols:chevron-right-rounded"
-                      class="text-xl text-[var(--primary)] shrink-0 opacity-0 group-hover:opacity-100 transition" />
+                <span class="flex-1 truncate text-75 group-hover:text-[var(--primary)] transition">
+                    {post.data.title}
+                </span>
             </a>
         ))}
     </div>
-</div>
+</WidgetLayout>
