@@ -1,0 +1,43 @@
+---
+import { Icon } from "astro-icon/components";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+import type { SeriesInfo } from "../utils/content-utils";
+import { getPostUrlBySlug } from "../utils/url-utils";
+
+interface Props {
+    series: SeriesInfo;
+    currentSlug: string;
+    class?: string;
+}
+
+const { series, currentSlug } = Astro.props;
+const className = Astro.props.class;
+
+if (!series || series.posts.length <= 1) return null;
+---
+<div class:list={[className]}>
+    <div class="flex items-center gap-2 text-sm text-50 mb-3">
+        <Icon name="material-symbols:collections-bookmark-outline" class="text-base" />
+        <span>{i18n(I18nKey.seriesPosts)}: {series.name}</span>
+    </div>
+    <div class="flex flex-col gap-1">
+        {series.posts.map((post, idx) => (
+            <a href={getPostUrlBySlug(post.slug)}
+               class:list={[
+                   "rounded-xl px-4 py-2.5 flex items-center gap-3 transition text-sm",
+                   post.slug === currentSlug
+                       ? "bg-[var(--primary)]/10 text-[var(--primary)] font-medium"
+                       : "text-75 hover:bg-[var(--btn-plain-bg-hover)] hover:text-90"
+               ]}>
+                <span class="w-6 h-6 rounded-lg bg-[var(--btn-regular-bg)] flex items-center justify-center text-xs font-bold shrink-0">
+                    {post.order || idx + 1}
+                </span>
+                <span class="truncate">{post.title}</span>
+                {post.slug === currentSlug && (
+                    <Icon name="material-symbols:arrow-left-rounded" class="text-sm ml-auto shrink-0" />
+                )}
+            </a>
+        ))}
+    </div>
+</div>

@@ -1,0 +1,42 @@
+---
+import { Icon } from "astro-icon/components";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+import type { RelatedPost } from "../utils/content-utils";
+import { getPostUrlBySlug } from "../utils/url-utils";
+
+interface Props {
+    posts: RelatedPost[];
+    class?: string;
+}
+
+const { posts } = Astro.props;
+const className = Astro.props.class;
+
+if (posts.length === 0) return null;
+---
+<div class:list={[className]}>
+    <div class="flex items-center gap-2 text-sm text-50 mb-3">
+        <Icon name="material-symbols:article-outline" class="text-base" />
+        <span>{i18n(I18nKey.relatedPosts)}</span>
+    </div>
+    <div class="flex flex-col gap-2">
+        {posts.map((post) => (
+            <a href={getPostUrlBySlug(post.slug)}
+               class="btn-card rounded-xl px-4 py-3 flex items-center justify-between group">
+                <div class="flex-1 min-w-0">
+                    <div class="text-sm font-medium text-90 truncate group-hover:text-[var(--primary)] transition">
+                        {post.title}
+                    </div>
+                    <div class="flex items-center gap-2 mt-1">
+                        {post.category && (
+                            <span class="text-xs text-50">{post.category}</span>
+                        )}
+                    </div>
+                </div>
+                <Icon name="material-symbols:chevron-right-rounded"
+                      class="text-xl text-[var(--primary)] shrink-0 opacity-0 group-hover:opacity-100 transition -translate-x-1 group-hover:translate-x-0" />
+            </a>
+        ))}
+    </div>
+</div>

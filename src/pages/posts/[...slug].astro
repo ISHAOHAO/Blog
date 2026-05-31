@@ -5,7 +5,7 @@ import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getSortedPosts } from "@utils/content-utils";
+import { getRelatedPosts, getSeriesPosts, getSortedPosts } from "@utils/content-utils";
 import { getDir, getPostUrlBySlug } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import { licenseConfig } from "src/config";
@@ -13,6 +13,12 @@ import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
+import Comment from "../../components/Comment.astro";
+import RelatedPosts from "../../components/RelatedPosts.astro";
+import SeriesNav from "../../components/SeriesNav.astro";
+import ShareButtons from "../../components/ShareButtons.astro";
+import PostRating from "../../components/PostRating.svelte";
+import RSSPromo from "../../components/RSSPromo.astro";
 
 export async function getStaticPaths() {
     const blogEntries = await getSortedPosts();
@@ -42,11 +48,11 @@ const jsonLd = {
     inLanguage: entry.data.lang
         ? entry.data.lang.replace("_", "-")
         : siteConfig.lang.replace("_", "-"),
-    // TODO include cover image here
 };
 
-// 评论组件
-import Comment from "../../components/Comment.astro";
+const relatedPosts = await getRelatedPosts(entry.slug, 3);
+const seriesInfo = await getSeriesPosts(entry.data.series || "");
+const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
 ---
 
 <MainGridLayout
@@ -169,6 +175,22 @@ import Comment from "../../components/Comment.astro";
                     />
                 )
             }
+
+            <SeriesNav series={seriesInfo} currentSlug={entry.slug} class="mb-6 onload-animation" />
+
+            <div class="mb-6 onload-animation">
+                <ShareButtons title={entry.data.title} url={postUrl} />
+            </div>
+
+            <div class="mb-4 onload-animation">
+                <PostRating slug={entry.slug} client:load />
+            </div>
+
+            <RelatedPosts posts={relatedPosts} class="mb-6 onload-animation" />
+
+            <div class="mb-6 onload-animation">
+                <RSSPromo />
+            </div>
         </div>
     </div>
 

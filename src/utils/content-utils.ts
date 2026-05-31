@@ -112,3 +112,94 @@ export async function getCategoryList(): Promise<Category[]> {
 	}
 	return ret;
 }
+
+export type RelatedPost = {
+	slug: string;
+	title: string;
+	published: Date;
+	tags: string[];
+	category: string | null;
+	score: number;
+};
+
+export async function getRelatedPosts(
+	currentSlug: string,
+	maxCount = 3,
+): Promise<RelatedPost[]> {
+	const allPosts = await getCollection("posts", ({ data }) => {
+		return import.meta.env.PROD ? data.draft !== true : true;
+	});
+
+	const currentPost = allPosts.find((p) => p.slug === currentSlug);
+	if (!currentPost) return [];
+
+	const currentTags = new Set(currentPost.data.tags || []);
+	const currentCategory = currentPost.data.category?.trim() || null;
+
+	const scored = allPosts
+		.filter((p) => p.slug !== currentSlug)
+		.map((p) => {
+			let score = 0;
+			const pTags = p.data.tags || [];
+			const pCategory = p.data.category?.trim() || null;
+
+			for (const tag of pTags) {
+				if (currentTags.has(tag)) {
+					score += 2;
+				}
+			}
+
+			if (currentCategory && pCategory && currentCategory === pCategory) {
+				score += 1;
+			}
+
+			return {
+				slug: p.slug,
+				title: p.data.title,
+				published: p.data.published,
+				tags: pTags,
+				category: pCategory,
+				score,
+			};
+		})
+		.filter((p) => p.score > 0)
+		.sort((a, b) => b.score - a.score || b.published.getTime() - a.published.getTime())
+		.slice(0, maxCount);
+
+	return scored;
+}
+
+export type SeriesInfo = {
+	name: string;
+	posts: { slug: string; title: string; order?: number }[];
+};
+
+export async function getSeriesPosts(currentSeries: string): Promise<SeriesInfo | null> {
+	if (!currentSeries) return null;
+
+	const allPosts = await getCollection("posts", ({ data }) => {
+		return import.meta.env.PROD ? data.draft !== true : true;
+	});
+
+	const seriesPosts = allPosts
+		.filter((p) => p.data.series === currentSeries)
+		.map((p) => ({
+			slug: p.slug,
+			title: p.data.title,
+			order: p.data.seriesOrder,
+		}));
+
+	if (seriesPosts.length <= 1) return null;
+
+	seriesPosts.sort((a, b) => {
+		if (a.order !== undefined && b.order !== undefined) return a.order - b.order;
+		if (a.order !== undefined) return -1;
+		if (b.order !== undefined) return 1;
+		return 0;
+	});
+
+	return {
+		name: currentSeries,
+		posts: seriesPosts,
+	};
+}

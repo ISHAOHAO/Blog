@@ -1,0 +1,58 @@
+---
+import { Icon } from "astro-icon/components";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+
+interface Props {
+    title: string;
+    url: string;
+    class?: string;
+}
+
+const { title, url } = Astro.props;
+const className = Astro.props.class;
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+const copiedText = i18n(I18nKey.shareCopied);
+const copyLinkText = i18n(I18nKey.shareCopyLink);
+---
+<div class:list={["share-buttons", className]}>
+    <div class="flex items-center gap-2 text-sm text-50 mb-2">
+        <Icon name="material-symbols:share-outline" class="text-base" />
+        <span>{i18n(I18nKey.shareText)}</span>
+    </div>
+    <div class="flex flex-wrap gap-2">
+        <a href={`https://service.weibo.com/share/share.php?url=${encodedUrl}&title=${encodedTitle}`}
+           target="_blank" rel="noopener noreferrer"
+           class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5">
+            <Icon name="fa6-brands:weibo" class="text-sm" />
+            <span>{i18n(I18nKey.shareViaWeibo)}</span>
+        </a>
+        <a href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
+           target="_blank" rel="noopener noreferrer"
+           class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5">
+            <Icon name="fa6-brands:twitter" class="text-sm" />
+            <span>{i18n(I18nKey.shareViaTwitter)}</span>
+        </a>
+        <button id="share-copy-btn"
+           class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5">
+            <Icon name="material-symbols:link" class="text-sm" />
+            <span id="share-copy-label">{copyLinkText}</span>
+        </button>
+    </div>
+</div>
+
+<script define:vars={{ url, copiedText, copyLinkText }}>
+    const btn = document.getElementById('share-copy-btn');
+    const label = document.getElementById('share-copy-label');
+    if (btn && label) {
+        btn.addEventListener('click', () => {
+            navigator.clipboard.writeText(url).then(() => {
+                label.textContent = copiedText;
+                setTimeout(() => {
+                    label.textContent = copyLinkText;
+                }, 2000);
+            });
+        });
+    }
+</script>

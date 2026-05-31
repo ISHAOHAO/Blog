@@ -32,6 +32,24 @@ enum I18nKey {
 	author = "author",
 	publishedAt = "publishedAt",
 	license = "license",
+
+	relatedPosts = "relatedPosts",
+	seriesPosts = "seriesPosts",
+	share = "share",
+	shareText = "shareText",
+	shareViaWechat = "shareViaWechat",
+	shareViaWeibo = "shareViaWeibo",
+	shareViaTwitter = "shareViaTwitter",
+	shareCopyLink = "shareCopyLink",
+	shareCopied = "shareCopied",
+	like = "like",
+	dislike = "dislike",
+	rssSubscribe = "rssSubscribe",
+	rssSubscribeText = "rssSubscribeText",
+	popularPosts = "popularPosts",
+	readMore = "readMore",
+	progressBar = "progressBar",
+	updatedAt = "updatedAt",
 }
 
 export default I18nKey;

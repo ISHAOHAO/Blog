@@ -4,7 +4,6 @@ import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 import { getTagList } from "../../utils/content-utils";
 import { getTagUrl } from "../../utils/url-utils";
-import ButtonTag from "../control/ButtonTag.astro";
 import WidgetLayout from "./WidgetLayout.astro";
 
 const tags = await getTagList();
@@ -19,13 +18,25 @@ interface Props {
 }
 const className = Astro.props.class;
 const style = Astro.props.style;
+
+const maxCount = tags.length > 0 ? Math.max(...tags.map(t => t.count)) : 1;
+const minCount = tags.length > 0 ? Math.min(...tags.map(t => t.count)) : 1;
+const getTagSize = (count: number) => {
+	if (maxCount === minCount) return 1;
+	return 0.75 + (count - minCount) / (maxCount - minCount) * 0.75;
+};
 ---
 <WidgetLayout name={i18n(I18nKey.tags)} id="tags" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT} class={className} style={style}>
-    <div class="flex gap-2 flex-wrap">
-        {tags.map(t => (
-            <ButtonTag href={getTagUrl(t.name)} label={`View all posts with the ${t.name.trim()} tag`}>
-                {t.name.trim()}
-            </ButtonTag>
-        ))}
+    <div class="flex gap-2 flex-wrap items-center">
+        {tags.map(t => {
+            const size = getTagSize(t.count);
+            return (
+                <a href={getTagUrl(t.name)} aria-label={`View all posts with the ${t.name.trim()} tag`}
+                   class="btn-card rounded-lg px-2.5 py-1.5 text-sm font-medium transition hover:bg-[var(--primary)]/10 hover:text-[var(--primary)] inline-flex items-center gap-1">
+                    <span style={`font-size: ${size}rem`}>{t.name.trim()}</span>
+                    <span class="text-xs text-30">({t.count})</span>
+                </a>
+            );
+        })}
     </div>
 </WidgetLayout>

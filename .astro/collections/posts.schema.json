@@ -80,6 +80,13 @@
           "type": "string",
           "default": ""
         },
+        "series": {
+          "type": "string",
+          "default": ""
+        },
+        "seriesOrder": {
+          "type": "number"
+        },
         "prevTitle": {
           "type": "string",
           "default": ""

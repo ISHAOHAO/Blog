@@ -1,0 +1,1857 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>HAOHAO&apos;s Blog</title><description>Hello</description><link>https://fuwari.vercel.app/</link><language>zh_CN</language><item><title>Git 完全入门指南：从安装到 VSCode 日常协作</title><link>https://fuwari.vercel.app/posts/git-%E5%AE%8C%E5%85%A8%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E4%BB%8E%E5%AE%89%E8%A3%85%E5%88%B0-vscode-%E6%97%A5%E5%B8%B8%E5%8D%8F%E4%BD%9C/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/git-%E5%AE%8C%E5%85%A8%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E4%BB%8E%E5%AE%89%E8%A3%85%E5%88%B0-vscode-%E6%97%A5%E5%B8%B8%E5%8D%8F%E4%BD%9C/</guid><description>手把手教你安装 Git，并用 VSCode 的可视化操作轻松管理代码版本，再也不怕敲命令。</description><pubDate>Thu, 09 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;封面图片来源：&lt;a href=&quot;https://git-scm.com/&quot;&gt;Git&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Git 完全入门指南：从安装到 VSCode 日常协作&lt;/h1&gt;
+&lt;p&gt;如果你刚开始接触版本控制，或者觉得 Git 命令太复杂，那么这篇文章正是为你准备的。我们将从零开始安装 Git，然后直接进入 &lt;strong&gt;VSCode&lt;/strong&gt; 这一主流编辑器，用鼠标点击完成大部分版本管理操作。同时，我会在文中标注出需要截图的地方，并告诉你如何截取这些关键画面，让你在写博客时也能轻松配图。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;📌 &lt;strong&gt;准备工作&lt;/strong&gt;：请确保你已经安装了 Visual Studio Code（&lt;a href=&quot;https://code.visualstudio.com/&quot;&gt;官网下载&lt;/a&gt;）。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;1. Git 安装与初始配置&lt;/h2&gt;
+&lt;h3&gt;1.1 下载 Git&lt;/h3&gt;
+&lt;p&gt;访问 &lt;a href=&quot;https://git-scm.com/downloads&quot;&gt;Git 官网&lt;/a&gt;，系统会自动识别你的操作系统。点击下载按钮获取安装程序。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./git-download.png&quot; alt=&quot;Git 官网下载页面&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;1.2 安装 Git（Windows 示例）&lt;/h3&gt;
+&lt;p&gt;运行下载的 &lt;code&gt;.exe&lt;/code&gt; 文件，大部分选项保持默认即可。但下面两个关键步骤需要留意：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;选择默认编辑器&lt;/strong&gt;：建议选 VSCode（Use Visual Studio Code as Git&apos;s default editor）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;调整 PATH 环境&lt;/strong&gt;：选择 “Git from the command line and also from 3rd-party software”（推荐）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;./git-install-editor.png&quot; alt=&quot;Git 安装选项：选择默认编辑器&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./git-install-path.png&quot; alt=&quot;Git 安装选项：PATH 环境&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;其他步骤连续点击 “Next” 完成安装。macOS 用户可使用 &lt;code&gt;brew install git&lt;/code&gt;，Linux 用户使用系统包管理器。&lt;/p&gt;
+&lt;h3&gt;1.3 验证安装&lt;/h3&gt;
+&lt;p&gt;打开终端（Windows 用 cmd 或 PowerShell，macOS/Linux 用 Terminal），输入：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git --version
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果正确显示版本号（如 &lt;code&gt;git version 2.53.0&lt;/code&gt;），说明安装成功。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./git-version.png&quot; alt=&quot;终端中验证 Git 版本&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;1.4 配置用户信息&lt;/h3&gt;
+&lt;p&gt;Git 会记录每次提交的作者，请设置全局用户名和邮箱（最好和 GitHub 账号一致）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git config --global user.name &quot;你的名字&quot;
+git config --global user.email &quot;你的邮箱&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;2. Git 核心概念速览&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;工作区&lt;/strong&gt;：你电脑里能看到的项目文件夹。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;暂存区&lt;/strong&gt;：临时存放准备提交的文件（VSCode 中的 “Staged Changes”）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;本地仓库&lt;/strong&gt;：&lt;code&gt;.git&lt;/code&gt; 文件夹，保存所有历史版本。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;远程仓库&lt;/strong&gt;：如 GitHub、GitLab 上的项目副本。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;日常操作流程：修改文件 → 暂存（Stage） → 提交（Commit） → 推送到远程（Push）。&lt;/p&gt;
+&lt;h2&gt;3. 在 VSCode 中使用 Git（重点）&lt;/h2&gt;
+&lt;p&gt;VSCode 内置了强大的 Git 支持，大多数操作不需要输入命令。我们通过一个实际例子来学习。&lt;/p&gt;
+&lt;h3&gt;3.1 打开源代码管理面板&lt;/h3&gt;
+&lt;p&gt;左侧活动栏点击 &lt;strong&gt;源代码管理&lt;/strong&gt; 图标（或按 &lt;code&gt;Ctrl+Shift+G&lt;/code&gt;）。如果当前文件夹还不是 Git 仓库，面板会显示 “初始化仓库” 按钮。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./vscode-init-repo.png&quot; alt=&quot;VSCode 源代码管理面板（空仓库状态）&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;3.2 初始化仓库或克隆现有项目&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;方式一：初始化新仓库&lt;/strong&gt;
+点击 “初始化仓库” 按钮，VSCode 会在当前目录创建 &lt;code&gt;.git&lt;/code&gt; 文件夹。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方式二：克隆远程仓库&lt;/strong&gt;
+按 &lt;code&gt;Ctrl+Shift+P&lt;/code&gt; 打开命令面板，输入 &lt;code&gt;Git: Clone&lt;/code&gt;，然后粘贴远程仓库地址（如 &lt;code&gt;https://github.com/用户名/仓库名.git&lt;/code&gt;），选择本地存放位置即可。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./vscode-clone.png&quot; alt=&quot;VSCode 克隆仓库命令面板&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;3.3 基本提交流程&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;修改文件&lt;/strong&gt;：新建或编辑文件（例如 &lt;code&gt;main.py&lt;/code&gt;）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;暂存更改&lt;/strong&gt;：在源代码管理面板中，文件会出现在 “更改” 区域。鼠标悬停文件右侧，点击 &lt;strong&gt;+&lt;/strong&gt; 号（暂存）。也可以点击文件旁的 “+” 暂存所有更改。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./vscode-stage.png&quot; alt=&quot;暂存一个文件&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;提交&lt;/strong&gt;：在顶部的消息框中输入本次修改的说明（如 “首次提交”），然后点击上方的 &lt;strong&gt;✔️ 提交&lt;/strong&gt; 按钮（或按 &lt;code&gt;Ctrl+Enter&lt;/code&gt;）。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./vscode-commit.png&quot; alt=&quot;填写提交信息并提交&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3.4 查看历史与版本对比&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;点击源代码管理面板右上角的 &lt;strong&gt;···&lt;/strong&gt;（更多操作） → &lt;strong&gt;查看历史&lt;/strong&gt;（或 &lt;strong&gt;View History&lt;/strong&gt;），可以打开提交记录视图。&lt;/li&gt;
+&lt;li&gt;在某个文件上右键选择 &lt;strong&gt;打开更改&lt;/strong&gt;（Open Changes），可以对比当前文件与最近提交的差异。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;./vscode-history.png&quot; alt=&quot;查看文件历史记录&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;3.5 推送与拉取远程仓库&lt;/h3&gt;
+&lt;p&gt;当本地有提交后，就可以同步到远程仓库（例如 GitHub）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;推送&lt;/strong&gt;：点击源代码管理面板底部的 &lt;strong&gt;同步更改&lt;/strong&gt; 按钮（或者状态栏的圆圈图标），如果是首次推送，VSCode 会提示你选择远程仓库地址。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;拉取&lt;/strong&gt;：同样点击同步按钮即可拉取远程最新更改。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;./vscode-sync.png&quot; alt=&quot;VSCode 推送/拉取按钮&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;3.6 分支管理（简单操作）&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;点击 VSCode 左下角状态栏的分支名（默认 &lt;code&gt;main&lt;/code&gt; 或 &lt;code&gt;master&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;在弹出菜单中选择 &lt;strong&gt;创建新分支&lt;/strong&gt;，输入分支名即可切换。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;./vscode-branch.png&quot; alt=&quot;VSCode 状态栏分支切换&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;4. 实战：将本地项目推送到 GitHub&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;在 GitHub 上新建一个空仓库&lt;/strong&gt;（不要勾选 “Initialize this repository with a README”）。&lt;/li&gt;
+&lt;li&gt;复制仓库地址（HTTPS 或 SSH）。&lt;/li&gt;
+&lt;li&gt;回到 VSCode，打开项目文件夹，按前面方法初始化仓库并完成一次提交。&lt;/li&gt;
+&lt;li&gt;执行推送：点击状态栏的同步图标 → 选择 “发布到 GitHub”（Publish to GitHub）→ 粘贴远程地址 → 选择分支（通常是 main）。&lt;/li&gt;
+&lt;li&gt;刷新 GitHub 页面，就能看到你的代码了。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;如果遇到认证问题，推荐使用 GitHub CLI 或生成个人访问令牌（Personal Access Token），VSCode 会引导你登录。&lt;/p&gt;
+&lt;h2&gt;5. 常见问题与技巧&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;撤销暂存&lt;/strong&gt;：在 “暂存的更改” 区域点击文件右侧的 &lt;strong&gt;–&lt;/strong&gt; 号。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;丢弃更改&lt;/strong&gt;：在 “更改” 区域右键文件选择 &lt;strong&gt;放弃更改&lt;/strong&gt;（小心操作，会丢失未提交修改）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决冲突&lt;/strong&gt;：当拉取代码产生冲突时，VSCode 会高亮冲突文件，编辑器内提供 “接受当前更改”、“接受传入更改” 等按钮，非常直观。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Git 忽略文件&lt;/strong&gt;：在项目根目录创建 &lt;code&gt;.gitignore&lt;/code&gt; 文件，写入不需要版本控制的文件/文件夹（如 &lt;code&gt;node_modules&lt;/code&gt;、&lt;code&gt;.env&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;6. 总结&lt;/h2&gt;
+&lt;p&gt;现在你已经掌握了 Git 在 VSCode 中的可视化使用方法。不必再死记硬背 &lt;code&gt;git add&lt;/code&gt;、&lt;code&gt;git commit&lt;/code&gt; 等命令，日常开发时通过鼠标点击和快捷键就能高效完成版本管理。如果遇到更复杂的操作（如 rebase、cherry-pick），再去查阅命令也不迟。&lt;/p&gt;
+</content:encoded></item><item><title>Panther-X2部署Portainer并实现完美汉化 | 附Nginx反代配置和汉化补丁</title><link>https://fuwari.vercel.app/posts/panther-x2%E9%83%A8%E7%BD%B2portainer%E5%B9%B6%E5%AE%9E%E7%8E%B0%E5%AE%8C%E7%BE%8E%E6%B1%89%E5%8C%96/%E9%99%84nginx%E5%8F%8D%E4%BB%A3%E9%85%8D%E7%BD%AE/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/panther-x2%E9%83%A8%E7%BD%B2portainer%E5%B9%B6%E5%AE%9E%E7%8E%B0%E5%AE%8C%E7%BE%8E%E6%B1%89%E5%8C%96/%E9%99%84nginx%E5%8F%8D%E4%BB%A3%E9%85%8D%E7%BD%AE/</guid><description>本文详解在Panther-X2 Armbian设备上部署Portainer容器管理工具，通过汉化补丁实现全界面中文，并配置Nginx反代解决端口访问与安全问题。</description><pubDate>Thu, 12 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;封面图片来源：&lt;a href=&quot;https://www.portainer.io/&quot;&gt;portainer&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;1. 简介&lt;/h2&gt;
+&lt;p&gt;先跟大家聊聊 &lt;strong&gt;Portainer&lt;/strong&gt; —— 一款轻量级的Docker可视化管理工具，用Web界面就能搞定容器、镜像、网络的全生命周期管理，不用再死记硬背docker命令。&lt;/p&gt;
+&lt;p&gt;咱用Panther-X2小主机跑Docker服务时，纯命令行操作又麻烦又容易出错，尤其是管理多容器的时候，找个日志都得翻半天😤。&lt;/p&gt;
+&lt;p&gt;所以这篇教程，专门针对Panther-X2 Armbian环境，从部署Portainer、打汉化补丁，到配置Nginx反代，一步到位，最终实现&lt;strong&gt;全中文界面+友好端口访问+安全加密&lt;/strong&gt;，小白也能轻松上手！&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;2. 环境准备&lt;/h2&gt;
+&lt;p&gt;先明确环境要求，我亲测Panther-X2完全适配，大家对号入座：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;硬件设备&lt;/strong&gt;：Rockchip RK3566 Panther-X2 小主机（ARM64架构，性能足够跑Portainer）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;系统环境&lt;/strong&gt;：Armbian 24.x / Linux 6.x 内核 / Debian trixie（rolling版实测无问题）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;依赖条件&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;Docker已安装（版本≥20.10，Panther-X2安装教程可参考我之前的文章）&lt;/li&gt;
+&lt;li&gt;Docker Compose（可选，方便管理Portainer容器）&lt;/li&gt;
+&lt;li&gt;Nginx（用于反代，提前安装：&lt;code&gt;apt install nginx -y&lt;/code&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;坑点提醒&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;Portainer默认端口&lt;code&gt;9000&lt;/code&gt;容易冲突，建议自定义端口&lt;/li&gt;
+&lt;li&gt;反代时必须开启WebSocket支持，否则界面操作卡顿&lt;/li&gt;
+&lt;li&gt;防火墙/路由器需放行反代端口（避开80/443，用非标端口如&lt;code&gt;8888&lt;/code&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;3. 一步步部署+汉化+反代&lt;/h2&gt;
+&lt;p&gt;核心步骤来了，全程命令可直接复制，重点标注关键操作，确保一次成功！&lt;/p&gt;
+&lt;h3&gt;步骤1：拉取Portainer镜像并启动容器&lt;/h3&gt;
+&lt;p&gt;先创建Portainer数据目录，避免容器重启数据丢失，然后启动容器（自定义端口&lt;code&gt;9001&lt;/code&gt;避免冲突）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 创建数据目录
+mkdir -p /opt/portainer/data
+# 拉取官方最新版镜像（ARM64架构适配）
+docker pull portainer/portainer-ce:latest
+# 启动容器（重点：映射9001端口，挂载Docker套接字和数据目录）
+docker run -d \
+  --name portainer \
+  --restart=always \
+  -p 9001:9000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /opt/portainer/data:/data \
+  portainer/portainer-ce:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;验证启动是否成功：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 查看容器状态
+docker ps | grep portainer
+# 访问测试（替换为Panther-X2内网IP）
+curl http://192.168.1.x:9001
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果返回&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/code&gt;开头的内容，说明容器启动正常。&lt;/p&gt;
+&lt;h3&gt;步骤2：安装Portainer汉化补丁&lt;/h3&gt;
+&lt;p&gt;Portainer官方无中文版，需通过替换前端文件实现汉化，步骤如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 进入Portainer容器
+docker exec -it portainer /bin/sh
+# 安装wget（容器内默认无）
+apk add wget
+# 备份原版前端文件
+mv /usr/share/portainer/public /usr/share/portainer/public.bak
+# 下载汉化版前端文件（适配最新版Portainer）
+wget -O /tmp/portainer-cn.zip https://ghproxy.com/https://github.com/eysp/portainer-cn/releases/latest/download/portainer-cn.zip
+# 解压到指定目录
+unzip /tmp/portainer-cn.zip -d /usr/share/portainer/
+# 退出容器
+exit
+# 重启Portainer生效
+docker restart portainer
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;此时访问 &lt;code&gt;http://Panther-X2内网IP:9001&lt;/code&gt;，就能看到全中文界面！首次登录需设置管理员密码，完成初始化。&lt;/p&gt;
+&lt;h3&gt;步骤3：配置Nginx反代（优化访问体验）&lt;/h3&gt;
+&lt;p&gt;直接访问&lt;code&gt;:9001&lt;/code&gt;端口不够友好，配置Nginx反代，实现「域名+非标端口」访问，同时开启HTTPS（可选）：&lt;/p&gt;
+&lt;h4&gt;3.1 创建Nginx配置文件&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;vim /etc/nginx/conf.d/portainer.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.2 写入反代配置（关键：开启WebSocket）&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;server {
+    # 自定义反代端口（避开80/443，用8888）
+    listen 8888;
+    # 替换为你的DDNS域名（如portainer.example.com）
+    server_name your-domain.com;
+
+    # 反代核心配置
+    location / {
+        proxy_pass http://127.0.0.1:9001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 必须开启WebSocket，否则界面操作卡顿
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection &quot;upgrade&quot;;
+        proxy_read_timeout 86400;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.3 验证并重启Nginx&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;# 检查配置语法
+nginx -t
+# 重启Nginx生效
+systemctl restart nginx
+# 设置开机自启
+systemctl enable nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;步骤4：最终验证&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;访问 &lt;code&gt;http://Panther-X2内网IP:8888&lt;/code&gt;（或域名+8888端口）&lt;/li&gt;
+&lt;li&gt;输入初始化设置的管理员密码&lt;/li&gt;
+&lt;li&gt;进入Portainer主界面，确认所有菜单、按钮均为中文&lt;/li&gt;
+&lt;li&gt;尝试创建/删除容器，验证功能正常无卡顿&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr /&gt;
+&lt;h2&gt;4. 常见问题 &amp;amp; 排错&lt;/h2&gt;
+&lt;p&gt;整理我踩过的坑，遇到问题直接对号入座：&lt;/p&gt;
+&lt;h3&gt;问题1：汉化后界面乱码/部分英文&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;原因：汉化补丁版本与Portainer版本不匹配&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;解决：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 查看Portainer版本
+docker exec portainer portainer --version
+# 下载对应版本的汉化补丁（替换版本号）
+wget -O /tmp/portainer-cn.zip https://ghproxy.com/https://github.com/eysp/portainer-cn/releases/download/v2.20.0/portainer-cn.zip
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;问题2：反代后无法登录/操作卡顿&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;原因：未开启WebSocket支持或Nginx配置错误&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;解决：检查Nginx配置中是否包含以下内容，缺一不可：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection &quot;upgrade&quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;问题3：端口被占用（9001/8888）&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;解决：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 查看端口占用进程
+netstat -tulpn | grep 9001
+# 替换端口重新启动（例如改为9002）
+docker stop portainer &amp;amp;&amp;amp; docker rm portainer
+docker run -d --name portainer --restart=always -p 9002:9000 -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer/data:/data portainer/portainer-ce:latest
+# 同步修改Nginx配置中的proxy_pass为9002
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;问题4：外网无法访问&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;排查步骤：
+&lt;ol&gt;
+&lt;li&gt;检查Panther-X2防火墙：&lt;code&gt;ufw allow 8888/tcp&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;路由器端口转发：转发外网8888端口到Panther-X2内网IP的8888端口&lt;/li&gt;
+&lt;li&gt;验证DDNS域名解析：&lt;code&gt;nslookup your-domain.com&lt;/code&gt;（确保指向当前公网IP）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;5. 总结&lt;/h2&gt;
+&lt;p&gt;这套流程下来，Panther-X2上的Portainer实现了三大核心目标：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;全中文界面&lt;/strong&gt;：告别英文菜单，新手也能轻松管理Docker&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;友好访问方式&lt;/strong&gt;：通过Nginx反代，用域名+非标端口访问，避开运营商封锁&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稳定可靠&lt;/strong&gt;：容器化部署+开机自启，Panther-X2低负载运行（实测CPU占用≤5%）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;最终效果：随时随地通过浏览器访问域名+8888端口，就能可视化管理Panther-X2上的所有Docker容器、镜像、网络，不用再敲繁琐的命令，真正做到「小白友好」！&lt;/p&gt;
+&lt;p&gt;如果你们在Panther-X2上部署Portainer遇到其他问题，欢迎评论区交流，一起避坑～&lt;/p&gt;
+&lt;hr /&gt;
+</content:encoded></item><item><title>Windows系统Python环境搭建指南：从零开始选择你的编程利器</title><link>https://fuwari.vercel.app/posts/windows%E7%B3%BB%E7%BB%9Fpython%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%80%89%E6%8B%A9%E4%BD%A0%E7%9A%84%E7%BC%96%E7%A8%8B%E5%88%A9%E5%99%A8/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/windows%E7%B3%BB%E7%BB%9Fpython%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%80%89%E6%8B%A9%E4%BD%A0%E7%9A%84%E7%BC%96%E7%A8%8B%E5%88%A9%E5%99%A8/</guid><description>详细讲解Windows系统下Python环境的搭建步骤，以及如何选择适合自己的编程工具，附赠PyCharm学生认证申请全流程。</description><pubDate>Wed, 11 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;封面图片来源：&lt;a href=&quot;https://www.python.org/&quot;&gt;python.org&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Python作为当前最热门的编程语言之一，以其简洁的语法和强大的生态吸引着越来越多的初学者。但对于Windows用户来说，如何正确搭建Python环境，选择合适的开发工具，往往成为入门的第一道坎。&lt;/p&gt;
+&lt;p&gt;本文将手把手教你完成Python环境的搭建，并帮你找到最适合自己的编程工具，最后还会分享PyCharm专业版的免费获取方法——学生认证全攻略！&lt;/p&gt;
+&lt;h2&gt;一、Python环境搭建&lt;/h2&gt;
+&lt;h3&gt;1.1 下载Python安装包&lt;/h3&gt;
+&lt;p&gt;首先，我们需要从官方网站下载Python安装包。虽然官网下载速度可能较慢，但为了保证文件安全，建议优先选择官方渠道。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;操作步骤：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;打开浏览器，访问Python官网：&lt;a href=&quot;https://www.python.org/&quot;&gt;https://www.python.org/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;将鼠标悬停在导航栏的&quot;Downloads&quot;按钮上&lt;/li&gt;
+&lt;li&gt;网站会自动检测你的操作系统，显示对应的下载按钮&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;./python_org.png&quot; alt=&quot;Python官网&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;如果你觉得官网下载速度太慢，也可以使用国内镜像源：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;镜像站&lt;/th&gt;
+&lt;th&gt;地址&lt;/th&gt;
+&lt;th&gt;特点&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;清华大学TUNA&lt;/td&gt;
+&lt;td&gt;mirrors.tuna.tsinghua.edu.cn/python/&lt;/td&gt;
+&lt;td&gt;更新及时，高校网络优化&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;华为云镜像&lt;/td&gt;
+&lt;td&gt;repo.huaweicloud.com/python/&lt;/td&gt;
+&lt;td&gt;稳定性高，支持断点续传&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;1.2 安装Python&lt;/h3&gt;
+&lt;p&gt;下载完成后，双击运行安装包，这里有一个&lt;strong&gt;非常重要的注意事项&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./python-install-1.png&quot; alt=&quot;Python安装界面，红色箭头标注Add Python to PATH选项&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./python-install-2.png&quot; alt=&quot;Python安装界面，红色箭头标注Add Python to PATH选项&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;关键步骤：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;✅ 务必勾选 &lt;strong&gt;&quot;Add Python to PATH&quot;&lt;/strong&gt; （将Python添加到环境变量）&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;当然如果你懒得弄乱七八糟的东西，可以直接安装，当然这是我不推荐的
+![直接安装]&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;✅ 选择 &lt;strong&gt;&quot;Install Now&quot;&lt;/strong&gt;（推荐）或自定义安装路径&lt;/p&gt;
+&lt;p&gt;✅ 等待安装完成&lt;/p&gt;
+&lt;p&gt;安装完成后，我们需要验证是否成功：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;按下 &lt;code&gt;Win + R&lt;/code&gt; 键，输入 &lt;code&gt;cmd&lt;/code&gt; 打开命令提示符&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;输入以下命令并回车：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;python --version
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果显示Python版本号（如 &lt;code&gt;Python 3.14.3&lt;/code&gt;），说明安装成功&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./python-v.png&quot; alt=&quot;命令提示符python --version命令和执行结果&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;1.3 配置pip镜像源&lt;/h3&gt;
+&lt;p&gt;pip是Python的包管理工具，用于安装第三方库。但默认的官方源在国外，下载速度较慢。我们可以配置国内镜像源加速下载。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;配置方法：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**方法一：**使用自动化脚本&lt;/p&gt;
+&lt;p&gt;打开&lt;code&gt;PowerShell&lt;/code&gt;,输入下面指令，启动换源脚本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Text.Encoding]::UTF8.GetString((New-Object System.Net.WebClient).DownloadData(&apos;https://raw.githubusercontent.com/ISHAOHAO/pyboct/main/windows.ps1&apos;)) | iex
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;出现&lt;code&gt;网络波动&lt;/code&gt;或&lt;code&gt;无法找到网站&lt;/code&gt;等问题请使用下面的备用地址：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Text.Encoding]::UTF8.GetString((New-Object System.Net.WebClient).DownloadData(&apos;https://gitee.com/is-haohao/pyboct/raw/main/windows.ps1&apos;)) | iex
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;**方法二：**手动换源&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;在文件资源管理器地址栏输入 &lt;code&gt;%APPDATA%&lt;/code&gt; 并回车&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;进入 &lt;code&gt;pip&lt;/code&gt; 文件夹（如果没有就新建一个）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;创建 &lt;code&gt;pip.ini&lt;/code&gt; 文件&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;用记事本打开，粘贴以下内容：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[global]
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+[install]
+trusted-host = pypi.tuna.tsinghua.edu.cn
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;二、选择合适的Python编程工具&lt;/h2&gt;
+&lt;p&gt;环境搭建好后，接下来需要选择一个趁手的开发工具。这里对比几款主流的选择：&lt;/p&gt;
+&lt;h3&gt;2.1 VS Code - 轻量级全能选手&lt;/h3&gt;
+&lt;p&gt;适合人群：前端开发者、轻量级开发、多语言开发者&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优点：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;免费开源，启动速度快&lt;/li&gt;
+&lt;li&gt;插件生态丰富&lt;/li&gt;
+&lt;li&gt;内存占用相对较小&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;缺点：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;需要手动配置Python插件&lt;/li&gt;
+&lt;li&gt;大型项目调试体验不如IDE&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;./VSCode.png&quot; alt=&quot;VS Code界面&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;2.2 PyCharm - 专业Python IDE&lt;/h3&gt;
+&lt;p&gt;适合人群：Python重度用户、大型项目开发者、学生&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优点：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开箱即用的Python开发环境&lt;/li&gt;
+&lt;li&gt;智能代码补全和错误提示&lt;/li&gt;
+&lt;li&gt;内置数据库工具和版本控制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;缺点：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;专业版收费（社区版免费但功能有限）&lt;/li&gt;
+&lt;li&gt;占用内存较大&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2.3 Jupyter Notebook - 数据科学利器&lt;/h3&gt;
+&lt;p&gt;适合人群：数据分析师、机器学习研究者&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优点：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;交互式编程体验&lt;/li&gt;
+&lt;li&gt;支持图文混排和Markdown&lt;/li&gt;
+&lt;li&gt;便于分享和展示成果&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;缺点：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不适合大型项目开发&lt;/li&gt;
+&lt;li&gt;调试功能较弱&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;三、PyCharm学生认证申请全攻略&lt;/h2&gt;
+&lt;p&gt;PyCharm专业版的功能远超市区版，但需要付费。好消息是，JetBrains为学生和教育工作者提供免费的教育许可证。下面教你如何申请：&lt;/p&gt;
+&lt;h3&gt;3.1 准备工作&lt;/h3&gt;
+&lt;p&gt;你需要准备：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;学校邮箱（通常是 &lt;code&gt;xxx@学校域名.edu.cn&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;录取通知书 或 有效的学生证照片&lt;/li&gt;
+&lt;li&gt;JetBrains账号（没有的话可以在申请时注册）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3.2 申请步骤&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;第一步：进入教育申请页面&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;访问&lt;code&gt;JetBrains&lt;/code&gt;教育项目官网：&lt;a href=&quot;https://www.jetbrains.com/shop/eform/students&quot;&gt;https://www.jetbrains.com/shop/eform/students&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./jb-student.png&quot; alt=&quot;JetBrains学生申请页面&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第二步：填写申请信息&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;按照页面要求填写：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;姓名（拼音，与证件一致）&lt;/li&gt;
+&lt;li&gt;学校邮箱&lt;/li&gt;
+&lt;li&gt;申请目的（一般选学习用途）&lt;/li&gt;
+&lt;li&gt;验证码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;第三步：验证身份&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;点击&quot;Apply for free products&quot;后，JetBrains会向你填写的邮箱发送验证邮件。登录邮箱点击验证链接即可。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./email.png&quot; alt=&quot;JetBrains验证邮件&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第四步：下载激活&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;验证成功后，你会收到激活邮件。登录JetBrains账号，在&quot;Licenses&quot;页面就能看到一年期的免费许可证。到期前可以续期（只要还在读）。&lt;/p&gt;
+&lt;h3&gt;3.3 激活PyCharm&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;下载安装PyCharm专业版&lt;/li&gt;
+&lt;li&gt;启动后选择&quot;Activate with JetBrains Account&quot;&lt;/li&gt;
+&lt;li&gt;登录你的JetBrains账号&lt;/li&gt;
+&lt;li&gt;自动激活成功！&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;./pycharm.png&quot; alt=&quot;PyCharm的界面&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;四、第一个Python程序&lt;/h2&gt;
+&lt;p&gt;环境搭建完成，工具准备就绪，让我们运行第一个Python程序来检验成果：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 我的第一个Python程序
+print(&quot;Hello, Python!&quot;)
+
+# 来点更有趣的
+name = input(&quot;请输入你的名字：&quot;)
+print(f&quot;欢迎 {name} 加入Python的世界！&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在PyCharm中运行效果：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Hello, Python!
+请输入你的名字：Howie
+欢迎 Howie 加入Python的世界！
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;五、常见问题解决&lt;/h2&gt;
+&lt;h3&gt;Q1：提示&quot;python不是内部或外部命令&quot;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;原因&lt;/strong&gt;：安装时没有勾选&quot;Add Python to PATH&quot;
+&lt;strong&gt;解决&lt;/strong&gt;：重新运行安装程序，勾选该选项，或手动添加环境变量&lt;/p&gt;
+&lt;h3&gt;Q2：pip安装库速度很慢&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;原因&lt;/strong&gt;：默认使用官方源
+&lt;strong&gt;解决&lt;/strong&gt;：按前文配置国内镜像源&lt;/p&gt;
+&lt;h3&gt;Q3：学生认证申请被拒&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;原因&lt;/strong&gt;：学校邮箱不在官方列表或学生证不清晰
+&lt;strong&gt;解决&lt;/strong&gt;：尝试上传更清晰的学生证照片，或联系学校IT部门确认邮箱状态&lt;/p&gt;
+&lt;h2&gt;结语&lt;/h2&gt;
+&lt;p&gt;至此，你已经完成了从零搭建Python开发环境的全过程。记住，选择工具时不必盲目追求&quot;最好&quot;，适合自己的才是最好的。&lt;/p&gt;
+&lt;p&gt;如果你在搭建过程中遇到任何问题，欢迎在评论区留言讨论。Happy Coding！ 🐍&lt;/p&gt;
+</content:encoded></item><item><title>Panther-X2 盒子部署私有“文件快递柜”教程,自托管实现即传即下载</title><link>https://fuwari.vercel.app/posts/panther-x2-%E7%9B%92%E5%AD%90%E9%83%A8%E7%BD%B2%E7%A7%81%E6%9C%89%E6%96%87%E4%BB%B6%E5%BF%AB%E9%80%92%E6%9F%9C%E6%95%99%E7%A8%8B%E8%87%AA%E6%89%98%E7%AE%A1%E5%AE%9E%E7%8E%B0%E5%8D%B3%E4%BC%A0%E5%8D%B3%E4%B8%8B%E8%BD%BD/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/panther-x2-%E7%9B%92%E5%AD%90%E9%83%A8%E7%BD%B2%E7%A7%81%E6%9C%89%E6%96%87%E4%BB%B6%E5%BF%AB%E9%80%92%E6%9F%9C%E6%95%99%E7%A8%8B%E8%87%AA%E6%89%98%E7%AE%A1%E5%AE%9E%E7%8E%B0%E5%8D%B3%E4%BC%A0%E5%8D%B3%E4%B8%8B%E8%BD%BD/</guid><description>本文介绍如何在 Docker 环境下部署 FileCodeBox，通过 Nginx 反向代理实现非标端口下的安全 HTTPS 访问，打造属于自己的即传即下私有服务。</description><pubDate>Tue, 10 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;封面图片来源：&lt;a href=&quot;https://github.com/vastsa/FileCodeBox&quot;&gt;vastsa/FileCodeBox&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;1. 简介&lt;/h2&gt;
+&lt;p&gt;你是否有过这样的需求：在电脑上想传个文件到手机，或者想临时发个文件给远方的朋友，却不想忍受登录各种社交软件或云盘的繁琐？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;FileCodeBox（文件快递柜）&lt;/strong&gt; 就是为此而生的。它模仿了类似 AirPortal 的“取件码”逻辑：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;即传即下&lt;/strong&gt;：上传文件，生成 5 位取件码。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;口令取件&lt;/strong&gt;：对方输入口令，文件直接秒下。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;阅后即焚&lt;/strong&gt;：支持设置下载次数和有效期。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文将手把手带你在 &lt;strong&gt;Panther-X2&lt;/strong&gt; 盒子上，利用 Portainer 和 Nginx 搭建这一神器，并解决家用公网环境下的 HTTPS 访问难题。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;2. 环境准备&lt;/h2&gt;
+&lt;p&gt;我的折腾环境如下，大家可以作为参考：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;硬件设备&lt;/strong&gt;：Panther-X2（RK3566，性能强劲的 ARM 盒子）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;系统环境&lt;/strong&gt;：Armbian / Docker / Portainer。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键组件&lt;/strong&gt;：已经运行好的 &lt;strong&gt;Nginx 代理容器&lt;/strong&gt;（用于处理 SSL 证书和转发）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;前置坑点提示&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;端口映射&lt;/strong&gt;：宿主机端口不能冲突，本文使用虚拟端口 &lt;strong&gt;52000&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;防火墙/安全组&lt;/strong&gt;：如果你使用华为云等云服务器做转发，记得在后台开启 &lt;strong&gt;52000&lt;/strong&gt; 端口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络逻辑&lt;/strong&gt;：所有容器必须在同一个 Docker 网络下（如 &lt;code&gt;proxy_network&lt;/code&gt;），否则 Nginx 找不到快递柜。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;3. 一步步安装部署&lt;/h2&gt;
+&lt;h3&gt;第一步：在 Portainer 中部署 Stacks&lt;/h3&gt;
+&lt;p&gt;登录 Portainer，新建一个 Stack，粘贴以下 Docker Compose 代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;version: &apos;3.3&apos;
+services:
+  filecodebox:
+    image: lanol/filecodebox:latest
+    container_name: filecodebox
+    restart: unless-stopped
+    volumes:
+      - ./filecodebox_data:/app/data
+    networks:
+      - proxy_network # 确保 Nginx 也能访问这个网络
+
+networks:
+  proxy_network:
+    external: true # 使用已有的外部网络
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;验证启动：&lt;/strong&gt; 部署后查看容器日志（Logs），看到 &lt;code&gt;应用初始化完成&lt;/code&gt; 字样即代表成功。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;初始密码：&lt;/strong&gt; 默认管理密码通常为 &lt;code&gt;FileCodeBox2023&lt;/code&gt;。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;./Docker_Compose.png&quot; alt=&quot;Docker Compose 代码&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;h3&gt;第二步：配置 Nginx 反向代理&lt;/h3&gt;
+&lt;p&gt;为了在外网通过 &lt;code&gt;https://drop.example.com:52000&lt;/code&gt; 安全访问，我们需要修改 Nginx 配置。&lt;/p&gt;
+&lt;p&gt;在你的 Nginx &lt;code&gt;conf.d&lt;/code&gt; 目录下新建 &lt;code&gt;filecodebox.conf&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# HTTPS 服务器
+server {
+    listen 52000 ssl;
+    http2 on;
+    server_name drop.example.com; # 换成你自己的域名
+
+    # SSL 证书路径
+    ssl_certificate /root/SSL/fullchain.pem;
+    ssl_certificate_key /root/SSL/private.key;
+
+    location / {
+        proxy_pass http://filecodebox:12345; # 容器名:内部端口
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # 允许上传大文件，这里设置为 10G,因为的要传大文件，根据自己需求调整吧
+        client_max_body_size 10G; 
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改完成后，执行 &lt;code&gt;docker exec nginx-proxy nginx -s reload&lt;/code&gt; 生效。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h3&gt;第三步：宿主机与防火墙设置&lt;/h3&gt;
+&lt;p&gt;很多小伙伴配置完 Nginx 发现还是打不开，通常是卡在这里了：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Docker 端口映射&lt;/strong&gt;：确保你的 Nginx 容器在创建时映射了 &lt;code&gt;52000:52000&lt;/code&gt; 端口。如果没映射，需要 &lt;code&gt;docker compose up -d --force-recreate&lt;/code&gt; 重新创建 Nginx 容器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全组开放&lt;/strong&gt;：登录你的云服务后台（如华为云），在安全组规则中添加一条：&lt;strong&gt;协议 TCP，端口 52000，源地址 0.0.0.0/0&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;！&lt;a href=&quot;./OpenWrt.png&quot;&gt;转发端口&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;h2&gt;4. 常见问题 &amp;amp; 排错&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;访问提示“拒绝连接”&lt;/strong&gt;：
+执行 &lt;code&gt;sudo iptables -t nat -L DOCKER -n&lt;/code&gt; 查看是否有 52000 的转发规则。如果没有，说明 Docker 容器没有正确绑定端口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;找不到后台地址&lt;/strong&gt;：
+默认后台地址是 &lt;code&gt;你的域名:52000/#/admin&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;上传大文件报错 413&lt;/strong&gt;：
+这是 Nginx 的限制，请确保配置文件里的 &lt;code&gt;client_max_body_size&lt;/code&gt; 足够大。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;管理密码不对&lt;/strong&gt;：
+如果默认密码失效，进入容器 Console 执行 &lt;code&gt;rm -rf /app/data/*&lt;/code&gt; 并重启，观察日志重新获取初始密码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;5. 总结&lt;/h2&gt;
+&lt;p&gt;折腾完这套服务，Panther-X2 盒子的实用性又提升了一个档次：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;./%E6%88%90%E5%93%81%E5%9B%BE.png&quot; alt=&quot;成果图&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;颜值极高&lt;/strong&gt;：简洁的磨砂玻璃风格 UI，放在哪都好看。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全可控&lt;/strong&gt;：数据存在自己的 Panther-X2 里，不再担心隐私泄露。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;全平台通用&lt;/strong&gt;：只要有浏览器，无论安卓、iOS 还是 Linux 都能轻松取件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最舒服的瞬间，莫过于给朋友发一个 5 位数字，对方就能瞬间拿到你准备好的大文件。这种“快递柜”式的体验，真的是用了就回不去！&lt;/p&gt;
+&lt;p&gt;如果你也在折腾 Panther-X2 或者是私有云部署，欢迎在评论区交流心得！&lt;/p&gt;
+</content:encoded></item><item><title>用 Nginx 反向代理 Docker 管理面板 Portainer 完整指南</title><link>https://fuwari.vercel.app/posts/%E7%94%A8-nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-docker-%E7%AE%A1%E7%90%86%E9%9D%A2%E6%9D%BF-portainer-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/%E7%94%A8-nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-docker-%E7%AE%A1%E7%90%86%E9%9D%A2%E6%9D%BF-portainer-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/</guid><description>本文详细介绍如何在 ArmBian 系统上使用 Docker Compose 部署 Portainer，并通过 Nginx 反向代理实现通过域名访问，打造干净可扩展的容器管理架构。</description><pubDate>Sun, 08 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;封面图片来源：&lt;a href=&quot;https://www.portainer.io/&quot;&gt;portainer&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;1. 简介&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Portainer&lt;/strong&gt; 是一个轻量级的 Docker 容器管理面板，通过 Web 界面让你像点外卖一样管理容器、镜像、网络和卷，再也不用背那些长长的 Docker 命令。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Nginx&lt;/strong&gt; 作为高性能的反向代理服务器，可以把多个 Web 服务统一通过域名+80/443端口对外暴露，配合 Portainer 简直是绝配。&lt;/p&gt;
+&lt;p&gt;本文带你从零开始，在 &lt;strong&gt;Panther-X2 ArmBian&lt;/strong&gt; 小主机上部署 Portainer + Nginx 反向代理，最终实现通过 &lt;code&gt;http://docker.yourdomain.com&lt;/code&gt; 访问管理面板，并且这套架构可以随时扩展更多服务。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;2. 环境准备&lt;/h2&gt;
+&lt;p&gt;先说说我用的环境，配置对号入座就行：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;硬件设备&lt;/strong&gt;：Rockchip RK3566 盒子（Panther-X2，性能够用功耗低，7x24小时开机不心疼）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;系统环境&lt;/strong&gt;：Armbian 24.x / Linux 6.x 内核 / Debian trixie（实测稳定运行）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;前置要求&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;Docker 和 Docker Compose 已安装（没装的话参考 &lt;a href=&quot;https://docs.docker.com/engine/install/debian/&quot;&gt;官方文档&lt;/a&gt;）&lt;/li&gt;
+&lt;li&gt;有一个内网域名（比如 &lt;code&gt;docker.lan.com&lt;/code&gt; 或 &lt;code&gt;docker.home&lt;/code&gt;），并在路由器做好 DNS 指向&lt;/li&gt;
+&lt;li&gt;开放 80 端口（用于 Nginx 对外服务）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;小提醒&lt;/strong&gt;：如果你打算外网访问，记得做好安全防护，比如配置 HTTPS 和强密码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;3. 一步步安装部署&lt;/h2&gt;
+&lt;h3&gt;3.1 创建目录结构&lt;/h3&gt;
+&lt;p&gt;好的架构从清晰的目录开始，我们在 &lt;code&gt;/opt/docker&lt;/code&gt; 下分别管理 Nginx 和 Portainer：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 创建主目录
+mkdir -p /opt/docker/{nginx/conf.d,portainer}
+cd /opt/docker
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;最终目录结构是这样的：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/opt/docker/
+├── nginx/
+│   ├── nginx.conf          # Nginx 主配置
+│   └── conf.d/              # 站点配置文件
+└── portainer/
+    └── docker-compose.yml   # Portainer 服务配置
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.2 部署 Nginx 反向代理&lt;/h3&gt;
+&lt;p&gt;先配置 Nginx，让它成为所有 Web 服务的统一入口。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;创建 Nginx 主配置文件&lt;/strong&gt; &lt;code&gt;/opt/docker/nginx/nginx.conf&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log notice;
+pid /var/run/nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    log_format main &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;
+                    &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;
+                    &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;
+
+    access_log /var/log/nginx/access.log main;
+    sendfile on;
+    keepalive_timeout 65;
+
+    # 引入所有站点配置，这是扩展性的关键
+    include /etc/nginx/conf.d/*.conf;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;创建 Portainer 的站点配置&lt;/strong&gt; &lt;code&gt;/opt/docker/nginx/conf.d/portainer.conf&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server {
+    listen 80;
+    server_name docker.yourdomain.com;  # 换成你的域名
+
+    location / {
+        proxy_pass http://portainer:9000;  # 通过容器名访问
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 支持 WebSocket（Portainer 的终端功能需要）
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection &quot;upgrade&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;创建 Nginx 的 Docker Compose 文件&lt;/strong&gt; &lt;code&gt;/opt/docker/nginx/docker-compose.yml&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - &quot;80:80&quot;      # HTTP 端口
+      - &quot;443:443&quot;    # HTTPS 端口（后续可以配置证书）
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./conf.d:/etc/nginx/conf.d:ro
+      - ./logs:/var/log/nginx
+    networks:
+      - proxy_network
+
+networks:
+  proxy_network:
+    name: proxy_network
+    driver: bridge
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.3 部署 Portainer&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;创建 Portainer 的 Docker Compose 文件&lt;/strong&gt; &lt;code&gt;/opt/docker/portainer/docker-compose.yml&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;volumes:
+  portainer_data:
+    name: portainer_data
+    external: true
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+      - &quot;8000:8000&quot;  # 边缘计算功能，可选
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - proxy_network
+
+networks:
+  proxy_network:
+    name: proxy_network
+    external: true  # 使用 Nginx 创建的网络
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.4 启动所有服务&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 先启动 Nginx（会创建共享网络）
+cd /opt/docker/nginx
+docker-compose up -d
+
+# 再启动 Portainer（连接到已存在的网络）
+cd /opt/docker/portainer
+docker-compose up -d
+
+# 查看运行状态
+docker ps
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;看到两个容器都在运行，就成功了一大半！&lt;/p&gt;
+&lt;h3&gt;3.5 验证部署&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 测试 Nginx 配置是否正确
+curl -H &quot;Host: docker.yourdomain.com&quot; http://localhost
+
+# 或者直接访问
+curl http://docker.yourdomain.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;打开浏览器访问 &lt;code&gt;http://docker.yourdomain.com&lt;/code&gt;，如果能看到 Portainer 的初始化页面，恭喜你，部署成功！&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;4. 常见问题与排错&lt;/h2&gt;
+&lt;h3&gt;Q1：Nginx 启动失败，日志报错&lt;/h3&gt;
+&lt;p&gt;执行 &lt;code&gt;docker logs nginx-proxy&lt;/code&gt; 查看具体错误。最常见的是配置文件语法错误，可以用这个命令检查：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker exec nginx-proxy nginx -t
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Q2：Portainer 无法访问，报 502 Bad Gateway&lt;/h3&gt;
+&lt;p&gt;检查两点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Portainer 容器是否正常运行：&lt;code&gt;docker ps | grep portainer&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;网络是否连通：&lt;code&gt;docker network inspect proxy_network&lt;/code&gt; 看两个容器是否都在网络里&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Q3：想添加新的 Web 服务怎么办？&lt;/h3&gt;
+&lt;p&gt;这套架构最棒的地方就是扩展性。假设你要添加 NextCloud：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;在新目录 &lt;code&gt;/opt/docker/nextcloud&lt;/code&gt; 创建 docker-compose.yml，确保：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;加入网络 &lt;code&gt;proxy_network&lt;/code&gt;（&lt;code&gt;external: true&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;不要映射 80/443 端口&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在 &lt;code&gt;/opt/docker/nginx/conf.d/&lt;/code&gt; 创建 &lt;code&gt;nextcloud.conf&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server {
+    listen 80;
+    server_name nextcloud.yourdomain.com;
+    location / {
+        proxy_pass http://nextcloud:80;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重新加载 Nginx：&lt;code&gt;docker exec nginx-proxy nginx -s reload&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Q4：容器开机不自启？&lt;/h3&gt;
+&lt;p&gt;检查 docker-compose.yml 里是否有 &lt;code&gt;restart: always&lt;/code&gt;，同时确保 Docker 服务开机自启：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl enable docker
+systemctl is-enabled docker
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h2&gt;5. 总结&lt;/h2&gt;
+&lt;p&gt;通过本文的部署，你得到了一个：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;结构清晰&lt;/strong&gt;：Nginx 独立管理所有反向代理配置，Portainer 独立运行，互不干扰&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;易于扩展&lt;/strong&gt;：想加新服务只需要加配置文件和 conf.d 配置，不用动现有服务&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;规范统一&lt;/strong&gt;：所有 Web 服务统一通过域名+80端口访问，再也不用记那些乱七八糟的端口号&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这套架构不仅适用于 Portainer，任何需要 Web 访问的 Docker 服务都可以用这种方式接入。从今天起，你的小主机就变成一个专业的、可扩展的家庭服务器了！&lt;/p&gt;
+&lt;p&gt;最后提醒一下：生产环境一定要配置 HTTPS（可以用 Let&apos;s Encrypt），并设置强密码，安全无小事。&lt;/p&gt;
+</content:encoded></item><item><title>如何利用 Docker 自建 RustDesk 远程桌面服务和免费的 RustDesk-API 网页管理页面</title><link>https://fuwari.vercel.app/posts/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8-docker-%E8%87%AA%E5%BB%BA-rustdesk-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%85%8D%E8%B4%B9%E7%9A%84rustdesk-api%E7%9A%84%E7%BD%91%E9%A1%B5%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8-docker-%E8%87%AA%E5%BB%BA-rustdesk-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%85%8D%E8%B4%B9%E7%9A%84rustdesk-api%E7%9A%84%E7%BD%91%E9%A1%B5%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2/</guid><description>本文介绍如何在自有小主机上用 Docker 搭建 RustDesk 远程桌面服务和网页 API 管理服务，并通过 Nginx 提供 HTTPS 安全访问。</description><pubDate>Sun, 08 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;封面图片来源：&lt;a href=&quot;https://rustdesk.com/&quot;&gt;rustdesk.com&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;1. 简介&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;RustDesk&lt;/strong&gt; 是一款开源自托管远程桌面服务，支持客户端直连或中继模式，延迟低、跨平台、无需依赖第三方服务器。&lt;/p&gt;
+&lt;p&gt;通过本教程，你可以在自有小主机上搭建 RustDesk 服务，同时通过 Nginx 做 HTTPS 代理，为管理页面提供安全访问。&lt;/p&gt;
+&lt;p&gt;最终效果：外网通过 HTTPS 访问管理页面，RustDesk 客户端可直连内网服务，内部 API 不直接暴露公网。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;2. 环境准备&lt;/h2&gt;
+&lt;h3&gt;硬件与系统&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;硬件设备&lt;/strong&gt;：Rockchip RK3566 / 任意 Linux 服务器（本示例使用 Panther-X2 小主机）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;操作系统&lt;/strong&gt;：Ubuntu 22.04 或 Debian 12&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;软件依赖&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;Docker ≥ 20.x&lt;/li&gt;
+&lt;li&gt;Docker Compose（可选，推荐）&lt;/li&gt;
+&lt;li&gt;Nginx ≥ 1.20（也可用 Docker 运行 Nginx）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络要求&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;局域网或公网访问环境&lt;/li&gt;
+&lt;li&gt;路由器端口转发：本文端口示例为 &lt;code&gt;21115~21119&lt;/code&gt;（可根据需要调整）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全注意&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;防火墙需放行相关端口&lt;/li&gt;
+&lt;li&gt;使用 HTTPS 访问管理页面，内部 API 不直接暴露公网&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;3. 一步步安装部署&lt;/h2&gt;
+&lt;h3&gt;3.1 创建 Docker 网络&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 创建自定义 Docker 网络，便于容器间固定 IP 通信
+docker network create --driver bridge --subnet 172.20.0.0/16 rustdesk_network
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.2 启动 RustDesk 服务容器&lt;/h3&gt;
+&lt;p&gt;以下提供两种方式：&lt;strong&gt;docker run&lt;/strong&gt;（快速启动）和 &lt;strong&gt;docker-compose&lt;/strong&gt;（推荐，便于管理）。&lt;/p&gt;
+&lt;h4&gt;方式一：使用 docker run 命令&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;# 启动 HBBS（主服务器）
+docker run -d --name rustdesk-hbbs \
+  --network rustdesk_network --ip 172.20.0.2 \
+  -p 21115:21115/tcp \
+  -p 21116:21116/tcp -p 21116:21116/udp \
+  -p 21118:21118/tcp \
+  --restart always \
+  rustdesk/rustdesk-server:latest hbbs -k _
+
+# 启动 HBBR（中继服务器）
+docker run -d --name rustdesk-hbbr \
+  --network rustdesk_network --ip 172.20.0.3 \
+  -p 21117:21117/tcp \
+  -p 21119:21119/tcp \
+  --restart always \
+  rustdesk/rustdesk-server:latest hbbr -k _
+
+# 启动 API 服务（管理接口）
+docker run -d --name rustdesk-api \
+  --network rustdesk_network --ip 172.20.0.4 \
+  -p 21114:21114 \
+  --restart always \
+  -e DB_TYPE=sqlite \
+  -e TZ=Asia/Shanghai \
+  -e API_URL=https://desk.example.com:21113 \
+  -e TRUSTED_PROXIES=* \
+  -v rustdesk_api_data:/app/data \
+  lejianwen/rustdesk-api:latest ./apimain
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;方式二：使用 docker-compose（推荐）&lt;/h4&gt;
+&lt;p&gt;创建目录并编写 &lt;code&gt;docker-compose.yml&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mkdir -p /opt/rustdesk &amp;amp;&amp;amp; cd /opt/rustdesk
+nano docker-compose.yml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;内容如下（请根据实际情况调整环境变量中的域名）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;version: &apos;3.8&apos;
+
+networks:
+  rustdesk_network:
+    name: rustdesk_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  rustdesk_data:
+    name: rustdesk_data
+  rustdesk_api_data:
+    name: rustdesk_api_data
+
+services:
+  hbbs:
+    image: rustdesk/rustdesk-server:latest
+    container_name: rustdesk-hbbs
+    command: hbbs -k _
+    volumes:
+      - rustdesk_data:/root
+    ports:
+      - &quot;21115:21115&quot;
+      - &quot;21116:21116&quot;
+      - &quot;21116:21116/udp&quot;
+      - &quot;21118:21118&quot;
+    networks:
+      rustdesk_network:
+        ipv4_address: 172.20.0.2
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
+
+  hbbr:
+    image: rustdesk/rustdesk-server:latest
+    container_name: rustdesk-hbbr
+    command: hbbr -k _
+    volumes:
+      - rustdesk_data:/root
+    ports:
+      - &quot;21117:21117&quot;
+      - &quot;21119:21119&quot;
+    networks:
+      rustdesk_network:
+        ipv4_address: 172.20.0.3
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
+
+  rustdesk-api:
+    image: lejianwen/rustdesk-api:latest
+    container_name: rustdesk-api
+    restart: unless-stopped
+    ports:
+      - &quot;21114:21114&quot;
+    volumes:
+      - rustdesk_api_data:/app/data
+    networks:
+      rustdesk_network:
+        ipv4_address: 172.20.0.4
+    environment:
+      - DB_TYPE=sqlite
+      - TZ=Asia/Shanghai
+      - API_URL=https://desk.example.com:21113   # 替换为你的域名和 HTTPS 端口
+      - TRUSTED_PROXIES=*
+    depends_on:
+      - hbbs
+      - hbbr
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;启动服务：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker-compose up -d
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.3 配置 Nginx HTTPS 代理&lt;/h3&gt;
+&lt;h4&gt;准备 SSL 证书&lt;/h4&gt;
+&lt;p&gt;将你的 SSL 证书（&lt;code&gt;fullchain.pem&lt;/code&gt; 和 &lt;code&gt;private.key&lt;/code&gt;）放置在宿主机的 &lt;code&gt;/root/SSL/&lt;/code&gt; 目录下（也可自定义路径）。&lt;/p&gt;
+&lt;h4&gt;运行 Nginx 容器（或使用宿主机 Nginx）&lt;/h4&gt;
+&lt;p&gt;这里以 Docker 方式运行 Nginx 为例，便于与 RustDesk 容器网络互通。&lt;/p&gt;
+&lt;p&gt;创建 Nginx 配置目录：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mkdir -p /opt/nginx/conf.d /opt/nginx/ssl /opt/nginx/logs
+cp /root/SSL/* /opt/nginx/ssl/   # 或使用符号链接
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建 Nginx 的 &lt;code&gt;docker-compose.yml&lt;/code&gt;（&lt;code&gt;/opt/nginx/docker-compose.yml&lt;/code&gt;）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - &quot;80:80&quot;
+      - &quot;443:443&quot;
+      - &quot;21113:21113&quot;          # 映射 HTTPS 管理端口
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./conf.d:/etc/nginx/conf.d:ro
+      - ./logs:/var/log/nginx
+      - /root/SSL:/etc/nginx/ssl:ro   # 挂载证书目录
+    networks:
+      - proxy_network
+      - rustdesk_network        # 加入 RustDesk 网络以访问 API 容器
+
+networks:
+  proxy_network:
+    external: true
+  rustdesk_network:
+    external: true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意：需要预先创建外部网络 &lt;code&gt;proxy_network&lt;/code&gt;（用于其他服务）和 &lt;code&gt;rustdesk_network&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker network create proxy_network
+docker network create rustdesk_network
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在 &lt;code&gt;/opt/nginx/conf.d/&lt;/code&gt; 下创建 &lt;code&gt;rustdesk.conf&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server {
+    listen 21113 ssl;
+    http2 on;
+    server_name desk.example.com;   # 替换为你的域名
+
+    ssl_certificate     /etc/nginx/ssl/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/private.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    location / {
+        proxy_pass http://rustdesk-api:21114/;   # 通过容器名访问
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_read_timeout 300s;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;启动 Nginx 容器：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cd /opt/nginx
+docker-compose up -d
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.4 验证部署&lt;/h3&gt;
+&lt;h4&gt;验证容器间通信&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;docker exec -it rustdesk-api ping rustdesk-hbbs
+docker exec -it rustdesk-api ping rustdesk-hbbr
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;访问管理页面&lt;/h4&gt;
+&lt;p&gt;浏览器打开 &lt;code&gt;https://desk.example.com:21113&lt;/code&gt;，应显示 RustDesk API 管理页面（首次访问需设置管理员密码，或使用命令行重置）。&lt;/p&gt;
+&lt;h4&gt;获取中继服务器 Key&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;docker logs rustdesk-hbbs | grep &quot;Key&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;记录下 Key，后续配置客户端时需要。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;4. 常见问题与排错&lt;/h2&gt;
+&lt;h3&gt;容器无法启动&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;检查端口是否被占用：&lt;code&gt;ss -tulnp | grep 2111&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查看容器日志：&lt;code&gt;docker logs 容器名&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Nginx 无法启动或报错&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;测试配置：&lt;code&gt;docker exec nginx-proxy nginx -t&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查看错误日志：&lt;code&gt;docker exec nginx-proxy tail -f /var/log/nginx/error.log&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;确保证书路径正确（容器内路径，如 &lt;code&gt;/etc/nginx/ssl/...&lt;/code&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;HTTPS 无法访问（502 或连接失败）&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;检查 Nginx 容器是否已加入 &lt;code&gt;rustdesk_network&lt;/code&gt;：&lt;code&gt;docker network inspect rustdesk_network&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;确认 Nginx 容器已映射相应端口（如 &lt;code&gt;21113:21113&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;从 Nginx 容器内测试连通性：&lt;code&gt;docker exec nginx-proxy curl http://rustdesk-api:21114&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;RustDesk 客户端无法连接&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;确认客户端配置的服务器地址、端口、Key 正确&lt;/li&gt;
+&lt;li&gt;检查防火墙是否放行相关端口（21115~21119）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;5. 管理 API 管理员密码&lt;/h2&gt;
+&lt;p&gt;首次登录或需要重置密码时，可使用以下命令：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker exec -it rustdesk-api ./apimain reset-admin-pwd 你的新密码
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;默认用户名 &lt;code&gt;admin&lt;/code&gt;，密码即为你设置的值。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;6. 总结&lt;/h2&gt;
+&lt;p&gt;通过本教程，你成功搭建了：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;RustDesk 内网远程桌面服务（HBBS + HBBR）&lt;/li&gt;
+&lt;li&gt;RustDesk-API 网页管理界面&lt;/li&gt;
+&lt;li&gt;Nginx HTTPS 代理，安全访问管理页面&lt;/li&gt;
+&lt;li&gt;Docker 容器固定 IP，便于服务间通信&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最终实现：在小主机上自建远程桌面服务，安全、轻量、易扩展。只需类似方法，你可以添加更多服务并通过 Nginx 统一提供 HTTPS 访问。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;特别感谢&lt;/strong&gt;：本文根据实际部署经验修订，确保步骤准确、无遗漏。如有问题，欢迎留言交流。&lt;/p&gt;
+&lt;/blockquote&gt;
+</content:encoded></item><item><title>动态公网 IP 下使用域名部署 Screego 屏幕共享教程</title><link>https://fuwari.vercel.app/posts/%E5%8A%A8%E6%80%81%E5%85%AC%E7%BD%91-ip-%E4%B8%8B%E4%BD%BF%E7%94%A8%E5%9F%9F%E5%90%8D%E9%83%A8%E7%BD%B2-screego-%E5%B1%8F%E5%B9%95%E5%85%B1%E4%BA%AB%E6%95%99%E7%A8%8B/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/%E5%8A%A8%E6%80%81%E5%85%AC%E7%BD%91-ip-%E4%B8%8B%E4%BD%BF%E7%94%A8%E5%9F%9F%E5%90%8D%E9%83%A8%E7%BD%B2-screego-%E5%B1%8F%E5%B9%95%E5%85%B1%E4%BA%AB%E6%95%99%E7%A8%8B/</guid><description>本文介绍如何在没有 80/443 端口且 IP 动态变化的情况下，利用 Armbian 设备从零搭建高性能 WebRTC 屏幕共享系统。</description><pubDate>Thu, 26 Feb 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;封面图片来源：&lt;a href=&quot;https://github.com/screego/server/raw/master/docs/logo.png&quot;&gt;Screego/server&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;1. 简介&lt;/h2&gt;
+&lt;p&gt;先跟大家唠唠 &lt;strong&gt;Screego&lt;/strong&gt; —— 一款用Go写的自托管屏幕共享工具，基于WebRTC，延迟低、画质清，关键是轻量，不用折腾一堆依赖。&lt;/p&gt;
+&lt;p&gt;咱家用网络都懂吧？没有固定公网IP，运营商还把80、443端口封得死死的，想搭个私有共享服务，传统方法真的能把人逼疯😭。&lt;/p&gt;
+&lt;p&gt;所以这篇教程，就是专门给用 &lt;strong&gt;Armbian Panther-X2&lt;/strong&gt; 小主机的小伙伴写的，全程用自定义端口+官方原生动态解析，不用瞎写脚本，一步步带你搭好，稳定能用，亲测跑通！&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;2. 环境准备&lt;/h2&gt;
+&lt;p&gt;先说说我用的环境，大家对号入座，差不多就行，不用完全一致：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;硬件设备&lt;/strong&gt;：Rockchip RK3566 Armbian 盒子（就是我的Panther-X2，小主机一枚，性能够用不费电）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;系统环境&lt;/strong&gt;：Armbian 24.x / Linux 6.x 内核 / Debian trixie（我用的是Armbian rolling版，实测没问题）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络条件&lt;/strong&gt;：&lt;/li&gt;
+&lt;li&gt;有动态公网IPv4（没有的话可以试试frp，不过本文不聊这个）&lt;/li&gt;
+&lt;li&gt;提前弄好DDNS域名（不然IP变了就找不到服务了）&lt;/li&gt;
+&lt;li&gt;路由器支持端口转发（这个是关键，不然外网访问不了）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;小提醒&lt;/strong&gt;：全程用非标端口，避开被封的80/443，省得白折腾&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;3. 一步步安装部署&lt;/h2&gt;
+&lt;p&gt;话不多说，直接上干货，每一步都能复制，小白也能跟上！&lt;/p&gt;
+&lt;h3&gt;下载与解压&lt;/h3&gt;
+&lt;p&gt;先登录Panther-X2，创建目录、下载Screego，我用的是v1.12.2版本（这个是26年1月新发布的版本，如果使用其他版本替换链接就好，但是要保证有官方原生支持的动态IP解析）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mkdir ~/screego &amp;amp;&amp;amp; cd ~/screego
+wget https://github.com/screego/server/releases/download/v1.12.2/screego_1.12.2_linux_arm64.tar.gz
+tar -xvf screego_1.12.2_linux_arm64.tar.gz
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;没啥难度，就是下载解压，等待完成就行，中途别乱按键盘～&lt;/p&gt;
+&lt;h3&gt;编写配置文件&lt;/h3&gt;
+&lt;p&gt;新建一个&lt;code&gt;screego.config&lt;/code&gt;文件，这步最关键，别瞎改！把里面的证书路径和域名，换成你自己的就好：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 动态IP自动解析 (把这个`share.example.com`替换成你自己的域名，要注意别把前面的`dns:`删掉了！！！)
+SCREEGO_EXTERNAL_IP=dns:share.example.com
+
+# 自定义端口，避开80/443，我用的11451，你们随便换个没被占用的就可以
+SCREEGO_SERVER_ADDRESS=0.0.0.0:11451
+
+# 安全密钥，用Linux的OpenSSL生成一个，或者自己随便写一串长字符都可以
+SCREEGO_SECRET=XXXXXXXXXXXXXXXXXXXXX
+
+# TLS证书配置，我用Let&apos;s Encrypt签的，路径替换成你自己的即可
+SCREEGO_SERVER_TLS=true
+SCREEGO_TLS_CERT_FILE=/etc/ssl/certs/fullchain.pem
+SCREEGO_TLS_KEY_FILE=/etc/ssl/private/privkey.key
+
+# TURN穿透，外网不黑屏全靠它！别改端口，改了容易出问题
+SCREEGO_TURN_ADDRESS=0.0.0.0:3478
+SCREEGO_TURN_PORT_RANGE=50000:50100
+
+# 清空拦截规则，划重点！我之前踩坑就在这，留空才能解决外网黑屏
+SCREEGO_TURN_DENY_PEERS=
+
+# 日志和认证，默认就行，不用动
+SCREEGO_LOG_LEVEL=info
+SCREEGO_AUTH_MODE=turn
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;小吐槽&lt;/h3&gt;
+&lt;p&gt;我最开始在这步栽过坑，加了行内注释，结果启动失败，折腾半天才发现，配置文件里别瞎加多余文字！&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;4. 配置 Systemd 服务&lt;/h2&gt;
+&lt;p&gt;为了让Screego开机自启，不用每次手动启动，咱们配置个systemd服务，步骤也很简单：&lt;/p&gt;
+&lt;p&gt;先创建服务文件&lt;code&gt;vim /etc/systemd/system/screego.service&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[Unit]
+Description=Screego Screen Sharing Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/screego
+ExecStart=/root/screego/screego serve /root/screego/screego.config
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后执行这三条命令，启动并设置开机自启：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl daemon-reload
+systemctl enable --now screego
+systemctl status screego
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果执行完&lt;code&gt;systemctl status screego&lt;/code&gt;，显示“active (running)”，就说明成了，要是失败，看后面的排错步骤～&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;5. 端口转发 (！！！必须配置！！！)&lt;/h2&gt;
+&lt;p&gt;这步千万别漏，不然外网肯定访问不了，我用的OpenWrt路由器，其他路由器操作也差不多，找到“端口转发”功能就行：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;协议&lt;/th&gt;
+&lt;th&gt;外部端口&lt;/th&gt;
+&lt;th&gt;内部端口&lt;/th&gt;
+&lt;th&gt;内网 IP&lt;/th&gt;
+&lt;th&gt;用途&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;TCP&lt;/td&gt;
+&lt;td&gt;11451&lt;/td&gt;
+&lt;td&gt;11451&lt;/td&gt;
+&lt;td&gt;192.168.1.111&lt;/td&gt;
+&lt;td&gt;网页访问，就是你打开的链接端口&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;UDP&lt;/td&gt;
+&lt;td&gt;3478&lt;/td&gt;
+&lt;td&gt;3478&lt;/td&gt;
+&lt;td&gt;192.168.1.111&lt;/td&gt;
+&lt;td&gt;WebRTC信令，穿透用的&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;UDP&lt;/td&gt;
+&lt;td&gt;50000-50100&lt;/td&gt;
+&lt;td&gt;50000-50100&lt;/td&gt;
+&lt;td&gt;192.168.1.111&lt;/td&gt;
+&lt;td&gt;视频流传输，外网不黑屏的关键&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;小提醒&lt;/h3&gt;
+&lt;p&gt;家用路由器一定要重启一下端口转发规则，不然可能不生效，别问我怎么知道的，都是踩坑经验🤣&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;6. 常见问题与排错&lt;/h2&gt;
+&lt;p&gt;我把我折腾过程中遇到的坑，都整理在这了，你们遇到问题直接对号入座，省得走弯路：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;外网黑屏、内网正常&lt;/strong&gt;
+99%是UDP端口没开放！重点检查3478和50000-50100这两个UDP端口，路由器和服务器防火墙都要放行，我之前就是漏了防火墙，折腾了半天。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;启动失败&lt;/strong&gt;
+别慌，执行&lt;code&gt;journalctl -u screego -f&lt;/code&gt;查看实时日志，一般都是配置文件写错了，比如证书路径不对、域名写错了，或者加了多余注释。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;证书错误&lt;/strong&gt;
+没有80端口，别用HTTP-01挑战申请证书，用DNS模式申请Let’s Encrypt，一步到位，不会报错。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;IP变动无法访问&lt;/strong&gt;
+不用慌！咱们配置里用了&lt;code&gt;dns:域名&lt;/code&gt;，官方会自动解析最新IP，不用写定时脚本，我最开始傻呵呵写了个脚本，后来才发现官方早就支持，纯纯多此一举😂&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;7. 总结&lt;/h2&gt;
+&lt;p&gt;折腾完这套流程，只能说一句：真香！&lt;/p&gt;
+&lt;p&gt;这套方案的优点，我总结一下，都是实打实的：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不用80/443端口，完美避开运营商封锁&lt;/li&gt;
+&lt;li&gt;动态公网IP自动适配，不用手动重启服务，不用写脚本&lt;/li&gt;
+&lt;li&gt;内网、外网都能正常用，不黑屏、不卡顿&lt;/li&gt;
+&lt;li&gt;资源占用极低，我这Panther-X2小主机，负载才4%，完全无压力&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最终实现：随时随地打开浏览器，输入域名+端口，就能共享屏幕，干净无广告，自己说了算，再也不用依赖第三方工具啦！&lt;/p&gt;
+&lt;p&gt;如果你们也在折腾Screego，或者Panther-X2小主机，欢迎评论区交流，一起避坑～&lt;/p&gt;
+</content:encoded></item><item><title>Panther-X2 盒子 Armbian 原生搭建 WireGuard 教程实现跨网段互通</title><link>https://fuwari.vercel.app/posts/panther-x2-%E7%8E%A9%E6%9C%BA%E7%AC%94%E8%AE%B0%E5%8E%9F%E7%94%9F-wireguard-%E7%BB%84%E7%BD%91%E4%B8%8E%E8%B7%A8%E7%BD%91%E6%AE%B5%E8%BD%AC%E5%8F%91%E5%85%A8%E8%AE%B0%E5%BD%95/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/panther-x2-%E7%8E%A9%E6%9C%BA%E7%AC%94%E8%AE%B0%E5%8E%9F%E7%94%9F-wireguard-%E7%BB%84%E7%BD%91%E4%B8%8E%E8%B7%A8%E7%BD%91%E6%AE%B5%E8%BD%AC%E5%8F%91%E5%85%A8%E8%AE%B0%E5%BD%95/</guid><description>记录在 Panther-X2 盒子上通过原生内核部署 WireGuard 的全过程，并解决与主路由 ImmortalWrt 之间的跨网段转发访问难题。</description><pubDate>Wed, 18 Feb 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;为什么折腾这个？&lt;/h2&gt;
+&lt;p&gt;最近在玩 Panther-X2 这款盒子（RK3566），本来想用 Docker 跑 VPN，但发现 Debian 13 (Trixie) 的 nftables 和 Docker 容器的防火墙规则冲突得厉害。既然内核已经是 6.18 了，自带 WireGuard 模块，就没必要在容器里面较劲了，直接原生跑性能更强。&lt;/p&gt;
+&lt;p&gt;这篇文章记录下我如何通过原生方式搭好 VPN，并利用主路由静态路由彻底解决“跨网段访问”和“端口转发”的坑。&lt;/p&gt;
+&lt;h2&gt;1. 硬件状态摸底&lt;/h2&gt;
+&lt;p&gt;开工前先看一眼系统，Panther-X2 的 Armbian 固件现在做得很成熟了：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;内核&lt;/strong&gt;：&lt;code&gt;6.18.8-current-rockchip64&lt;/code&gt; (内核自带 WireGuard)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;系统&lt;/strong&gt;：&lt;code&gt;Debian 13 (Trixie)&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;物理网卡&lt;/strong&gt;：&lt;code&gt;end0&lt;/code&gt; (注意：有些固件里叫 eth0，我这里识别为 end0，配置里一定要对上)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;网络环境&lt;/strong&gt;：主路由 ImmortalWrt (192.168.1.1)，X2 盒子作为 VPN 服务器 (192.168.1.111)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;./iplink.png&quot; alt=&quot;在执行截图&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;2. 部署 WireGuard 服务端&lt;/h2&gt;
+&lt;p&gt;既然内核支持，咱们直接安装&lt;a href=&quot;https://github.com/angristan/wireguard-install&quot;&gt;管理工具&lt;/a&gt;。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 安装基础包
+sudo apt update &amp;amp;&amp;amp; sudo apt install -y wireguard qrencode
+
+# 拉取自动化部署脚本（这个脚本可以搞定自动处理密钥生成这些）
+wget https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh
+
+chmod +x wireguard-install.sh
+
+sudo ./wireguard-install.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;几个关键的配置坑点：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Public IP&lt;/strong&gt;: 填你的 DDNS 域名或者公网 IP。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Interface&lt;/strong&gt;: 手动输入 &lt;code&gt;end0&lt;/code&gt; (别闭眼回车，和前面硬件查到的名字对应就行)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Port&lt;/strong&gt;: 默认 &lt;code&gt;51820&lt;/code&gt; (记得去主路由防火墙开个 UDP 转发，不然家门都进不来)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;DNS&lt;/strong&gt;: 建议填主路由 IP &lt;code&gt;192.168.1.1&lt;/code&gt;，这样在外面也能像在家里一样访问局域网设备。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;3. 跨网段互通&lt;/h2&gt;
+&lt;p&gt;很多人连上 VPN 后发现，虽然能上网，但主路由找不到 VPN 里的设备（10.66.66.x 段）。以前的土办法是在 X2 上写一堆 &lt;code&gt;nftables&lt;/code&gt; 转发指令，但那玩意儿太难记了，主要是怕过段时间忘了当初改了什么。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;我的方案是：直接在主路由 ImmortalWrt 上加一条静态路由。&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;登录 &lt;strong&gt;ImmortalWrt&lt;/strong&gt; 后台 -&amp;gt; &lt;strong&gt;网络&lt;/strong&gt; -&amp;gt; &lt;strong&gt;路由&lt;/strong&gt; -&amp;gt; &lt;strong&gt;静态 IPv4 路由&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;点击 &lt;strong&gt;添加&lt;/strong&gt;：&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;对象 (Target)&lt;/strong&gt;: &lt;code&gt;10.66.66.0&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;子网掩码&lt;/strong&gt;: &lt;code&gt;255.255.255.0&lt;/code&gt;&amp;lt;p style=&quot;color: #e53e3e; font-weight: 600; padding: 8px 0;&quot;&amp;gt;注意一下，可能有些版本的 ImmortalWrt 没有子网掩码的输入栏，它采用的是 IPv4 CIDR 的书写方式，在对象 (Target) 填写 10.66.66.0/24 就行&amp;lt;/p&amp;gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;网关&lt;/strong&gt;: &lt;code&gt;192.168.1.111&lt;/code&gt; (告诉路由器，想找 VPN 里的设备，去找 X2 盒子领路)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;接口&lt;/strong&gt;: &lt;code&gt;lan&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;保存并应用&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;4. 端口转发&lt;/h2&gt;
+&lt;p&gt;有了静态路由，主路由已经完全“认识” 10.66.66.x 这个段了。如果我想让公网流量直接访问我那台连着 VPN 的远程电脑（假设隧道 IP 为 10.66.66.10）：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;直接在 &lt;strong&gt;ImmortalWrt&lt;/strong&gt; 的 &lt;strong&gt;端口转发&lt;/strong&gt; 页面配置。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;内部 IP&lt;/strong&gt; 填 &lt;code&gt;10.66.66.10&lt;/code&gt; 就行，不需要再转给 111 转发二次。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;外部端口&lt;/strong&gt; 随意，&lt;strong&gt;内网端口&lt;/strong&gt; 填你电脑服务的端口（比如 TCP 的 1145）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;就这样，流量会顺着 &lt;strong&gt;主路由 (1.1) -&amp;gt; X2 盒子 (1.111) -&amp;gt; 远程电脑 (10.66.66.10)&lt;/strong&gt; 自动流转，全程不需要在命令行里折腾防火墙。&lt;/p&gt;
+&lt;h2&gt;5. 经验总结&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原生才是王道&lt;/strong&gt;：对于 VPN 这种底层网络服务，原生内核运行的效率和稳定性远超 Docker，还少了一层 NAT 损耗。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;图形化管理&lt;/strong&gt;：把规则留在路由器的 Web 界面上，比写在黑盒一样的命令行里要靠谱得多，一眼就能看出哪个端口转给了谁。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;备份建议&lt;/strong&gt;：搞定后记得把 &lt;code&gt;/root/&lt;/code&gt; 下生成的 &lt;code&gt;.conf&lt;/code&gt; 文件和 &lt;code&gt;/etc/wireguard/&lt;/code&gt; 整个目录拷出来。哪天系统被我玩挂了，几分钟就能复活~&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;
+本文记录的操作过程仅用于技术交流与个人学习环境测试。请确保在法律法规允许的范围内使用相关技术，切勿用于任何非法用途。&lt;/p&gt;
+&lt;/blockquote&gt;
+</content:encoded></item><item><title>如何编写 Markdown 文件</title><link>https://fuwari.vercel.app/posts/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E7%9A%84%E7%BC%96%E5%86%99markdown%E6%96%87%E4%BB%B6/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E7%9A%84%E7%BC%96%E5%86%99markdown%E6%96%87%E4%BB%B6/</guid><description>如何使用这个博客模板。</description><pubDate>Tue, 17 Feb 2026 00:00:00 GMT</pubDate><content:encoded>&lt;hr /&gt;
+&lt;blockquote&gt;
+&lt;p&gt;封面图片来源：&lt;a href=&quot;https://markdown-here.com/img/icon256.png&quot;&gt;markdown-here&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Markdown 是一种轻量级标记语言，由约翰·格鲁伯（John Gruber）在 2004 年创建。它允许人们使用易读易写的纯文本格式编写文档，然后转换成有效的 HTML。如今，Markdown 已成为编写技术文档、博客文章、笔记甚至书籍的流行选择。本文将全面介绍 Markdown 的语法、最佳实践、高级技巧和实用工具，帮助你快速掌握这门强大的语言。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;1. 什么是 Markdown？&lt;/h2&gt;
+&lt;p&gt;Markdown 是一种纯文本格式化语法，设计初衷是让作者专注于内容而不是排版。它的核心思想是：&lt;strong&gt;用简单的符号标记文本的结构，使文本在未渲染时依然保持可读性&lt;/strong&gt;。例如，在文字两侧加 &lt;code&gt;*&lt;/code&gt; 或 &lt;code&gt;_&lt;/code&gt; 表示斜体，加 &lt;code&gt;**&lt;/code&gt; 表示粗体。这些标记非常直观，几乎不需要学习就能看懂。&lt;/p&gt;
+&lt;p&gt;Markdown 文件通常以 &lt;code&gt;.md&lt;/code&gt; 或 &lt;code&gt;.markdown&lt;/code&gt; 为扩展名。你可以用任何文本编辑器编写，然后通过 Markdown 渲染器将其转换为美观的 HTML、PDF 或其他格式。&lt;/p&gt;
+&lt;h2&gt;2. 为什么使用 Markdown？&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;简单易学&lt;/strong&gt;：语法极少，十分钟即可上手。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;纯文本&lt;/strong&gt;：无需专用软件，兼容所有操作系统和设备。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;版本控制友好&lt;/strong&gt;：可以方便地用 Git 等工具追踪变更。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;平台支持广泛&lt;/strong&gt;：GitHub、GitLab、Stack Overflow、Notion、Obsidian 等都支持 Markdown。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;专注内容&lt;/strong&gt;：不用分心调整字体、字号，让你专注于写作本身。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;3. 基本语法&lt;/h2&gt;
+&lt;p&gt;以下是最常用、最核心的 Markdown 语法。每个部分都会先展示 Markdown 写法，再给出渲染后的效果示例。&lt;/p&gt;
+&lt;h3&gt;3.1 标题&lt;/h3&gt;
+&lt;p&gt;Markdown 支持六级标题，用 &lt;code&gt;#&lt;/code&gt; 的个数表示级别：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 一级标题
+## 二级标题
+### 三级标题
+#### 四级标题
+##### 五级标题
+###### 六级标题
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;h1&gt;一级标题&lt;/h1&gt;
+&lt;h2&gt;二级标题&lt;/h2&gt;
+&lt;h3&gt;三级标题&lt;/h3&gt;
+&lt;h4&gt;四级标题&lt;/h4&gt;
+&lt;h5&gt;五级标题&lt;/h5&gt;
+&lt;h6&gt;六级标题&lt;/h6&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意：&lt;code&gt;#&lt;/code&gt; 和标题文字之间要留一个空格，这是标准写法。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;3.2 段落与换行&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;段落&lt;/strong&gt;：由一行或多行文字组成，段落之间用空行分隔。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;换行&lt;/strong&gt;：在行尾添加两个空格，然后回车，即可实现换行（有些渲染器也支持直接使用 &lt;code&gt;&amp;lt;br&amp;gt;&lt;/code&gt; 标签）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;这是第一段。  
+这是第一段内的换行（行尾有两个空格）。
+
+这是第二段。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这是第一段。&lt;br /&gt;
+这是第一段内的换行（行尾有两个空格）。&lt;/p&gt;
+&lt;p&gt;这是第二段。&lt;/p&gt;
+&lt;h3&gt;3.3 强调&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;样式&lt;/th&gt;
+&lt;th&gt;语法&lt;/th&gt;
+&lt;th&gt;示例&lt;/th&gt;
+&lt;th&gt;效果&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;斜体&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;*文字*&lt;/code&gt; 或 &lt;code&gt;_文字_&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;*斜体*&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;斜体&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;粗体&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;**文字**&lt;/code&gt; 或 &lt;code&gt;__文字__&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;**粗体**&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;粗体&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;粗斜体&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;***文字***&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;***粗斜体***&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;&lt;strong&gt;粗斜体&lt;/strong&gt;&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;删除线&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;~~文字~~&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;~~删除线~~&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;s&gt;删除线&lt;/s&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意：某些渲染器要求符号与文字之间不能有空格，例如 &lt;code&gt;* 斜体*&lt;/code&gt; 不会生效，应写作 &lt;code&gt;*斜体*&lt;/code&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;3.4 列表&lt;/h3&gt;
+&lt;h4&gt;无序列表&lt;/h4&gt;
+&lt;p&gt;使用 &lt;code&gt;-&lt;/code&gt;、&lt;code&gt;*&lt;/code&gt; 或 &lt;code&gt;+&lt;/code&gt; 作为标记：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- 苹果
+- 香蕉
+- 橙子
+
+* 苹果
+* 香蕉
+* 橙子
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;苹果&lt;/li&gt;
+&lt;li&gt;香蕉&lt;/li&gt;
+&lt;li&gt;橙子&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;有序列表&lt;/h4&gt;
+&lt;p&gt;使用数字后跟英文句点：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1. 第一步
+2. 第二步
+3. 第三步
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;第一步&lt;/li&gt;
+&lt;li&gt;第二步&lt;/li&gt;
+&lt;li&gt;第三步&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4&gt;嵌套列表&lt;/h4&gt;
+&lt;p&gt;在子列表前缩进 2 或 4 个空格：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- 水果
+  - 苹果
+  - 香蕉
+- 蔬菜
+  1. 胡萝卜
+  2. 西兰花
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;水果
+&lt;ul&gt;
+&lt;li&gt;苹果&lt;/li&gt;
+&lt;li&gt;香蕉&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;蔬菜
+&lt;ol&gt;
+&lt;li&gt;胡萝卜&lt;/li&gt;
+&lt;li&gt;西兰花&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3.5 链接&lt;/h3&gt;
+&lt;h4&gt;行内式链接&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;[必应](https://www.bing.com)
+[带标题的链接](https://www.bing.com &quot;访问必应&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;br /&gt;
+&lt;a href=&quot;https://www.bing.com&quot;&gt;必应&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://www.bing.com&quot;&gt;带标题的链接&lt;/a&gt;（鼠标悬停可看到提示）&lt;/p&gt;
+&lt;h4&gt;参考式链接&lt;/h4&gt;
+&lt;p&gt;适用于多处引用同一链接的情况：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[百度][baidu] 和 [必应][bing] 都是搜索引擎。
+
+[baidu]: https://www.baidu.com
+[bing]: https://www.bing.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;br /&gt;
+&lt;a href=&quot;https://www.baidu.com&quot;&gt;百度&lt;/a&gt; 和 &lt;a href=&quot;https://www.bing.com&quot;&gt;必应&lt;/a&gt; 都是搜索引擎。&lt;/p&gt;
+&lt;h4&gt;自动链接&lt;/h4&gt;
+&lt;p&gt;直接用尖括号包裹 URL 或邮箱地址：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;https://example.com&amp;gt;
+&amp;lt;email@example.com&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;br /&gt;
+&lt;a href=&quot;https://example.com&quot;&gt;https://example.com&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;mailto:email@example.com&quot;&gt;email@example.com&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;3.6 图片&lt;/h3&gt;
+&lt;p&gt;图片语法与链接类似，前面加一个感叹号：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;![替代文字](图片URL &quot;可选标题&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;![Markdown 徽章](https://markdown-here.com/img/icon256.png)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;br /&gt;
+&lt;img src=&quot;https://markdown-here.com/img/icon256.png&quot; alt=&quot;Markdown 徽章&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;图片也支持参考式写法。&lt;/p&gt;
+&lt;h3&gt;3.7 引用&lt;/h3&gt;
+&lt;p&gt;使用 &lt;code&gt;&amp;gt;&lt;/code&gt; 表示引用，可以嵌套：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; 这是一段引用。
+&amp;gt; 
+&amp;gt; 可以跨越多行。
+&amp;gt;&amp;gt; 嵌套引用。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这是一段引用。&lt;/p&gt;
+&lt;p&gt;可以跨越多行。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;嵌套引用。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;3.8 代码&lt;/h3&gt;
+&lt;h4&gt;行内代码&lt;/h4&gt;
+&lt;p&gt;用反引号 &lt;code&gt;`&lt;/code&gt; 包裹：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;请执行 `npm install` 命令。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;br /&gt;
+请执行 &lt;code&gt;npm install&lt;/code&gt; 命令。&lt;/p&gt;
+&lt;h4&gt;代码块&lt;/h4&gt;
+&lt;p&gt;用三个反引号 &lt;code&gt;```&lt;/code&gt; 包裹，并可指定语言实现语法高亮：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;```python
+def hello():
+    print(&quot;Hello, Markdown!&quot;)
+```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;def hello():
+    print(&quot;Hello, Markdown!&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以用缩进 4 个空格或一个制表符表示代码块，但不支持语法高亮。&lt;/p&gt;
+&lt;h3&gt;3.9 水平线&lt;/h3&gt;
+&lt;p&gt;使用三个或更多的 &lt;code&gt;-&lt;/code&gt;、&lt;code&gt;*&lt;/code&gt; 或 &lt;code&gt;_&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;---
+***
+___
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;hr /&gt;
+&lt;hr /&gt;
+&lt;h3&gt;3.10 表格&lt;/h3&gt;
+&lt;p&gt;用 &lt;code&gt;|&lt;/code&gt; 分隔单元格，用 &lt;code&gt;-&lt;/code&gt; 分隔表头与表体，可用 &lt;code&gt;:&lt;/code&gt; 设置对齐方式：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;| 左对齐 | 居中对齐 | 右对齐 |
+|:-------|:--------:|-------:|
+| 苹果   | 香蕉     | 橙子   |
+| 猫     | 狗       | 兔子   |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;左对齐&lt;/th&gt;
+&lt;th&gt;居中对齐&lt;/th&gt;
+&lt;th&gt;右对齐&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;苹果&lt;/td&gt;
+&lt;td&gt;香蕉&lt;/td&gt;
+&lt;td&gt;橙子&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;猫&lt;/td&gt;
+&lt;td&gt;狗&lt;/td&gt;
+&lt;td&gt;兔子&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;3.11 任务列表&lt;/h3&gt;
+&lt;p&gt;在 GitHub Flavored Markdown (GFM) 中支持任务列表：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- [x] 已完成任务
+- [ ] 未完成任务
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;[x] 已完成任务&lt;/li&gt;
+&lt;li&gt;[ ] 未完成任务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3.12 脚注&lt;/h3&gt;
+&lt;p&gt;某些 Markdown 处理器（如 Pandoc、GitHub 部分支持）支持脚注：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;这是一段文字[^1]。
+
+[^1]: 这是脚注的解释。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;br /&gt;
+这是一段文字&lt;a href=&quot;%E8%BF%99%E6%98%AF%E8%84%9A%E6%B3%A8%E7%9A%84%E8%A7%A3%E9%87%8A%E3%80%82&quot;&gt;^1&lt;/a&gt;。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意：脚注的渲染效果依赖具体平台。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;3.13 定义列表&lt;/h3&gt;
+&lt;p&gt;部分扩展语法支持定义列表：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Markdown
+:   一种轻量级标记语言。
+
+HTML
+:   超文本标记语言。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果（取决于渲染器）：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Markdown
+:   一种轻量级标记语言。&lt;/p&gt;
+&lt;p&gt;HTML
+:   超文本标记语言。&lt;/p&gt;
+&lt;h3&gt;3.14 内嵌 HTML&lt;/h3&gt;
+&lt;p&gt;Markdown 兼容 HTML，当 Markdown 语法无法满足需求时，可以直接使用 HTML 标签：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;这是一段 &amp;lt;span style=&quot;color: red;&quot;&amp;gt;红色文字&amp;lt;/span&amp;gt;。
+
+&amp;lt;details&amp;gt;
+  &amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;
+  这里是隐藏的内容。
+&amp;lt;/details&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这是一段 &amp;lt;span style=&quot;color: red;&quot;&amp;gt;红色文字&amp;lt;/span&amp;gt;。&lt;/p&gt;
+&lt;p&gt;&amp;lt;details&amp;gt;
+&amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;
+这里是隐藏的内容。
+&amp;lt;/details&amp;gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;4. 扩展语法（GFM）&lt;/h2&gt;
+&lt;p&gt;GitHub Flavored Markdown (GFM) 在标准 Markdown 基础上增加了一些实用功能，包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;任务列表&lt;/strong&gt;（见 3.11）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;表格&lt;/strong&gt;（见 3.10）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除线&lt;/strong&gt;（见 3.3）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自动链接&lt;/strong&gt;（URL 自动识别）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;围栏代码块并支持语法高亮&lt;/strong&gt;（见 3.8）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;表情符号&lt;/strong&gt;：&lt;code&gt;:smile:&lt;/code&gt; 显示为 :smile:&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提及用户&lt;/strong&gt;：&lt;code&gt;@github/someone&lt;/code&gt; 在 GitHub 上会触发通知&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;参考链接和脚注&lt;/strong&gt;的增强&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;大多数在线平台都采用 GFM 或其变体，因此掌握这些扩展语法非常实用。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;5. Markdown 编辑器推荐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Typora&lt;/strong&gt;：所见即所得，界面简洁，支持多种主题和导出格式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Visual Studio Code&lt;/strong&gt; + 插件（如 Markdown All in One）：强大的编辑体验，支持实时预览。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Obsidian&lt;/strong&gt;：基于 Markdown 的知识库管理工具，适合做笔记和双链。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mark Text&lt;/strong&gt;：开源、跨平台的所见即所得编辑器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Haroopad&lt;/strong&gt;：功能丰富的 Markdown 编辑器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;在线编辑器&lt;/strong&gt;：StackEdit、Dillinger、Cmd Markdown 等，无需安装即可使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;6. 最佳实践&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;保持简单&lt;/strong&gt;：不要过度嵌套或使用复杂 HTML，除非必要。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用语义化标记&lt;/strong&gt;：例如标题按层级使用，不要为了改变字体大小而滥用标题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;列表项一致性&lt;/strong&gt;：无序列表统一使用 &lt;code&gt;-&lt;/code&gt;，有序列表的数字不必按顺序，Markdown 会自动修正，但建议手动编写正确顺序便于阅读。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;适当添加空行&lt;/strong&gt;：段落、列表、代码块前后用空行分隔，提高可读性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;为图片添加替代文字&lt;/strong&gt;：有利于无障碍访问和图片加载失败时的理解。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用参考式链接管理长 URL&lt;/strong&gt;：使正文更清晰。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;遵循项目规范&lt;/strong&gt;：如果参与多人协作，事先约定 Markdown 风格（如缩进空格数、列表标记等）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;7. 高级主题&lt;/h2&gt;
+&lt;h3&gt;7.1 YAML Front Matter&lt;/h3&gt;
+&lt;p&gt;许多静态网站生成器（如 Jekyll、Hugo、Hexo）和 Markdown 编辑器支持在文件开头添加 YAML 格式的元数据，称为 Front Matter。它通常用 &lt;code&gt;---&lt;/code&gt; 包裹，用于定义标题、日期、分类、标签等信息。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;---
+title: 我的文章
+date: 2025-03-15
+categories: 技术
+tags: [Markdown, 教程]
+---
+
+# 正文开始...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Front Matter 在渲染时会被解析，但不会显示在正文中。&lt;/p&gt;
+&lt;h3&gt;7.2 数学公式&lt;/h3&gt;
+&lt;p&gt;通过 LaTeX 语法，许多 Markdown 渲染器（如 Typora、Jupyter、GitHub 的 MathJax 支持）可以显示数学公式。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;行内公式&lt;/strong&gt;：用单个美元符号 &lt;code&gt;$...$&lt;/code&gt; 包裹&lt;br /&gt;
+&lt;code&gt;$E = mc^2$&lt;/code&gt; 效果：$E = mc^2$&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;块级公式&lt;/strong&gt;：用双美元符号 &lt;code&gt;$$...$$&lt;/code&gt; 包裹&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;$$
+\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+$$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;效果：
+$$
+\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+$$&lt;/p&gt;
+&lt;h3&gt;7.3 图表和流程图（Mermaid）&lt;/h3&gt;
+&lt;p&gt;Mermaid 是一种基于文本的图表绘制工具，许多 Markdown 编辑器（如 Typora、GitHub）支持嵌入 Mermaid 代码块。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;```mermaid
+graph TD;
+    A--&amp;gt;B;
+    A--&amp;gt;C;
+    B--&amp;gt;D;
+    C--&amp;gt;D;
+```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;效果（需渲染器支持）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;graph TD;
+    A--&amp;gt;B;
+    A--&amp;gt;C;
+    B--&amp;gt;D;
+    C--&amp;gt;D;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;7.4 交叉引用与目录&lt;/h3&gt;
+&lt;p&gt;一些扩展语法允许插入目录或交叉引用标题。例如在 Markdown 中，可以使用 &lt;code&gt;[链接文本](#标题标识符)&lt;/code&gt; 的方式链接到同一文档的标题。标题标识符通常是将标题转换为小写、用连字符连接（如 &lt;code&gt;## 我的标题&lt;/code&gt; 的标识符为 &lt;code&gt;#我的标题&lt;/code&gt;）。&lt;/p&gt;
+&lt;p&gt;在支持自动目录的编辑器（如 Typora）中，可以插入 &lt;code&gt;[TOC]&lt;/code&gt; 生成目录。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[TOC]
+
+## 第一节
+## 第二节
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;7.5 内联属性&lt;/h3&gt;
+&lt;p&gt;某些 Markdown 变体（如 Kramdown）允许为元素添加属性，例如为图片指定宽度：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;![图片](image.png){: width=&quot;50%&quot;}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这并非标准语法，使用时需确认渲染器支持。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;8. Markdown 与其他工具的集成&lt;/h2&gt;
+&lt;h3&gt;8.1 静态网站生成器&lt;/h3&gt;
+&lt;p&gt;Markdown 是静态网站生成器（如 &lt;strong&gt;Hugo&lt;/strong&gt;、&lt;strong&gt;Jekyll&lt;/strong&gt;、&lt;strong&gt;Next.js&lt;/strong&gt;、&lt;strong&gt;VuePress&lt;/strong&gt;）的核心内容格式。你可以用 Markdown 写文章，生成器会自动将其转换为 HTML，并套用主题。&lt;/p&gt;
+&lt;h3&gt;8.2 文档生成工具&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MkDocs&lt;/strong&gt;：专为项目文档设计，使用 Markdown 编写，支持主题和插件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Docusaurus&lt;/strong&gt;：Facebook 开源，适合构建文档网站，支持 Markdown 和 MDX（在 Markdown 中嵌入 JSX）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GitBook&lt;/strong&gt;：在线文档平台，支持 Markdown 导入。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;8.3 笔记应用&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Obsidian&lt;/strong&gt;：基于本地 Markdown 文件的双向链接笔记工具，知识库构建神器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Roam Research&lt;/strong&gt;、&lt;strong&gt;Logseq&lt;/strong&gt;：类似理念，支持 Markdown 格式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notion&lt;/strong&gt;：虽使用自己的块编辑器，但支持 Markdown 快捷输入（如 &lt;code&gt;#&lt;/code&gt; 标题、&lt;code&gt;*&lt;/code&gt; 列表等）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;8.4 转换工具（Pandoc）&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Pandoc&lt;/strong&gt; 是一个强大的文档转换工具，可以在 Markdown、HTML、PDF、Word、LaTeX 等数十种格式之间相互转换。例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pandoc input.md -o output.pdf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过 Pandoc，你可以利用 Markdown 编写，然后输出为出版级 PDF 或 Word 文档。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;9. 常见问题与解答&lt;/h2&gt;
+&lt;h3&gt;Q1: Markdown 中如何添加注释？&lt;/h3&gt;
+&lt;p&gt;A: Markdown 没有内置注释语法，但可以使用 HTML 注释 &lt;code&gt;&amp;lt;!-- 注释内容 --&amp;gt;&lt;/code&gt;，它在渲染时会被忽略。&lt;/p&gt;
+&lt;h3&gt;Q2: 如何在表格中换行？&lt;/h3&gt;
+&lt;p&gt;A: 可以在单元格中使用 HTML 的 &lt;code&gt;&amp;lt;br&amp;gt;&lt;/code&gt; 标签。例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;| 列1 | 列2 |
+|-----|-----|
+| 第一行&amp;lt;br&amp;gt;第二行 | 内容 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Q3: 如何强制换行而不开始新段落？&lt;/h3&gt;
+&lt;p&gt;A: 在行尾添加两个空格再回车。&lt;/p&gt;
+&lt;h3&gt;Q4: 不同平台的 Markdown 语法有差异，如何保证兼容性？&lt;/h3&gt;
+&lt;p&gt;A: 尽量使用标准 CommonMark 语法，避免依赖特定扩展。如果必须使用扩展，可在文档开头注明所需的渲染器。&lt;/p&gt;
+&lt;h3&gt;Q5: 如何在 Markdown 中嵌入视频？&lt;/h3&gt;
+&lt;p&gt;A: Markdown 本身不支持嵌入视频，但可以使用 HTML 的 &lt;code&gt;&amp;lt;video&amp;gt;&lt;/code&gt; 标签或嵌入 iframe（如 YouTube 嵌入代码）。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;video src=&quot;video.mp4&quot; controls&amp;gt;&amp;lt;/video&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Q6: 有没有 Markdown 的语法检查工具？&lt;/h3&gt;
+&lt;p&gt;A: 有，例如 &lt;strong&gt;markdownlint&lt;/strong&gt;（VS Code 插件）可以检查并修复语法问题，保持风格一致。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;10. 总结&lt;/h2&gt;
+&lt;p&gt;通过本文，你应该已经全面掌握了 Markdown 的编写方法，包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;基本语法&lt;/strong&gt;：标题、强调、列表、链接、图片、引用、代码、表格、任务列表等。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;扩展语法&lt;/strong&gt;：GFM、数学公式、Mermaid 图表、Front Matter 等。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;最佳实践&lt;/strong&gt;：保持简洁、语义化、合理使用空行和参考链接。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实用工具&lt;/strong&gt;：编辑器推荐、与静态网站生成器和 Pandoc 的集成。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;常见问题&lt;/strong&gt;：注释、表格换行、兼容性等解决方案。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Markdown 是一门终身受用的技能，无论你是写博客、记笔记、写文档还是出书，它都能让你专注于内容本身。现在就开始用 Markdown 记录你的想法吧！&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;strong&gt;延伸阅读：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://daringfireball.net/projects/markdown/&quot;&gt;Markdown 官方文档（英文）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.github.com/gfm/&quot;&gt;GitHub Flavored Markdown 规范&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://commonmark.org/&quot;&gt;CommonMark 规范&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://pandoc.org/MANUAL.html&quot;&gt;Pandoc 用户指南&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>关于Fuwari如何发布文章</title><link>https://fuwari.vercel.app/posts/guide/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/guide/</guid><description>如何使用这个博客模板。</description><pubDate>Fri, 13 Feb 2026 00:00:00 GMT</pubDate><content:encoded>&lt;hr /&gt;
+&lt;blockquote&gt;
+&lt;p&gt;封面图片来源：&lt;a href=&quot;https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/208fc754-890d-4adb-9753-2c963332675d/width=2048/01651-1456859105-%28colour_1.5%29,girl,_Blue,yellow,green,cyan,purple,red,pink,_best,8k,UHD,masterpiece,male%20focus,%201boy,gloves,%20ponytail,%20long%20hair,.jpeg&quot;&gt;Source&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这个博客模板基于 Astro 构建。对于本指南中未提到的内容，你可以在 Astro Docs 中找到答案。&lt;/p&gt;
+&lt;h2&gt;文章的 Front-matter&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;---
+title: 我的第一篇博客文章
+published: 2023-09-09
+description: 这是我新的 Astro 博客的第一篇文章。
+image: ./cover.jpg
+tags: [Foo, Bar]
+category: 前端
+draft: false
+---
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;属性&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;title&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;文章标题。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;published&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;文章的发布日期。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;description&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;文章的简短描述，会显示在索引页面。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;image&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;文章封面图片路径。&amp;lt;br/&amp;gt;1. 以 &lt;code&gt;http://&lt;/code&gt; 或 &lt;code&gt;https://&lt;/code&gt; 开头：使用网络图片&amp;lt;br/&amp;gt;2. 以 &lt;code&gt;/&lt;/code&gt; 开头：表示 &lt;code&gt;public&lt;/code&gt; 目录中的图片&amp;lt;br/&amp;gt;3. 没有这些前缀：相对于当前 markdown 文件的路径&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;tags&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;文章标签。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;category&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;文章分类。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;draft&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;是否为草稿。草稿不会被显示。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;将文章文件放在哪里&lt;/h2&gt;
+&lt;p&gt;你的文章文件应放在 &lt;code&gt;src/content/posts/&lt;/code&gt; 目录中。你也可以创建子目录来更好地组织文章和资源文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+src/content/posts/
+├── post-1.md
+└── post-2/
+    ├── cover.png
+    └── index.md
+
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item></channel></rss>

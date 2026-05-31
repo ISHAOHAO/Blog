@@ -1,0 +1,117 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+import { profileConfig, siteConfig } from "../config";
+---
+
+<MainGridLayout title="RSS 订阅" description="订阅博客，获取最新文章推送">
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
+        <div class="card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full">
+            <div class="relative mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center">
+                        <Icon name="fa6-solid:rss" class="text-[var(--primary)] text-xl" />
+                    </div>
+                    <h1 class="text-2xl font-bold text-90">RSS 订阅</h1>
+                </div>
+                <p class="text-75 text-sm leading-relaxed">
+                    RSS 就像"报纸订阅"——把订阅地址添加到 RSS 阅读器，有新文章时它会自动通知你，无需每天手动刷新网站。
+                </p>
+            </div>
+
+            <div class="mb-6">
+                <div class="text-sm text-50 mb-2 font-medium">订阅地址</div>
+                <div class="flex items-center gap-2">
+                    <code class="flex-1 bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 text-sm font-mono text-90 break-all select-all">
+                        {new URL("/rss.xml", Astro.site).href}
+                    </code>
+                    <button id="copy-rss-btn"
+                            class="btn-regular rounded-lg px-4 py-3 text-sm font-medium flex items-center gap-2 shrink-0 hover:bg-[var(--primary)]/10">
+                        <Icon name="material-symbols:content-copy-outline" class="text-base" />
+                        <span id="copy-rss-label">复制</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <div class="text-sm text-50 mb-3 font-medium">推荐 RSS 阅读器</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <a href="https://feedly.com" target="_blank" rel="noopener"
+                       class="btn-card rounded-xl px-4 py-3 flex items-center gap-3 group">
+                        <span class="text-lg">📰</span>
+                        <div>
+                            <div class="text-sm font-medium text-90">Feedly</div>
+                            <div class="text-xs text-50">全平台 Web / iOS / Android</div>
+                        </div>
+                        <Icon name="fa6-solid:arrow-up-right-from-square" class="text-xs text-30 ml-auto shrink-0" />
+                    </a>
+                    <a href="https://www.inoreader.com" target="_blank" rel="noopener"
+                       class="btn-card rounded-xl px-4 py-3 flex items-center gap-3 group">
+                        <span class="text-lg">📖</span>
+                        <div>
+                            <div class="text-sm font-medium text-90">Inoreader</div>
+                            <div class="text-xs text-50">功能丰富的 Web 阅读器</div>
+                        </div>
+                        <Icon name="fa6-solid:arrow-up-right-from-square" class="text-xs text-30 ml-auto shrink-0" />
+                    </a>
+                    <a href="https://netnewswire.com" target="_blank" rel="noopener"
+                       class="btn-card rounded-xl px-4 py-3 flex items-center gap-3 group">
+                        <span class="text-lg">🍎</span>
+                        <div>
+                            <div class="text-sm font-medium text-90">NetNewsWire</div>
+                            <div class="text-xs text-50">Mac / iOS 原生客户端</div>
+                        </div>
+                        <Icon name="fa6-solid:arrow-up-right-from-square" class="text-xs text-30 ml-auto shrink-0" />
+                    </a>
+                    <a href="https://freshrss.org" target="_blank" rel="noopener"
+                       class="btn-card rounded-xl px-4 py-3 flex items-center gap-3 group">
+                        <span class="text-lg">🖥</span>
+                        <div>
+                            <div class="text-sm font-medium text-90">FreshRSS</div>
+                            <div class="text-xs text-50">自托管开源阅读器</div>
+                        </div>
+                        <Icon name="fa6-solid:arrow-up-right-from-square" class="text-xs text-30 ml-auto shrink-0" />
+                    </a>
+                    <a href="https://www.rsshub.app" target="_blank" rel="noopener"
+                       class="btn-card rounded-xl px-4 py-3 flex items-center gap-3 group">
+                        <span class="text-lg">🐼</span>
+                        <div>
+                            <div class="text-sm font-medium text-90">RSSHub</div>
+                            <div class="text-xs text-50">中文用户友好推荐</div>
+                        </div>
+                        <Icon name="fa6-solid:arrow-up-right-from-square" class="text-xs text-30 ml-auto shrink-0" />
+                    </a>
+                    <a href="https://www.reederapp.com" target="_blank" rel="noopener"
+                       class="btn-card rounded-xl px-4 py-3 flex items-center gap-3 group">
+                        <span class="text-lg">📱</span>
+                        <div>
+                            <div class="text-sm font-medium text-90">Reeder</div>
+                            <div class="text-xs text-50">精致的 iOS / Mac 客户端</div>
+                        </div>
+                        <Icon name="fa6-solid:arrow-up-right-from-square" class="text-xs text-30 ml-auto shrink-0" />
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-xs text-30">
+                提示：也可以直接在浏览器地址栏输入 <a href="/rss.xml" class="text-[var(--primary)] hover:underline">/rss.xml</a> 查看原始 XML。
+            </div>
+        </div>
+    </div>
+</MainGridLayout>
+
+<script>
+    const btn = document.getElementById('copy-rss-btn');
+    const label = document.getElementById('copy-rss-label');
+    if (btn && label) {
+        btn.addEventListener('click', () => {
+            const code = document.querySelector('code');
+            if (code) {
+                navigator.clipboard.writeText(code.textContent || '').then(() => {
+                    label.textContent = '已复制';
+                    setTimeout(() => { label.textContent = '复制'; }, 2000);
+                });
+            }
+        });
+    }
+</script>

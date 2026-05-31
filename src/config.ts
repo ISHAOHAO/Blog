@@ -68,7 +68,7 @@ export const profileConfig: ProfileConfig = {
 		{
 			name: "RSS",
 			icon: "fa6-solid:rss", // RSS 图标
-			url: "/rss.xml",
+			url: "/subscribe/",
 		},
 		{
 			name: "GitHub",

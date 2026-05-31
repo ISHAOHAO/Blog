@@ -1,0 +1,26 @@
+---
+import { Icon } from "astro-icon/components";
+import { profileConfig, siteConfig } from "../config";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+
+interface Props {
+    class?: string;
+}
+
+const className = Astro.props.class;
+---
+<div class:list={["card-base p-5", className]}>
+    <div class="flex items-center gap-2 mb-2">
+        <Icon name="fa6-solid:rss" class="text-[var(--primary)] text-lg" />
+        <span class="font-bold text-90">{i18n(I18nKey.rssSubscribe)}</span>
+    </div>
+    <div class="text-sm text-50 mb-3">
+        {i18n(I18nKey.rssSubscribeText)}
+    </div>
+    <a href="/subscribe/" target="_blank"
+       class="btn-regular rounded-lg w-full py-2 text-sm font-medium flex items-center justify-center gap-2 hover:bg-[var(--primary)]/10">
+        <Icon name="fa6-solid:rss" class="text-sm" />
+        <span>{i18n(I18nKey.rssSubscribe)}</span>
+    </a>
+</div>
