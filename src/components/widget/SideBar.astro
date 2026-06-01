@@ -1,33 +1,35 @@
 ---
 import type { MarkdownHeading } from "astro";
 import AdSidebar from "../AdSidebar.astro"; // 赞助组件
-import Profile from "./Profile.astro";
 import PopularPosts from "../PopularPosts.astro";
-// import Tag from "./Tags.astro"; // 标签组件
+import Profile from "./Profile.astro";
 import Statistics from "./Statistics.astro"; // 统计组件
+import Tag from "./Tags.astro"; // 标签组件
 
 interface Props {
-    class?: string;
-    headings?: MarkdownHeading[];
+  class?: string;
+  headings?: MarkdownHeading[];
 }
 
 const className = Astro.props.class;
 ---
 
 <div id="sidebar" class:list={[className, "w-full"]}>
-    <div class="flex flex-col w-full gap-4 mb-4">
-        <Profile />
+  <div class="flex flex-col w-full gap-3 mb-3">
+    <Profile />
+  </div>
+  <div
+    id="sidebar-sticky"
+    class="transition-all duration-700 flex flex-col w-full gap-3 top-4 sticky top-4"
+  >
+    <PopularPosts class="onload-animation" style="animation-delay: 150ms" />
+    <!-- 标签云 -->
+    <Tag class="onload-animation" style="animation-delay: 225ms" />
+    <!-- 统计组件 -->
+    <Statistics class="onload-animation" style="animation-delay: 175ms" />
+    <!-- 赞助组件 -->
+    <div class="onload-animation" style="animation-delay: 200ms">
+      <AdSidebar />
     </div>
-    <div
-        id="sidebar-sticky"
-        class="transition-all duration-700 flex flex-col w-full gap-4 top-4 sticky top-4"
-    >
-        <PopularPosts class="onload-animation" style="animation-delay: 150ms" />
-        <!-- 统计组件 -->
-        <Statistics class="onload-animation" style="animation-delay: 175ms" />
-        <!-- 赞助组件 -->
-        <div class="onload-animation" style="animation-delay: 200ms">
-            <AdSidebar />
-        </div>
-    </div>
+  </div>
 </div>

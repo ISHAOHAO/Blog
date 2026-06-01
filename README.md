@@ -28,8 +28,8 @@
 | **标签云** | 频率加权缩放 | `src/components/widget/Tags.astro` |
 | **RSS 订阅提醒** | 文章底部推广卡片 | `src/components/RSSPromo.astro` |
 | **RSS 订阅引导页** | 专用订阅页面 + 阅读器推荐 | `src/pages/subscribe.astro` |
-| **热门文章** | 侧边栏排行展示（最新 5 篇） | `src/components/PopularPosts.astro` |
-| **标签云** | 侧边栏标签（频率加权缩放） | `src/components/widget/Tags.astro` (已注释) |
+| **热门文章** | 侧边栏排行展示（最新 3 篇） | `src/components/PopularPosts.astro` |
+| **标签云** | 侧边栏标签（频率加权缩放） | `src/components/widget/Tags.astro` |
 
 ---
 
@@ -132,13 +132,13 @@ seriesOrder: 1
 
 ### 🏷 标签云
 
-侧边栏标签按使用频率自动缩放，高频标签更大更显眼。默认已注释，如需启用可在 `SideBar.astro` 中取消注释。
+侧边栏标签按使用频率自动缩放，高频标签更大更显眼，位于侧边栏底部。
 
 > 注：分类 (Categories) widget 已从侧边栏移除，分类筛选仅通过归档页和文章 metadata 展示。
 
 ### 🔥 热门文章排行
 
-侧边栏展示最新 5 篇文章排行，带序号徽标和悬停动效，位于侧边栏首个 widget。
+侧边栏展示最新 3 篇文章排行，带序号徽标和悬停动效，位于侧边栏首个 widget。
 
 ---
 

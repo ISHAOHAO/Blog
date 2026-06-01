@@ -47,13 +47,12 @@ let links: NavBarLink[] = navBarConfig.links.map(
             })}
         </div>
 
-        <!-- 实时时钟显示 -->
-        <div class="hidden lg:flex items-center px-6 text-base font-mono text-black/50 dark:text-white/50 select-none min-w-[8.5rem] justify-center">
-            <Icon name="material-symbols:schedule-outline" class="mr-1.5 text-[1rem]" />
-            <span id="live-clock">00:00:00</span>
-        </div>
-
-        <div class="flex">
+        <div class="flex items-center gap-1 sm:gap-2">
+            <!-- 实时时钟显示 -->
+            <div class="flex items-center px-1.5 sm:px-3 lg:px-4 text-xs sm:text-sm lg:text-base font-mono text-black/50 dark:text-white/50 select-none">
+                <Icon name="material-symbols:schedule-outline" class="mr-0.5 sm:mr-1 lg:mr-1.5 text-[0.75rem] sm:text-[0.85rem] lg:text-[1rem]" />
+                <span id="live-clock">00:00:00</span>
+            </div>
             <Search client:only="svelte"></Search>
             {!siteConfig.themeColor.fixed && (
                     <button aria-label="Display Settings" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" id="display-settings-switch">
