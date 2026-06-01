@@ -48,6 +48,7 @@ export const th: Translation = {
 	[Key.shareCopyLink]: "Copy Link",
 	[Key.shareCopied]: "Link Copied",
 	[Key.shareWechatScanHint]: "Scan QR code with WeChat to open",
+	[Key.shareClose]: "ปิด",
 	[Key.shareXiaohongshuHint]: "Link copied, paste to share in RED",
 	[Key.like]: "Like",
 	[Key.dislike]: "Dislike",

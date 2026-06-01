@@ -18,6 +18,7 @@ const copyLinkText = i18n(I18nKey.shareCopyLink);
 const wechatScanHint = i18n(I18nKey.shareWechatScanHint);
 const xiaohongshuHint = i18n(I18nKey.shareXiaohongshuHint);
 const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedUrl}`;
+const closeText = i18n(I18nKey.shareClose);
 ---
 
 <div class:list={["share-buttons", className]}>
@@ -77,10 +78,11 @@ const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=
 
 <div
   id="wechat-qr-modal"
-  class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden"
+  class="fixed inset-0 z-[9999] flex items-center justify-center hidden"
 >
   <div
-    class="bg-white dark:bg-[oklch(0.23_0.015_var(--hue))] rounded-2xl p-6 mx-4 max-w-sm w-full text-center shadow-2xl"
+    id="wechat-qr-inner"
+    class="bg-white dark:bg-[oklch(0.23_0.015_var(--hue))] rounded-2xl p-6 mx-4 max-w-sm w-full text-center shadow-2xl max-h-[90vh] overflow-y-auto"
   >
     <div class="text-lg font-bold text-90 mb-1">
       {i18n(I18nKey.shareViaWechat)}
@@ -94,24 +96,31 @@ const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=
     />
     <button
       id="wechat-qr-close"
-      class="btn-regular rounded-lg w-full mt-4 py-2 text-sm font-medium"
+      class="btn-regular rounded-lg w-full mt-4 py-2 text-sm font-medium cursor-pointer"
     >
-      关闭
+      {closeText}
     </button>
   </div>
 </div>
 
 <style>
   #wechat-qr-modal {
-    animation: fadeIn 0.2s ease-out;
+    background: rgba(0,0,0,0);
+    opacity: 0;
+    transition: opacity 0.2s ease-out, background 0.2s ease-out;
+    pointer-events: none;
   }
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+  #wechat-qr-modal.show {
+    background: rgba(0,0,0,0.5);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #wechat-qr-inner {
+    transform: scale(0.95);
+    transition: transform 0.2s ease-out;
+  }
+  #wechat-qr-modal.show #wechat-qr-inner {
+    transform: scale(1);
   }
 </style>
 
@@ -218,7 +227,27 @@ const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=
   const wechatBtn = document.getElementById("share-wechat-btn");
   const wechatModal = document.getElementById("wechat-qr-modal");
   const wechatClose = document.getElementById("wechat-qr-close");
+
+  if (wechatModal) {
+    const existing = document.body.querySelector("#wechat-qr-modal");
+    if (existing) existing.remove();
+    document.body.appendChild(wechatModal);
+  }
+
   if (wechatBtn && wechatModal) {
+    function showModal() {
+      wechatModal.classList.remove("hidden");
+      requestAnimationFrame(() => {
+        wechatModal.classList.add("show");
+      });
+    }
+    function hideModal() {
+      wechatModal.classList.remove("show");
+      setTimeout(() => {
+        wechatModal.classList.add("hidden");
+      }, 200);
+    }
+
     wechatBtn.addEventListener("click", async () => {
       if (isMobile()) {
         if (navigator.share) {
@@ -241,20 +270,18 @@ const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=
         setTimeout(() => {
           window.removeEventListener("pagehide", onHide);
           if (!launched.value) {
-            wechatModal.classList.remove("hidden");
+            showModal();
           }
         }, 2500);
       } else {
-        wechatModal.classList.remove("hidden");
+        showModal();
       }
     });
     wechatModal.addEventListener("click", (e) => {
-      if (e.target === wechatModal) wechatModal.classList.add("hidden");
+      if (e.target === wechatModal) hideModal();
     });
     if (wechatClose) {
-      wechatClose.addEventListener("click", () =>
-        wechatModal.classList.add("hidden"),
-      );
+      wechatClose.addEventListener("click", () => hideModal());
     }
   }
 </script>

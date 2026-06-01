@@ -48,6 +48,7 @@ export const zh_TW: Translation = {
 	[Key.shareCopyLink]: "複製連結",
 	[Key.shareCopied]: "連結已複製",
 	[Key.shareWechatScanHint]: "請使用微信「掃一掃」開啟",
+	[Key.shareClose]: "關閉",
 	[Key.shareXiaohongshuHint]: "連結已複製，打開小紅書 App 貼上分享",
 	[Key.like]: "讚",
 	[Key.dislike]: "踩",

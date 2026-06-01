@@ -48,6 +48,7 @@ export const ja: Translation = {
 	[Key.shareCopyLink]: "リンクをコピー",
 	[Key.shareCopied]: "コピーしました",
 	[Key.shareWechatScanHint]: "WeChatのQRコードでスキャンしてください",
+	[Key.shareClose]: "閉じる",
 	[Key.shareXiaohongshuHint]: "リンクをコピーしました、REDアプリで共有してください",
 	[Key.like]: "いいね",
 	[Key.dislike]: "低評価",

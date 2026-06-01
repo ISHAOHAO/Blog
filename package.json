@@ -1,7 +1,7 @@
 {
 	"name": "Blog",
 	"type": "module",
-	"version": "v1.5.7",
+	"version": "v1.6.2",
 	"scripts": {
 		"dev": "astro dev",
 		"start": "astro dev",

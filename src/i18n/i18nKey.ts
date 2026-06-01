@@ -45,6 +45,7 @@ enum I18nKey {
 	shareCopyLink = "shareCopyLink",
 	shareCopied = "shareCopied",
 	shareWechatScanHint = "shareWechatScanHint",
+	shareClose = "shareClose",
 	shareXiaohongshuHint = "shareXiaohongshuHint",
 	like = "like",
 	dislike = "dislike",
