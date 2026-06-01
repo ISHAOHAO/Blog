@@ -42,15 +42,13 @@ const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=
       <Icon name="fa6-brands:weibo" class="text-sm" />
       <span>{i18n(I18nKey.shareViaWeibo)}</span>
     </a>
-    <a
-      href={`https://connect.qq.com/widget/shareqq/index.html?url=${encodedUrl}&title=${encodedTitle}`}
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      id="share-qq-btn"
       class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5"
     >
       <Icon name="fa6-brands:qq" class="text-sm" />
       <span>{i18n(I18nKey.shareViaQQ)}</span>
-    </a>
+    </button>
     <button
       id="share-xhs-btn"
       class="btn-regular rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5"
@@ -117,7 +115,7 @@ const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=
   }
 </style>
 
-<script define:vars={{ url, copiedText, copyLinkText, xiaohongshuHint }}>
+<script define:vars={{ url, title, copiedText, copyLinkText, xiaohongshuHint }}>
   const copyBtn = document.getElementById("share-copy-btn");
   const copyLabel = document.getElementById("share-copy-label");
   if (copyBtn && copyLabel) {
@@ -135,13 +133,85 @@ const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=
   const xhsLabel = document.getElementById("share-xhs-label");
   if (xhsBtn && xhsLabel) {
     const original = xhsLabel.textContent || "";
-    xhsBtn.addEventListener("click", () => {
-      navigator.clipboard.writeText(url).then(() => {
-        xhsLabel.textContent = xiaohongshuHint;
+    xhsBtn.addEventListener("click", async () => {
+      if (isMobile()) {
+        if (navigator.share) {
+          try {
+            await navigator.share({ title, url });
+            return;
+          } catch (_) {}
+        }
+
+        const launched = { value: false };
+        const onHide = () => { launched.value = true; };
+        window.addEventListener("pagehide", onHide, { once: true });
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) launched.value = true;
+        }, { once: true });
+
+        window.location.href = "xhsdiscover://";
+        navigator.clipboard.writeText(url).then(() => {
+          if (!launched.value) {
+            xhsLabel.textContent = xiaohongshuHint;
+            setTimeout(() => {
+              xhsLabel.textContent = original;
+            }, 2000);
+          }
+        });
+
         setTimeout(() => {
-          xhsLabel.textContent = original;
+          window.removeEventListener("pagehide", onHide);
+          if (!launched.value) {
+            xhsLabel.textContent = xiaohongshuHint;
+            setTimeout(() => {
+              xhsLabel.textContent = original;
+            }, 2000);
+          }
+        }, 2500);
+      } else {
+        navigator.clipboard.writeText(url).then(() => {
+          xhsLabel.textContent = xiaohongshuHint;
+          setTimeout(() => {
+            xhsLabel.textContent = original;
+          }, 2000);
+        });
+      }
+    });
+  }
+
+  function isMobile() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+
+  const qqBtn = document.getElementById("share-qq-btn");
+  if (qqBtn) {
+    qqBtn.addEventListener("click", () => {
+      if (isMobile()) {
+        const qqUrl = `mqqapi://share/to_fri?src_type=web&version=1&file_type=news&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
+        let launched = false;
+        const onHide = () => { launched = true; };
+        window.addEventListener("pagehide", onHide, { once: true });
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) launched = true;
+        }, { once: true });
+
+        window.location.href = qqUrl;
+
+        setTimeout(() => {
+          window.removeEventListener("pagehide", onHide);
+          if (!launched) {
+            window.open(
+              `https://connect.qq.com/widget/shareqq/index.html?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
+              "_blank",
+            );
+          }
         }, 2000);
-      });
+      } else {
+        window.open(
+          `https://connect.qq.com/widget/shareqq/index.html?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
+          "_blank",
+        );
+      }
     });
   }
 
@@ -149,8 +219,34 @@ const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=
   const wechatModal = document.getElementById("wechat-qr-modal");
   const wechatClose = document.getElementById("wechat-qr-close");
   if (wechatBtn && wechatModal) {
-    wechatBtn.addEventListener("click", () => {
-      wechatModal.classList.remove("hidden");
+    wechatBtn.addEventListener("click", async () => {
+      if (isMobile()) {
+        if (navigator.share) {
+          try {
+            await navigator.share({ title, url });
+            return;
+          } catch (_) {}
+        }
+
+        const launched = { value: false };
+        const onHide = () => { launched.value = true; };
+        window.addEventListener("pagehide", onHide, { once: true });
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) launched.value = true;
+        }, { once: true });
+
+        window.location.href = "weixin://";
+        navigator.clipboard.writeText(url).catch(() => {});
+
+        setTimeout(() => {
+          window.removeEventListener("pagehide", onHide);
+          if (!launched.value) {
+            wechatModal.classList.remove("hidden");
+          }
+        }, 2500);
+      } else {
+        wechatModal.classList.remove("hidden");
+      }
     });
     wechatModal.addEventListener("click", (e) => {
       if (e.target === wechatModal) wechatModal.classList.add("hidden");
