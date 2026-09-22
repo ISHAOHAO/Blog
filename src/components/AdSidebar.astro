@@ -34,9 +34,12 @@
 </div>
 
 <script is:inline>
+    let displayModuleRequested = false;
+
     function loadDisplayModule() {
         const holder = document.getElementById("item-holder-v2");
-        if (!holder) return;
+        if (!holder || displayModuleRequested) return;
+        displayModuleRequested = true;
 
         holder.innerHTML = "";
 
@@ -50,9 +53,25 @@
         holder.appendChild(s);
     }
 
-    loadDisplayModule();
+    function observeDisplayModule() {
+        const holder = document.getElementById("item-holder-v2");
+        if (!holder) return;
+        if (!("IntersectionObserver" in window)) {
+            loadDisplayModule();
+            return;
+        }
 
-    document.addEventListener("swup:contentReplaced", loadDisplayModule);
+        const observer = new IntersectionObserver((entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            observer.disconnect();
+            loadDisplayModule();
+        }, { rootMargin: "200px" });
+        observer.observe(holder);
+    }
+
+    observeDisplayModule();
+
+    document.addEventListener("swup:contentReplaced", observeDisplayModule);
 </script>
 
 <style>

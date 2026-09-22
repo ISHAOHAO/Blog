@@ -12,6 +12,20 @@ let result: SearchResult[] = [];
 let isSearching = false;
 let pagefindLoaded = false;
 let initialized = false;
+let selectedTag = "";
+let selectedCategory = "";
+let selectedYear = "";
+let availableTags: string[] = [];
+let availableCategories: string[] = [];
+let availableYears: string[] = [];
+
+const filterValues = (
+	filters: Record<string, Record<string, number>>,
+	key: string,
+): string[] =>
+	Object.keys(filters[key] ?? {}).sort((a, b) =>
+		a.localeCompare(b, "zh-CN", { numeric: true }),
+	);
 
 const fakeResult: SearchResult[] = [
 	{
@@ -47,7 +61,13 @@ const setPanelVisibility = (show: boolean, isDesktop: boolean): void => {
 	}
 };
 
-const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
+const search = async (
+	keyword: string,
+	isDesktop: boolean,
+	tag = selectedTag,
+	category = selectedCategory,
+	year = selectedYear,
+): Promise<void> => {
 	if (!keyword) {
 		setPanelVisibility(false, isDesktop);
 		result = [];
@@ -64,7 +84,14 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 		let searchResults: SearchResult[] = [];
 
 		if (import.meta.env.PROD && pagefindLoaded && window.pagefind) {
-			const response = await window.pagefind.search(keyword);
+			const filters: Record<string, string> = {};
+			if (tag) filters.tag = tag;
+			if (category) filters.category = category;
+			if (year) filters.year = year;
+			const response = await window.pagefind.search(
+				keyword,
+				Object.keys(filters).length > 0 ? { filters } : undefined,
+			);
 			searchResults = await Promise.all(
 				response.results.map((item) => item.data()),
 			);
@@ -87,13 +114,18 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 };
 
 onMount(() => {
-	const initializeSearch = () => {
+	const initializeSearch = async () => {
 		initialized = true;
 		pagefindLoaded =
 			typeof window !== "undefined" &&
 			!!window.pagefind &&
 			typeof window.pagefind.search === "function";
-		console.log("Pagefind status on init:", pagefindLoaded);
+		if (pagefindLoaded && typeof window.pagefind.filters === "function") {
+			const filters = await window.pagefind.filters();
+			availableTags = filterValues(filters, "tag");
+			availableCategories = filterValues(filters, "category");
+			availableYears = filterValues(filters, "year").reverse();
+		}
 		if (keywordDesktop) search(keywordDesktop, true);
 		if (keywordMobile) search(keywordMobile, false);
 	};
@@ -104,36 +136,52 @@ onMount(() => {
 		);
 		initializeSearch();
 	} else {
-		document.addEventListener("pagefindready", () => {
-			console.log("Pagefind ready event received.");
-			initializeSearch();
-		});
-		document.addEventListener("pagefindloaderror", () => {
+		const handleReady = () => initializeSearch();
+		const handleError = () => {
 			console.warn(
 				"Pagefind load error event received. Search functionality will be limited.",
 			);
 			initializeSearch(); // Initialize with pagefindLoaded as false
-		});
+		};
+		document.addEventListener("pagefindready", handleReady);
+		document.addEventListener("pagefindloaderror", handleError);
 
 		// Fallback in case events are not caught or pagefind is already loaded by the time this script runs
-		setTimeout(() => {
+		const fallbackTimer = window.setTimeout(() => {
 			if (!initialized) {
-				console.log("Fallback: Initializing search after timeout.");
 				initializeSearch();
 			}
 		}, 2000); // Adjust timeout as needed
+
+		return () => {
+			window.clearTimeout(fallbackTimer);
+			document.removeEventListener("pagefindready", handleReady);
+			document.removeEventListener("pagefindloaderror", handleError);
+		};
 	}
 });
 
 $: if (initialized && keywordDesktop) {
 	(async () => {
-		await search(keywordDesktop, true);
+		await search(
+			keywordDesktop,
+			true,
+			selectedTag,
+			selectedCategory,
+			selectedYear,
+		);
 	})();
 }
 
 $: if (initialized && keywordMobile) {
 	(async () => {
-		await search(keywordMobile, false);
+		await search(
+			keywordMobile,
+			false,
+			selectedTag,
+			selectedCategory,
+			selectedYear,
+		);
 	})();
 }
 </script>
@@ -171,6 +219,29 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
                focus:w-60 text-black/50 dark:text-white/50"
         >
     </div>
+
+    {#if availableTags.length > 0 || availableCategories.length > 0 || availableYears.length > 0}
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2">
+        <select bind:value={selectedCategory} aria-label="按分类筛选" class="h-9 rounded-lg px-2 text-sm bg-[var(--btn-regular-bg)] text-75 outline-none">
+          <option value="">全部分类</option>
+          {#each availableCategories as category}
+            <option value={category}>{category}</option>
+          {/each}
+        </select>
+        <select bind:value={selectedTag} aria-label="按标签筛选" class="h-9 rounded-lg px-2 text-sm bg-[var(--btn-regular-bg)] text-75 outline-none">
+          <option value="">全部标签</option>
+          {#each availableTags as tag}
+            <option value={tag}>{tag}</option>
+          {/each}
+        </select>
+        <select bind:value={selectedYear} aria-label="按年份筛选" class="h-9 rounded-lg px-2 text-sm bg-[var(--btn-regular-bg)] text-75 outline-none">
+          <option value="">全部年份</option>
+          {#each availableYears as year}
+            <option value={year}>{year}</option>
+          {/each}
+        </select>
+      </div>
+    {/if}
 
     <!-- search results -->
     {#each result as item}

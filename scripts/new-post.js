@@ -45,10 +45,14 @@ if (!fs.existsSync(dirPath)) {
 const content = `---
 title: ${args[0]}
 published: ${getDate()}
+# updated: ${getDate()}
+# lastVerified: ${getDate()}
 description: ''
 image: ''
 tags: []
 category: ''
+series: ''
+# seriesOrder: 1
 draft: false 
 lang: ''
 ---

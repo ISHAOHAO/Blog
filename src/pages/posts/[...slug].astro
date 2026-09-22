@@ -8,11 +8,11 @@ import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getRelatedPosts, getSeriesPosts, getSortedPosts } from "@utils/content-utils";
 import { getDir, getPostUrlBySlug } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
+import { getImage } from "astro:assets";
 import { licenseConfig } from "src/config";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
-import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 import Comment from "../../components/Comment.astro";
 import RelatedPosts from "../../components/RelatedPosts.astro";
 import SeriesNav from "../../components/SeriesNav.astro";
@@ -32,6 +32,31 @@ const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
 
 const { remarkPluginFrontmatter } = await entry.render();
+const postImageModules = import.meta.glob<ImageMetadata>(
+    "../../content/posts/**/*.{avif,gif,jpeg,jpg,png,webp}",
+    { eager: true, import: "default" },
+);
+
+let socialImage: string | undefined;
+if (entry.data.image) {
+    const imageName = entry.data.image.replace(/^\.\//, "");
+    const imageKey = path.posix
+        .join("../../content/posts", getDir(entry.id).replace(/\\/g, "/"), imageName)
+        .replace(/\\/g, "/");
+    const source = postImageModules[imageKey];
+    if (source) {
+        const optimized = await getImage({
+            src: source,
+            width: 1200,
+            height: 630,
+            fit: "cover",
+        });
+        socialImage = new URL(optimized.src, Astro.site).href;
+    }
+}
+
+const modifiedDate = entry.data.updated ?? entry.data.lastVerified;
+const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
 
 const jsonLd = {
     "@context": "https://schema.org",
@@ -44,7 +69,13 @@ const jsonLd = {
         name: profileConfig.name,
         url: Astro.site,
     },
-    datePublished: formatDateToYYYYMMDD(entry.data.published),
+    datePublished: entry.data.published.toISOString(),
+    dateModified: (modifiedDate ?? entry.data.published).toISOString(),
+    image: socialImage,
+    mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": postUrl,
+    },
     inLanguage: entry.data.lang
         ? entry.data.lang.replace("_", "-")
         : siteConfig.lang.replace("_", "-"),
@@ -52,7 +83,6 @@ const jsonLd = {
 
 const relatedPosts = await getRelatedPosts(entry.slug, 3);
 const seriesInfo = await getSeriesPosts(entry.data.series || "");
-const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
 ---
 
 <MainGridLayout
@@ -62,6 +92,9 @@ const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
     lang={entry.data.lang}
     setOGTypeArticle={true}
     headings={headings}
+    image={socialImage}
+    published={entry.data.published}
+    modified={modifiedDate}
 >
     <script
         is:inline
@@ -74,6 +107,7 @@ const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
     >
         <div
             id="post-container"
+            data-pagefind-body
             class:list={[
                 "card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
                 {},
@@ -118,8 +152,7 @@ const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
 
             <!-- title -->
             <div class="relative onload-animation">
-                <div
-                    data-pagefind-body
+                <h1
                     data-pagefind-weight="10"
                     data-pagefind-meta="title"
                     class="transition w-full block font-bold mb-3
@@ -129,7 +162,13 @@ const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
                     before:absolute before:top-[0.75rem] before:left-[-1.125rem]"
                 >
                     {entry.data.title}
-                </div>
+                </h1>
+            </div>
+
+            <div class="sr-only" aria-hidden="true">
+                {entry.data.category && <span data-pagefind-filter="category">{entry.data.category}</span>}
+                {entry.data.tags.map((tag) => <span data-pagefind-filter="tag">{tag}</span>)}
+                <span data-pagefind-filter="year">{entry.data.published.getFullYear()}</span>
             </div>
 
             <!-- metadata -->
@@ -138,6 +177,7 @@ const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
                     class="mb-5"
                     published={entry.data.published}
                     updated={entry.data.updated}
+                    lastVerified={entry.data.lastVerified}
                     tags={entry.data.tags}
                     category={entry.data.category}
                 />
@@ -156,6 +196,11 @@ const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
                         id="post-cover"
                         src={entry.data.image}
                         basePath={path.join("content/posts/", getDir(entry.id))}
+                        alt={entry.data.title}
+                        widths={[480, 768, 1200]}
+                        sizes="(max-width: 768px) 100vw, 48rem"
+                        loading="eager"
+                        fetchpriority="high"
                         class="mb-8 rounded-xl banner-container onload-animation"
                     />
                 )
@@ -176,7 +221,7 @@ const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
                 )
             }
 
-            <SeriesNav series={seriesInfo} currentSlug={entry.slug} class="mb-6 onload-animation" />
+            {seriesInfo && <SeriesNav series={seriesInfo} currentSlug={entry.slug} class="mb-6 onload-animation" />}
 
             <div class="mb-6 onload-animation">
                 <ShareButtons title={entry.data.title} url={postUrl} />

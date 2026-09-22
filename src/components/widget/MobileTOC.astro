@@ -1,0 +1,43 @@
+---
+import type { MarkdownHeading } from "astro";
+import { Icon } from "astro-icon/components";
+import { url } from "../../utils/url-utils";
+
+interface Props {
+	headings?: MarkdownHeading[];
+}
+
+const { headings = [] } = Astro.props;
+const isPost = Astro.url.pathname.startsWith(url("/posts/"));
+const visibleHeadings = headings.filter((heading) => heading.depth <= 3);
+---
+
+{isPost && visibleHeadings.length > 0 && (
+	<details id="mobile-toc" class="fixed bottom-20 right-4 z-40 lg:hidden">
+		<summary class="btn-card cursor-pointer list-none rounded-full w-12 h-12 shadow-xl border border-black/5 dark:border-white/10" aria-label="打开文章目录">
+			<Icon name="material-symbols:format-list-bulleted-rounded" class="text-xl text-[var(--primary)]" />
+		</summary>
+		<nav aria-label="文章目录" class="absolute bottom-14 right-0 w-[min(20rem,calc(100vw-2rem))] max-h-[60vh] overflow-y-auto card-base shadow-2xl border border-black/5 dark:border-white/10 p-3">
+			<div class="font-bold text-90 px-2 py-2">文章目录</div>
+			{visibleHeadings.map((heading) => (
+				<a
+					href={`#${heading.slug}`}
+					class:list={[
+						"block rounded-lg px-3 py-2 text-sm hover:bg-[var(--btn-plain-bg-hover)]",
+						{ "pl-6 text-50": heading.depth === 3, "font-medium text-75": heading.depth <= 2 },
+					]}
+				>
+					{heading.text.replace(/#$/, "").trim()}
+				</a>
+			))}
+		</nav>
+	</details>
+)}
+
+<script>
+	document.addEventListener("click", (event) => {
+		const anchor = (event.target as HTMLElement).closest("#mobile-toc a");
+		if (!anchor) return;
+		(anchor.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open");
+	});
+</script>

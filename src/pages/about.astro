@@ -1,6 +1,8 @@
 ---
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 import { Icon } from "astro-icon/components";
+import ImageWrapper from "../components/misc/ImageWrapper.astro";
+import { profileConfig } from "../config";
 ---
 
 <MainGridLayout title="关于我">
@@ -30,10 +32,13 @@ import { Icon } from "astro-icon/components";
                         class="absolute -inset-8 bg-grid-[var(--primary)]/[0.05] [mask-image:radial-gradient(white,transparent)] pointer-events-none"
                     >
                     </div>
-                    <img
-                        src="https://github.com/ISHAOHAO.png"
+                    <ImageWrapper
+                        src={profileConfig.avatar || ""}
                         class="relative w-44 h-44 rounded-[2.5rem] border-2 border-[var(--primary)]/20 shadow-2xl object-cover transition-all duration-700 group-hover:rounded-[1rem]"
-                        alt="Avatar"
+                        alt={`${profileConfig.name} 的头像`}
+                        widths={[176, 352]}
+                        sizes="11rem"
+                        loading="eager"
                     />
                     <div
                         class="absolute -bottom-4 -right-4 bg-white dark:bg-zinc-800 px-4 py-2 rounded-2xl shadow-xl border border-black/5 dark:border-white/10 flex items-center gap-2"
@@ -176,6 +181,7 @@ import { Icon } from "astro-icon/components";
                                 <a
                                     href="https://github.com/ISHAOHAO"
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                     class="p-4 bg-zinc-100 dark:bg-white/5 rounded-2xl hover:bg-[var(--primary)] hover:text-white transition-all"
                                 >
                                     <Icon

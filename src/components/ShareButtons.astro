@@ -124,7 +124,7 @@ const closeText = i18n(I18nKey.shareClose);
   }
 </style>
 
-<script define:vars={{ url, title, copiedText, copyLinkText, xiaohongshuHint }}>
+<script is:inline define:vars={{ url, title, copiedText, copyLinkText, xiaohongshuHint }}>
   const copyBtn = document.getElementById("share-copy-btn");
   const copyLabel = document.getElementById("share-copy-label");
   if (copyBtn && copyLabel) {

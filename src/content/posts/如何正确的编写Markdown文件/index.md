@@ -2,7 +2,7 @@
 
 title: 如何编写 Markdown 文件
 published: 2026-02-17
-description: "如何使用这个博客模板。"
+description: "从标题、列表、代码块到图片与表格，系统介绍 Markdown 的常用语法和写作规范。"
 image: "./markdown-icon256.png"
 tags: ["Markdown", "教程", "指南"]
 category: 教程

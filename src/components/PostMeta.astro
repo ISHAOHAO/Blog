@@ -9,6 +9,7 @@ interface Props {
 	class: string;
 	published: Date;
 	updated?: Date;
+	lastVerified?: Date;
 	tags: string[];
 	category: string | null;
 	hideTagsForMobile?: boolean;
@@ -17,6 +18,7 @@ interface Props {
 const {
 	published,
 	updated,
+	lastVerified,
 	tags,
 	category,
 	hideTagsForMobile = false,
@@ -43,6 +45,15 @@ const className = Astro.props.class;
                 <Icon name="material-symbols:edit-calendar-outline-rounded" class="text-xl"></Icon>
             </div>
             <span class="text-50 text-sm font-medium">{formatDateToYYYYMMDD(updated)}</span>
+        </div>
+    )}
+
+    {!hideUpdateDate && lastVerified && (
+        <div class="flex items-center" title="这篇教程最后一次按文中环境完成核验">
+            <div class="meta-icon">
+                <Icon name="material-symbols:verified-outline-rounded" class="text-xl"></Icon>
+            </div>
+            <span class="text-50 text-sm font-medium">验证于 {formatDateToYYYYMMDD(lastVerified)}</span>
         </div>
     )}
 

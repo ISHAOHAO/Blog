@@ -1,0 +1,30 @@
+---
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+---
+
+<MainGridLayout title="隐私与第三方服务" description="说明本站使用的本地存储、统计、评论、广告与表单服务。">
+	<article class="card-base px-6 py-8 md:px-10 md:py-12 prose dark:prose-invert max-w-none">
+		<h1>隐私与第三方服务</h1>
+		<p>本站是静态博客，不自行建立访客账户，也不在本站服务器保存密码或支付信息。</p>
+
+		<h2>浏览器本地存储</h2>
+		<p>主题、主题色和文章反馈会保存在当前设备的 localStorage 中。这些数据默认不会同步到其他设备，也不代表全站统计结果。</p>
+
+		<h2>第三方服务</h2>
+		<ul>
+			<li>Vercount：提供页面访问量统计。</li>
+			<li>Giscus：通过 GitHub Discussions 提供文章评论。</li>
+			<li>Vercel Speed Insights：提供页面性能观测。</li>
+			<li>Cloudflare Turnstile 与 FormSubmit：处理友链申请的人机验证和邮件转发。</li>
+			<li>第三方赞助内容服务：在侧栏进入视口后加载赞助内容。</li>
+			<li>QR Server：在用户打开微信分享二维码时生成二维码图片。</li>
+		</ul>
+		<p>这些服务可能接收完成请求所需的 IP 地址、浏览器信息和来源页面。具体处理方式以相应服务提供方的政策为准。</p>
+
+		<h2>外部内容</h2>
+		<p>文章、说说和友链中的外部图片或链接由第三方提供。访问这些资源时，请同时查看目标网站的隐私政策。</p>
+
+		<h2>联系</h2>
+		<p>如果你希望反馈隐私问题，可以通过关于页面中的邮箱联系站长。</p>
+	</article>
+</MainGridLayout>

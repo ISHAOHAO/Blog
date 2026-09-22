@@ -13,13 +13,21 @@ interface Props {
 
 const { series, currentSlug } = Astro.props;
 const className = Astro.props.class;
+const currentIndex = series.posts.findIndex((post) => post.slug === currentSlug);
+const progress = currentIndex >= 0 ? ((currentIndex + 1) / series.posts.length) * 100 : 0;
 
 if (!series || series.posts.length <= 1) return null;
 ---
 <div class:list={[className]}>
-    <div class="flex items-center gap-2 text-sm text-50 mb-3">
+    <div class="flex items-center justify-between gap-3 text-sm text-50 mb-2">
+        <div class="flex items-center gap-2 min-w-0">
         <Icon name="material-symbols:collections-bookmark-outline" class="text-base" />
-        <span>{i18n(I18nKey.seriesPosts)}: {series.name}</span>
+        <span class="truncate">{i18n(I18nKey.seriesPosts)}: {series.name}</span>
+        </div>
+        <span class="shrink-0">{currentIndex + 1}/{series.posts.length}</span>
+    </div>
+    <div class="h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden mb-3" aria-label={`系列进度 ${Math.round(progress)}%`}>
+        <div class="h-full bg-[var(--primary)] transition-all" style={`width: ${progress}%`}></div>
     </div>
     <div class="flex flex-col gap-1">
         {series.posts.map((post, idx) => (

@@ -2,12 +2,12 @@
 
 title: 关于Fuwari如何发布文章
 published: 2026-02-13
-description: "如何使用这个博客模板。"
+description: "介绍 Fuwari 博客的文章目录、Front matter 字段与 Markdown 发布流程。"
 image: "./cover.jpeg"
 tags: ["Fuwari", "博客", "自定义"]
 category: 指南
 draft: false
-------------
+---
 
 > 封面图片来源：[Source](https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/208fc754-890d-4adb-9753-2c963332675d/width=2048/01651-1456859105-%28colour_1.5%29,girl,_Blue,yellow,green,cyan,purple,red,pink,_best,8k,UHD,masterpiece,male%20focus,%201boy,gloves,%20ponytail,%20long%20hair,.jpeg)
 

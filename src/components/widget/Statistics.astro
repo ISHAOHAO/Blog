@@ -3,10 +3,8 @@ import { Icon } from "astro-icon/components";
 import WidgetLayout from "./WidgetLayout.astro";
 ---
 
-<WidgetLayout name="统计" icon="material-symbols:analytics-outline">
-    <div class="flex flex-col gap-2.5 px-2 py-2 relative group">
-        <script async src="https://vercount.one/js" id="vercount-loader"
-        ></script>
+<WidgetLayout name="统计" id="statistics">
+    <div id="statistics-widget" class="flex flex-col gap-2.5 px-2 py-2 relative group">
 
         <div
             class="stat-card main-card relative overflow-hidden p-3 rounded-2xl bg-gradient-to-br from-[oklch(99%_0.01_var(--hue))] to-[oklch(95%_0.02_var(--hue))] dark:from-zinc-900 dark:to-zinc-950 border border-black/5 dark:border-white/10 shadow-sm transition-all duration-500 hover:shadow-xl hover:shadow-[var(--primary)]/10 hover:-translate-y-1"
@@ -229,8 +227,42 @@ import WidgetLayout from "./WidgetLayout.astro";
         observer.observe(uvEl, { childList: true });
     }
 
-    initVercount();
-    document.addEventListener("astro:after-swap", initVercount);
+    function loadVercount() {
+        const existing = document.getElementById("vercount-loader") as HTMLScriptElement | null;
+        if (existing) {
+            initVercount();
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.id = "vercount-loader";
+        script.src = "https://vercount.one/js";
+        script.async = true;
+        script.addEventListener("load", initVercount, { once: true });
+        script.addEventListener("error", handleLoadError, { once: true });
+        document.head.appendChild(script);
+    }
+
+    function observeStatistics() {
+        const widget = document.getElementById("statistics-widget");
+        if (!widget || widget.dataset.observed === "true") return;
+        widget.dataset.observed = "true";
+
+        if (!("IntersectionObserver" in window)) {
+            loadVercount();
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            observer.disconnect();
+            loadVercount();
+        }, { rootMargin: "200px" });
+        observer.observe(widget);
+    }
+
+    observeStatistics();
+    document.addEventListener("swup:contentReplaced", observeStatistics);
 </script>
 
 <style>

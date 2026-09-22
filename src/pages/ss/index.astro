@@ -122,6 +122,7 @@ import Comment from "../../components/Comment.astro";
         <img
             id="modal-img"
             src=""
+            alt="说说图片预览"
             class="max-w-full max-h-full object-contain rounded-lg shadow-2xl scale-95 transition-transform duration-500"
         />
         <div
@@ -187,6 +188,9 @@ import Comment from "../../components/Comment.astro";
             document.body.style.overflow = "";
         }, 300);
     }
+
+    window.openModal = openModal;
+    window.closeModal = closeModal;
 
     // 初始化和 Swup 适配
     initModal();

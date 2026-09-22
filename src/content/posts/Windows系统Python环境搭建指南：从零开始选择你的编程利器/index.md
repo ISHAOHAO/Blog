@@ -79,13 +79,13 @@ pip是Python的包管理工具，用于安装第三方库。但默认的官方�
 
 打开`PowerShell`,输入下面指令，启动换源脚本
 
-```PowerShell
+```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Text.Encoding]::UTF8.GetString((New-Object System.Net.WebClient).DownloadData('https://raw.githubusercontent.com/ISHAOHAO/pyboct/main/windows.ps1')) | iex
 ```
 
 出现`网络波动`或`无法找到网站`等问题请使用下面的备用地址：
 
-```PowerShell
+```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Text.Encoding]::UTF8.GetString((New-Object System.Net.WebClient).DownloadData('https://gitee.com/is-haohao/pyboct/raw/main/windows.ps1')) | iex
 ```
 

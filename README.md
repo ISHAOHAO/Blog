@@ -28,8 +28,11 @@
 | **标签云** | 频率加权缩放 | `src/components/widget/Tags.astro` |
 | **RSS 订阅提醒** | 文章底部推广卡片 | `src/components/RSSPromo.astro` |
 | **RSS 订阅引导页** | 专用订阅页面 + 阅读器推荐 | `src/pages/subscribe.astro` |
-| **热门文章** | 侧边栏排行展示（最新 3 篇） | `src/components/PopularPosts.astro` |
+| **最新文章** | 侧边栏展示最新 3 篇文章 | `src/components/PopularPosts.astro` |
 | **标签云** | 侧边栏标签（频率加权缩放） | `src/components/widget/Tags.astro` |
+| **移动端目录** | 长文浮动目录按钮 | `src/components/widget/MobileTOC.astro` |
+| **内容校验** | 检查 Front matter、封面、标签与重复标题 | `scripts/validate-content.js` |
+| **隐私说明** | 本地存储与第三方服务披露 | `src/pages/privacy.astro` |
 
 ---
 
@@ -136,9 +139,9 @@ seriesOrder: 1
 
 > 注：分类 (Categories) widget 已从侧边栏移除，分类筛选仅通过归档页和文章 metadata 展示。
 
-### 🔥 热门文章排行
+### 🆕 最新文章
 
-侧边栏展示最新 3 篇文章排行，带序号徽标和悬停动效，位于侧边栏首个 widget。
+侧边栏展示最新 3 篇文章，带序号徽标和悬停动效，位于侧边栏首个 widget。这里按发布时间排序，不代表真实访问量排行。
 
 ---
 
@@ -155,6 +158,7 @@ seriesOrder: 1
 title: 文章标题
 published: 2026-02-18
 updated: 2026-03-01   # 可选：最后更新时间
+lastVerified: 2026-03-01 # 可选：教程最后实测日期
 description: "文章摘要"
 image: "./cover.jpg"
 tags: ["Tech", "教程"]
@@ -165,6 +169,8 @@ draft: false
 ---
 
 ```
+
+发布前可运行 `pnpm validate-content`。`pnpm check` 与 `pnpm build` 也会自动执行同一套内容校验。
 
 ### ✅ 说说 (Moments)
 

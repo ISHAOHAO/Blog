@@ -51,7 +51,9 @@
     });
 </script>
 
-<div class="flex items-center gap-4 py-2">
+<div class="py-2">
+    <div class="text-xs text-30 mb-2">本机反馈 · 仅保存在当前设备</div>
+    <div class="flex items-center gap-4">
     <button
         onclick={() => vote("like")}
         class:like-active={userVote === "like"}
@@ -70,6 +72,7 @@
         <Icon icon="material-symbols:thumb-down-outline" class="text-base" />
         <span class="font-medium">{dislikes}</span>
     </button>
+    </div>
 </div>
 
 <style>
