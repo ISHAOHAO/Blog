@@ -2,6 +2,52 @@
 
 本项目遵循 [语义化版本 2.0.0](https://semver.org/lang/zh-CN/) 规范。
 
+## [未发布] - 2026-09-22
+
+### 新增：移动端阅读、搜索筛选与内容维护能力
+
+* **移动端阅读体验**:
+  * 首页与文章布局改为响应式单栏/双栏结构，修复窄屏横向溢出。
+  * 新增移动端文章浮动目录，支持快速定位二、三级标题，跳转后自动收起。
+* **站内搜索**:
+  * Pagefind 新增分类、标签与年份三组筛选条件。
+  * 搜索索引在构建阶段生成，并为文章写入对应筛选元数据。
+* **内容工作流**:
+  * 新增 `scripts/validate-content.js`，校验 Front matter、摘要长度、日期、封面、重复标题、系列顺序、标签大小写和重复正文 H1。
+  * `pnpm check` 与 `pnpm build` 在执行前自动运行内容校验。
+  * Front matter 新增可选 `lastVerified` 字段，用于标记教程最后实测日期。
+  * 系列导航新增篇数进度与进度条。
+
+### 优化：SEO、性能与可信度
+
+* **SEO 与语义结构**:
+  * 新增 canonical、robots、Open Graph、Twitter Card、文章发布时间与更新时间元数据。
+  * 文章页补充 BlogPosting JSON-LD 的图片、修改日期与主页面地址。
+  * 修复首页缺少 H1、文章重复 H1，以及 `robots.txt` 阻止搜索引擎读取构建资源的问题。
+* **图片与加载性能**:
+  * 文章封面和头像改为响应式图片，输出多尺寸 WebP，并配置 `sizes`、懒加载与解码策略。
+  * Vercount 与侧边栏赞助脚本改为进入视口附近时加载，减少首屏第三方请求。
+  * 关于页头像改用本地优化资源，减少外部依赖。
+* **内容可信度**:
+  * 侧边栏“热门文章”更名为“最新文章”，明确按发布时间排序。
+  * 文章评分明确标注为本机反馈，数据仅保存在当前浏览器。
+  * 修正部分文章摘要、Front matter、标签拼写和代码块语言标识。
+
+### 新增：隐私与安全说明
+
+* 新增 `/privacy/` 页面，披露 localStorage、Vercount、Giscus、Speed Insights、Turnstile、FormSubmit、赞助服务与二维码服务的使用情况。
+* 页脚新增隐私说明入口。
+* Vercel 响应头新增 CSP `frame-ancestors`、HSTS、`X-Content-Type-Options`、`Referrer-Policy`、`Permissions-Policy` 与 `X-Frame-Options`。
+* 外部链接统一补充 `noopener noreferrer`。
+
+### 修复
+
+* 修复导航栏主题切换组件、归档页参数、统计组件与系列导航的类型问题。
+* 修复 Pagefind 1.4 筛选返回值结构适配问题。
+* 修复 PowerShell 代码块的语言标识警告。
+
+---
+
 ## [1.6.2] - 2026-06-01
 
 ### 修复：导航栏移动端布局与微信分享弹窗

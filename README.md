@@ -29,10 +29,11 @@
 | **RSS 订阅提醒** | 文章底部推广卡片 | `src/components/RSSPromo.astro` |
 | **RSS 订阅引导页** | 专用订阅页面 + 阅读器推荐 | `src/pages/subscribe.astro` |
 | **最新文章** | 侧边栏展示最新 3 篇文章 | `src/components/PopularPosts.astro` |
-| **标签云** | 侧边栏标签（频率加权缩放） | `src/components/widget/Tags.astro` |
 | **移动端目录** | 长文浮动目录按钮 | `src/components/widget/MobileTOC.astro` |
+| **站内搜索筛选** | Pagefind 分类 / 标签 / 年份过滤 | `src/components/Search.svelte` |
 | **内容校验** | 检查 Front matter、封面、标签与重复标题 | `scripts/validate-content.js` |
 | **隐私说明** | 本地存储与第三方服务披露 | `src/pages/privacy.astro` |
+| **SEO 元数据** | canonical / Open Graph / Twitter Card / JSON-LD | `src/layouts/Layout.astro` |
 
 ---
 
@@ -92,6 +93,7 @@ seriesOrder: 1
 
 - 自动列出同系列所有文章，按 `seriesOrder` 排序。
 - 当前文章高亮标记，序号徽标显示。
+- 显示当前篇数、总篇数与系列阅读进度条。
 - 当同系列仅 1 篇时自动隐藏。
 
 ### 📊 阅读进度条
@@ -118,6 +120,7 @@ seriesOrder: 1
 
 - 基于 **localStorage** 持久化，用户可切换或取消投票。
 - 无需后端服务，数据存储在浏览器端。
+- 页面明确显示“本机反馈 · 仅保存在当前设备”，不作为全站公开评分。
 - Svelte 5 组件位于 `src/components/PostRating.svelte:1`。
 
 ### 📡 RSS 订阅推广
@@ -142,6 +145,25 @@ seriesOrder: 1
 ### 🆕 最新文章
 
 侧边栏展示最新 3 篇文章，带序号徽标和悬停动效，位于侧边栏首个 widget。这里按发布时间排序，不代表真实访问量排行。
+
+### 🔎 站内搜索与筛选
+
+生产构建使用 Pagefind 生成静态搜索索引：
+
+- 支持按关键词搜索文章标题与正文。
+- 支持分类、标签和年份三组筛选条件。
+- 搜索索引由 `pnpm build` 自动写入 `dist/pagefind/`。
+- 开发模式不生成真实索引；请通过 `pnpm build && pnpm preview` 验证搜索结果。
+
+### 🔐 SEO、隐私与安全
+
+- 页面输出 canonical、Open Graph、Twitter Card 与文章 BlogPosting JSON-LD。
+- 文章社交分享图由 Astro 在构建时生成 1200×630 优化图片。
+- `/privacy/` 说明浏览器本地存储以及统计、评论、表单、赞助等第三方服务。
+- `vercel.json` 配置 CSP、HSTS、Referrer Policy、Permissions Policy 等安全响应头。
+- 统计和赞助脚本在组件接近视口时才加载，降低首屏第三方请求。
+
+> 本地预览无法验证 Vercount、Giscus、广告、FormSubmit、Turnstile 和 Vercel Speed Insights 的真实生产请求；部署后仍需进行线上验收。
 
 ---
 
@@ -172,6 +194,14 @@ draft: false
 
 发布前可运行 `pnpm validate-content`。`pnpm check` 与 `pnpm build` 也会自动执行同一套内容校验。
 
+内容校验覆盖：
+
+- Front matter 必填字段与日期格式。
+- 摘要长度、封面文件是否存在。
+- 重复标题、正文重复 H1。
+- 系列名称、顺序及重复序号。
+- 标签大小写是否保持一致。
+
 ### ✅ 说说 (Moments)
 
 编辑：`src/data/ss.json`。
@@ -198,3 +228,7 @@ draft: false
 | **修改人设** | `src/pages/about.astro` |
 | **调整标签云** | `src/components/widget/Tags.astro` |
 | **评论设置** | `src/components/Comment.astro` |
+| **搜索筛选** | `src/components/Search.svelte` 与文章页 `data-pagefind-*` 属性 |
+| **内容校验** | `scripts/validate-content.js` |
+| **SEO 元数据** | `src/layouts/Layout.astro`、`src/pages/posts/[...slug].astro` |
+| **隐私与安全** | `src/pages/privacy.astro`、`vercel.json` |
