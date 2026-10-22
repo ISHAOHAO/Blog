@@ -1,4 +1,4 @@
-# 🚀 博客指南 (v1.8.0)
+# 🚀 博客指南 (v1.8.1)
 
 ### 快速导航
 
@@ -11,8 +11,9 @@
 
 本文档记录了基于 Fuwari 深度定制后的功能模块、自动化流程与维护指南。
 
-## 🆕 v1.8.0 更新摘要
+## 🆕 v1.8.1 更新摘要
 
+- 发布《提示词工程入门指南：从需求拆解到稳定输出》，介绍提示词结构、示例驱动、任务拆解、输出约束、结果评估和实用模板。
 - 发布《Web 安全入门指南：从 HTTP 原理到常见漏洞与防御》，面向零基础读者讲解 HTTP/HTTPS、身份认证、会话以及常见漏洞的成因和防御边界。
 - 将核心构建栈升级到 Astro 7、Svelte 5 与 Tailwind CSS 4，并迁移 Astro Content Layer、Markdown 处理器和 Tailwind Vite 插件配置。
 - 更新直接依赖和间接依赖安全版本；截至 2026-10-22，使用 npm 官方注册表执行 `pnpm audit` 的结果为 0 个已知漏洞。
@@ -24,6 +25,7 @@
 | --- | --- | --- |
 | **文章发布** | Markdown + MDX | `src/content/posts/` |
 | **Web 安全入门教程** | HTTP / HTTPS、认证、会话、OWASP 防御实践 | `src/content/posts/Web 安全入门指南：从 HTTP 原理到常见漏洞与防御/` |
+| **提示词工程教程** | 需求拆解、提示词结构、输出约束、评估与复用模板 | `src/content/posts/提示词工程入门指南：从需求拆解到稳定输出/` |
 | **友链申请** | **FormSubmit + Cloudflare Turnstile** | `src/pages/friends/index.astro` |
 | **评论系统** | Giscus (GitHub Discussions) | `src/components/Comment.astro` |
 | **站点统计** | Vercount (Analytics) | `src/components/widget/Statistics.astro` |
