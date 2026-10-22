@@ -2,7 +2,54 @@
 
 本项目遵循 [语义化版本 2.0.0](https://semver.org/lang/zh-CN/) 规范。
 
-## [未发布] - 2026-09-22
+## [1.8.0] - 2026-10-22
+
+### 新增：Web 安全零基础教程
+
+* 发布《Web 安全入门指南：从 HTTP 原理到常见漏洞与防御》：
+  * 从浏览器、服务器与数据库的基本通信模型讲起，覆盖 HTTP/HTTPS、Cookie、Session、认证与授权。
+  * 讲解 SQL 注入、XSS、CSRF、SSRF、目录穿越、不安全文件上传、命令注入、JWT/OAuth 等常见风险及防御原则。
+  * 强调只在自有或明确授权环境中练习，并给出面向初学者的分阶段学习路线和检查清单。
+* 新增 `docs/web-security-research.md`，记录文章使用的规范、OWASP 指南和参考资料边界。
+
+### 安全：依赖漏洞清理
+
+* 重新使用 npm 官方注册表审计依赖；GitHub 原先显示 224 条漏洞，当前审计基线实际为 254 条。
+* 升级 Astro 7.4.2、Svelte 5.57.2、Tailwind CSS 4.3.3、Sharp 0.35.5、Markdown-It 14.3.3、sanitize-html 2.18.1 等直接依赖。
+* 迁移到 `@tailwindcss/vite`，移除已弃用且仅支持 Tailwind 3 的 `@astrojs/tailwind` 集成及旧 PostCSS 配置。
+* 对被上游旧构建链锁定的 KaTeX、PostCSS Selector Parser 和 Serialize JavaScript 使用最小安全版本覆盖。
+* 截至 2026-10-22，`pnpm audit --registry=https://registry.npmjs.org` 报告 0 个已知漏洞。
+
+### 迁移与兼容性
+
+* 将内容集合迁移到 Astro Content Layer 的 `glob()` loader，并改用 `render(entry)` API。
+* 将 Markdown Remark/Rehype 插件迁移到 `@astrojs/markdown-remark` 的统一处理器配置。
+* 完成 Tailwind CSS 4 的全局样式入口、`@reference`、自定义 utility 和 important 修饰符迁移。
+* 使用 GitHub 同款 slug 规则生成文章 ID，保持既有文章 URL 不变。
+* CI Node.js 矩阵更新为 22.23.4 与 24，并改为执行项目完整的 `pnpm check`、`pnpm build` 脚本。
+
+### 验证
+
+* 内容校验通过：13 篇文章。
+* Astro 检查通过：70 个文件，0 错误、0 警告、0 提示。
+* 生产构建通过：生成 21 个页面；Pagefind 索引 13 篇中文文章、3190 个词和 3 组筛选条件。
+
+---
+
+## [1.7.1] - 2026-10-01
+
+### 新增：Linux 与 Kali 基础命令文章
+
+* **Linux 基础教程**:
+  * 发布《Linux 基本命令详解：从文件操作到系统排查的常用命令清单》。
+  * 覆盖终端基础、目录与文件操作、权限、进程、网络、日志及安全练习流程。
+* **Kali Linux 入门教程**:
+  * 发布《Kali Linux 渗透基础命令：VMware 扫描自有局域网的 Nmap 入门》。
+  * 覆盖自有局域网中的主机发现、端口枚举、服务识别、脚本检查及扫描结果留存。
+
+---
+
+## [1.7.0] - 2026-09-22
 
 ### 新增：移动端阅读、搜索筛选与内容维护能力
 

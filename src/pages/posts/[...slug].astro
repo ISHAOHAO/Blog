@@ -6,9 +6,10 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getRelatedPosts, getSeriesPosts, getSortedPosts } from "@utils/content-utils";
-import { getDir, getPostUrlBySlug } from "@utils/url-utils";
+import { getPostDirectory, getPostUrlBySlug } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import { getImage } from "astro:assets";
+import { render } from "astro:content";
 import { licenseConfig } from "src/config";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
@@ -23,15 +24,13 @@ import RSSPromo from "../../components/RSSPromo.astro";
 export async function getStaticPaths() {
     const blogEntries = await getSortedPosts();
     return blogEntries.map((entry) => ({
-        params: { slug: entry.slug },
+        params: { slug: entry.id },
         props: { entry },
     }));
 }
 
 const { entry } = Astro.props;
-const { Content, headings } = await entry.render();
-
-const { remarkPluginFrontmatter } = await entry.render();
+const { Content, headings, remarkPluginFrontmatter } = await render(entry);
 const postImageModules = import.meta.glob<ImageMetadata>(
     "../../content/posts/**/*.{avif,gif,jpeg,jpg,png,webp}",
     { eager: true, import: "default" },
@@ -41,7 +40,7 @@ let socialImage: string | undefined;
 if (entry.data.image) {
     const imageName = entry.data.image.replace(/^\.\//, "");
     const imageKey = path.posix
-        .join("../../content/posts", getDir(entry.id).replace(/\\/g, "/"), imageName)
+        .join("../../content/posts", getPostDirectory(entry.filePath, entry.id), imageName)
         .replace(/\\/g, "/");
     const source = postImageModules[imageKey];
     if (source) {
@@ -56,7 +55,7 @@ if (entry.data.image) {
 }
 
 const modifiedDate = entry.data.updated ?? entry.data.lastVerified;
-const postUrl = new URL(getPostUrlBySlug(entry.slug), Astro.site).href;
+const postUrl = new URL(getPostUrlBySlug(entry.id), Astro.site).href;
 
 const jsonLd = {
     "@context": "https://schema.org",
@@ -81,7 +80,7 @@ const jsonLd = {
         : siteConfig.lang.replace("_", "-"),
 };
 
-const relatedPosts = await getRelatedPosts(entry.slug, 3);
+const relatedPosts = await getRelatedPosts(entry.id, 3);
 const seriesInfo = await getSeriesPosts(entry.data.series || "");
 ---
 
@@ -195,7 +194,7 @@ const seriesInfo = await getSeriesPosts(entry.data.series || "");
                     <ImageWrapper
                         id="post-cover"
                         src={entry.data.image}
-                        basePath={path.join("content/posts/", getDir(entry.id))}
+                        basePath={path.join("content/posts/", getPostDirectory(entry.filePath, entry.id))}
                         alt={entry.data.title}
                         widths={[480, 768, 1200]}
                         sizes="(max-width: 768px) 100vw, 48rem"
@@ -214,21 +213,21 @@ const seriesInfo = await getSeriesPosts(entry.data.series || "");
                 licenseConfig.enable && (
                     <License
                         title={entry.data.title}
-                        slug={entry.slug}
+                        slug={entry.id}
                         pubDate={entry.data.published}
                         class="mb-6 rounded-xl license-container onload-animation"
                     />
                 )
             }
 
-            {seriesInfo && <SeriesNav series={seriesInfo} currentSlug={entry.slug} class="mb-6 onload-animation" />}
+            {seriesInfo && <SeriesNav series={seriesInfo} currentSlug={entry.id} class="mb-6 onload-animation" />}
 
             <div class="mb-6 onload-animation">
                 <ShareButtons title={entry.data.title} url={postUrl} />
             </div>
 
             <div class="mb-4 onload-animation">
-                <PostRating slug={entry.slug} client:load />
+                <PostRating slug={entry.id} client:load />
             </div>
 
             <RelatedPosts posts={relatedPosts} class="mb-6 onload-animation" />

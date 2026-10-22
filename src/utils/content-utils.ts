@@ -21,11 +21,11 @@ export async function getSortedPosts() {
 	const sorted = await getRawSortedPosts();
 
 	for (let i = 1; i < sorted.length; i++) {
-		sorted[i].data.nextSlug = sorted[i - 1].slug;
+		sorted[i].data.nextSlug = sorted[i - 1].id;
 		sorted[i].data.nextTitle = sorted[i - 1].data.title;
 	}
 	for (let i = 0; i < sorted.length - 1; i++) {
-		sorted[i].data.prevSlug = sorted[i + 1].slug;
+		sorted[i].data.prevSlug = sorted[i + 1].id;
 		sorted[i].data.prevTitle = sorted[i + 1].data.title;
 	}
 
@@ -40,7 +40,7 @@ export async function getSortedPostsList(): Promise<PostForList[]> {
 
 	// delete post.body
 	const sortedPostsList = sortedFullPosts.map((post) => ({
-		slug: post.slug,
+		slug: post.id,
 		data: post.data,
 	}));
 
@@ -130,14 +130,14 @@ export async function getRelatedPosts(
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
 
-	const currentPost = allPosts.find((p) => p.slug === currentSlug);
+	const currentPost = allPosts.find((p) => p.id === currentSlug);
 	if (!currentPost) return [];
 
 	const currentTags = new Set(currentPost.data.tags || []);
 	const currentCategory = currentPost.data.category?.trim() || null;
 
 	const scored = allPosts
-		.filter((p) => p.slug !== currentSlug)
+		.filter((p) => p.id !== currentSlug)
 		.map((p) => {
 			let score = 0;
 			const pTags = p.data.tags || [];
@@ -154,7 +154,7 @@ export async function getRelatedPosts(
 			}
 
 			return {
-				slug: p.slug,
+				slug: p.id,
 				title: p.data.title,
 				published: p.data.published,
 				tags: pTags,
@@ -184,7 +184,7 @@ export async function getSeriesPosts(currentSeries: string): Promise<SeriesInfo 
 	const seriesPosts = allPosts
 		.filter((p) => p.data.series === currentSeries)
 		.map((p) => ({
-			slug: p.slug,
+			slug: p.id,
 			title: p.data.title,
 			order: p.data.seriesOrder,
 		}));

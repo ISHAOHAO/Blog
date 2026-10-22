@@ -1,4 +1,4 @@
-# 🚀 博客指南 (v1.6.x)
+# 🚀 博客指南 (v1.8.0)
 
 ### 快速导航
 
@@ -11,11 +11,19 @@
 
 本文档记录了基于 Fuwari 深度定制后的功能模块、自动化流程与维护指南。
 
+## 🆕 v1.8.0 更新摘要
+
+- 发布《Web 安全入门指南：从 HTTP 原理到常见漏洞与防御》，面向零基础读者讲解 HTTP/HTTPS、身份认证、会话以及常见漏洞的成因和防御边界。
+- 将核心构建栈升级到 Astro 7、Svelte 5 与 Tailwind CSS 4，并迁移 Astro Content Layer、Markdown 处理器和 Tailwind Vite 插件配置。
+- 更新直接依赖和间接依赖安全版本；截至 2026-10-22，使用 npm 官方注册表执行 `pnpm audit` 的结果为 0 个已知漏洞。
+- 当前本地开发基线为 Node.js 22.23.4 或更高版本、pnpm 10.29.3。
+
 ## 📂 新增功能模块索引
 
 | 功能模块 | 技术栈 / 数据路径 | 核心组件 / 页面 |
 | --- | --- | --- |
 | **文章发布** | Markdown + MDX | `src/content/posts/` |
+| **Web 安全入门教程** | HTTP / HTTPS、认证、会话、OWASP 防御实践 | `src/content/posts/Web 安全入门指南：从 HTTP 原理到常见漏洞与防御/` |
 | **友链申请** | **FormSubmit + Cloudflare Turnstile** | `src/pages/friends/index.astro` |
 | **评论系统** | Giscus (GitHub Discussions) | `src/components/Comment.astro` |
 | **站点统计** | Vercount (Analytics) | `src/components/widget/Statistics.astro` |
