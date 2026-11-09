@@ -8,6 +8,7 @@ import {
 	getStoredTheme,
 	setTheme,
 } from "@utils/setting-utils.ts";
+import { animateThemeChange } from "@utils/theme-transition.ts";
 import { onMount } from "svelte";
 import type { LIGHT_DARK_MODE } from "@/types/config.ts";
 
@@ -37,19 +38,20 @@ onMount(() => {
 	};
 });
 
-function switchScheme(newMode: LIGHT_DARK_MODE) {
+function switchScheme(newMode: LIGHT_DARK_MODE, e?: MouseEvent) {
 	mode = newMode;
-	setTheme(newMode);
+	const origin = e ? { x: e.clientX, y: e.clientY } : undefined;
+	animateThemeChange(() => setTheme(newMode), origin);
 }
 
-function toggleScheme() {
+function toggleScheme(e?: MouseEvent) {
 	let i = 0;
 	for (; i < seq.length; i++) {
 		if (seq[i] === mode) {
 			break;
 		}
 	}
-	switchScheme(seq[(i + 1) % seq.length]);
+	switchScheme(seq[(i + 1) % seq.length], e);
 }
 
 function showPanel() {
@@ -81,21 +83,21 @@ function hidePanel() {
         <div class="card-base float-panel p-2">
             <button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5"
                     class:current-theme-btn={mode === LIGHT_MODE}
-                    onclick={() => switchScheme(LIGHT_MODE)}
+                    onclick={(e) => switchScheme(LIGHT_MODE, e)}
             >
                 <Icon icon="material-symbols:wb-sunny-outline-rounded" class="text-[1.25rem] mr-3"></Icon>
                 {i18n(I18nKey.lightMode)}
             </button>
             <button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5"
                     class:current-theme-btn={mode === DARK_MODE}
-                    onclick={() => switchScheme(DARK_MODE)}
+                    onclick={(e) => switchScheme(DARK_MODE, e)}
             >
                 <Icon icon="material-symbols:dark-mode-outline-rounded" class="text-[1.25rem] mr-3"></Icon>
                 {i18n(I18nKey.darkMode)}
             </button>
             <button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95"
                     class:current-theme-btn={mode === AUTO_MODE}
-                    onclick={() => switchScheme(AUTO_MODE)}
+                    onclick={(e) => switchScheme(AUTO_MODE, e)}
             >
                 <Icon icon="material-symbols:radio-button-partial-outline" class="text-[1.25rem] mr-3"></Icon>
                 {i18n(I18nKey.systemMode)}

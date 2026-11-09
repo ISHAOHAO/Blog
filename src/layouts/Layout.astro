@@ -2,6 +2,8 @@
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import "@fontsource-variable/space-grotesk";
+import spaceGroteskWoff2 from "@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url";
 import "../styles/global.css";
 import "../styles/variables.styl";
 import "../styles/markdown-extend.styl";
@@ -81,7 +83,7 @@ const siteBase = Astro.site ?? new URL(Astro.url.origin);
 const canonicalUrl = new URL(Astro.url.pathname, siteBase).href;
 const socialImage = image
 	? new URL(image, siteBase).href
-	: new URL("/favicon/favicon-light-192.png", siteBase).href;
+	: new URL(url("/og/home.png"), siteBase).href;
 
 const bannerOffsetByPosition = {
 	top: `${BANNER_HEIGHT_EXTEND}vh`,
@@ -142,6 +144,13 @@ import SpeedInsights from "@vercel/speed-insights/astro";
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
+		<link
+			rel="preload"
+			as="font"
+			type="font/woff2"
+			href={spaceGroteskWoff2}
+			crossorigin="anonymous"
+		/>
 		{
 			favicons.map((favicon) => (
 				<link
@@ -469,12 +478,17 @@ function disableAnimation() {
 		banner.classList.remove("opacity-0", "scale-105");
 	}
 
+	/* ---------- 滚动渐入 reveal ---------- */
+	let revealObserver: IntersectionObserver | undefined;
+
 	function init() {
 		// disableAnimation()()		// TODO
 		loadTheme();
 		loadHue();
 		initCustomScrollbar();
 		showBanner();
+		initReveal();
+		updateNavbarGlass();
 	}
 
 	/* Load settings when entering the site */
@@ -518,6 +532,7 @@ function disableAnimation() {
 			}
 		});
 		window.swup.hooks.on("content:replace", initCustomScrollbar);
+		window.swup.hooks.on("content:replace", () => initReveal());
 		window.swup.hooks.on(
 			"visit:start",
 			(visit: { to: { url: string } }) => {
@@ -628,7 +643,81 @@ function disableAnimation() {
 			}
 		}
 	}
-	window.onscroll = scrollFunction;
+	/* ---------- Navbar 毛玻璃状态 ---------- */
+	function updateNavbarGlass() {
+		const navbarCard = document.getElementById("navbar-card");
+		if (!navbarCard) return;
+		navbarCard.classList.toggle("navbar-glass", window.scrollY > 24);
+	}
+
+	/* ---------- 滚动渐入 reveal ---------- */
+	function initReveal() {
+		revealObserver?.disconnect();
+		const els = document.querySelectorAll<HTMLElement>(
+			".reveal:not(.is-visible)",
+		);
+		if (!els.length) return;
+
+		const reduceMotion = window.matchMedia(
+			"(prefers-reduced-motion: reduce)",
+		).matches;
+		if (reduceMotion || !("IntersectionObserver" in window)) {
+			els.forEach((el) => el.classList.add("is-visible"));
+			return;
+		}
+
+		revealObserver = new IntersectionObserver(
+			(entries) => {
+				// 同一批次进入视口的元素做阶梯式延迟,营造逐个浮现的节奏
+				let batch = 0;
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					const el = entry.target as HTMLElement;
+					el.style.setProperty(
+						"--reveal-delay",
+						`${Math.min(batch * 70, 280)}ms`,
+					);
+					el.classList.add("is-visible");
+					revealObserver?.unobserve(el);
+					batch++;
+				}
+			},
+			{ rootMargin: "0px 0px -40px 0px", threshold: 0.05 },
+		);
+		els.forEach((el) => revealObserver!.observe(el));
+	}
+
+	/* ---------- 卡片 spotlight 鼠标跟随 ---------- */
+	const canHover = window.matchMedia("(hover: hover)").matches;
+	let spotlightCard: HTMLElement | null = null;
+	document.addEventListener(
+		"pointermove",
+		(e) => {
+			if (!canHover) return;
+			const target = e.target;
+			if (!(target instanceof Element)) return;
+			spotlightCard = target.closest<HTMLElement>(".spotlight-card");
+			if (!spotlightCard) return;
+			const rect = spotlightCard.getBoundingClientRect();
+			spotlightCard.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+			spotlightCard.style.setProperty("--my", `${e.clientY - rect.top}px`);
+		},
+		{ passive: true },
+	);
+
+	/* ---------- 统一 rAF 节流的滚动调度 ---------- */
+	let scrollTicking = false;
+	function onScroll() {
+		if (scrollTicking) return;
+		scrollTicking = true;
+		requestAnimationFrame(() => {
+			scrollTicking = false;
+			scrollFunction();
+			updateNavbarGlass();
+		});
+	}
+	window.addEventListener("scroll", onScroll, { passive: true });
+	onScroll();
 
 	window.onresize = () => {
 		// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text

@@ -1,4 +1,1441 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>HAOHAO&apos;s Blog</title><description>Hello</description><link>https://blog.ishaohao.cn/</link><language>zh_CN</language><item><title>Git 完全入门指南：从安装到 VSCode 日常协作</title><link>https://blog.ishaohao.cn/posts/git-%E5%AE%8C%E5%85%A8%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E4%BB%8E%E5%AE%89%E8%A3%85%E5%88%B0-vscode-%E6%97%A5%E5%B8%B8%E5%8D%8F%E4%BD%9C/</link><guid isPermaLink="true">https://blog.ishaohao.cn/posts/git-%E5%AE%8C%E5%85%A8%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E4%BB%8E%E5%AE%89%E8%A3%85%E5%88%B0-vscode-%E6%97%A5%E5%B8%B8%E5%8D%8F%E4%BD%9C/</guid><description>手把手教你安装 Git，并用 VSCode 的可视化操作轻松管理代码版本，再也不怕敲命令。</description><pubDate>Thu, 09 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>HAOHAO&apos;s Blog</title><description>Hello</description><link>https://blog.ishaohao.cn/</link><language>zh_CN</language><item><title>提示词工程入门指南：从需求拆解到稳定输出</title><link>https://blog.ishaohao.cn/posts/%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%B7%A5%E7%A8%8B%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E4%BB%8E%E9%9C%80%E6%B1%82%E6%8B%86%E8%A7%A3%E5%88%B0%E7%A8%B3%E5%AE%9A%E8%BE%93%E5%87%BA/</link><guid isPermaLink="true">https://blog.ishaohao.cn/posts/%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%B7%A5%E7%A8%8B%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E4%BB%8E%E9%9C%80%E6%B1%82%E6%8B%86%E8%A7%A3%E5%88%B0%E7%A8%B3%E5%AE%9A%E8%BE%93%E5%87%BA/</guid><description>从任务定义、上下文组织、输出约束到结果评估，系统介绍如何写出清晰、稳定、可复用的提示词，并通过实战模板提升 AI 协作效率。</description><pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;很多人第一次使用 AI 时，会把问题简单地写成一句话：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;帮我写一篇文章。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;有时结果还不错，有时却会出现跑题、空泛、格式不对、遗漏重点等问题。于是大家开始寻找“万能提示词”，但真正决定结果质量的，通常不是某一句神奇的话，而是你有没有把任务、背景、标准和输出形式说清楚。&lt;/p&gt;
+&lt;p&gt;这就是提示词工程（Prompt Engineering）要解决的问题：&lt;strong&gt;把人的目标转换成模型容易理解、容易执行、也容易检查的任务说明。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;本文不追求复杂的术语，而是从实际使用出发，带你建立一套可复用的写法。&lt;/p&gt;
+&lt;h2&gt;一、提示词工程到底是什么&lt;/h2&gt;
+&lt;p&gt;提示词就是你交给 AI 的输入，包括问题、背景资料、规则、示例和输出要求。提示词工程则是对这些输入进行设计、测试和迭代，让模型更稳定地完成任务。&lt;/p&gt;
+&lt;p&gt;可以把一次 AI 任务看成一个函数：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;结果 = 模型（任务 + 上下文 + 约束 + 示例）
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;任务&lt;/strong&gt;：你希望 AI 完成什么；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;上下文&lt;/strong&gt;：AI 需要知道哪些背景；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;约束&lt;/strong&gt;：哪些事情必须做、不能做；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;示例&lt;/strong&gt;：你希望结果长什么样；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;评估标准&lt;/strong&gt;：怎样判断结果是否合格。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果只给出任务，不给背景和标准，模型就只能自行猜测。模型的猜测越多，结果的不确定性通常就越高。&lt;/p&gt;
+&lt;h2&gt;二、写提示词前，先把需求说清楚&lt;/h2&gt;
+&lt;h3&gt;1. 区分目标和手段&lt;/h3&gt;
+&lt;p&gt;“帮我写一篇关于提示词的文章”是一个目标，但还缺少很多信息：写给谁、用于哪里、要多长、采用什么语气、是否需要示例。&lt;/p&gt;
+&lt;p&gt;可以先把需求拆成下面几项：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;项目&lt;/th&gt;
+&lt;th&gt;要回答的问题&lt;/th&gt;
+&lt;th&gt;示例&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;目标&lt;/td&gt;
+&lt;td&gt;最终要得到什么&lt;/td&gt;
+&lt;td&gt;一篇可发布的教程文章&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;读者&lt;/td&gt;
+&lt;td&gt;谁会阅读或使用&lt;/td&gt;
+&lt;td&gt;没有经验的普通用户&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;场景&lt;/td&gt;
+&lt;td&gt;结果将在哪里使用&lt;/td&gt;
+&lt;td&gt;个人博客&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;内容&lt;/td&gt;
+&lt;td&gt;必须覆盖哪些重点&lt;/td&gt;
+&lt;td&gt;结构、模板、常见误区&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;风格&lt;/td&gt;
+&lt;td&gt;希望如何表达&lt;/td&gt;
+&lt;td&gt;清晰、实用、少术语&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;格式&lt;/td&gt;
+&lt;td&gt;结果应该长什么样&lt;/td&gt;
+&lt;td&gt;Markdown，包含标题和代码块&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;标准&lt;/td&gt;
+&lt;td&gt;什么算完成&lt;/td&gt;
+&lt;td&gt;内容准确、步骤可执行、没有重复&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;“帮我写一篇文章”只是手段层面的请求；“让初学者学会写出可复用的提示词”才是更明确的目标。&lt;/p&gt;
+&lt;h3&gt;2. 把模糊形容词换成可观察的要求&lt;/h3&gt;
+&lt;p&gt;“写得专业一点”“详细一点”“不要太长”对不同人来说含义不同。更好的做法是把它们改写成可以检查的条件：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;“专业” → 使用准确术语，并对首次出现的术语给出解释；&lt;/li&gt;
+&lt;li&gt;“详细” → 至少包含原理、步骤、示例和常见错误；&lt;/li&gt;
+&lt;li&gt;“不要太长” → 控制在 1500～2000 字；&lt;/li&gt;
+&lt;li&gt;“通俗” → 面向没有编程经验的读者，避免连续使用未经解释的缩写。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;一个简单判断方法是：&lt;strong&gt;如果另一个人拿到这条要求，能否据此判断结果合不合格？&lt;/strong&gt; 如果不能，说明要求还不够具体。&lt;/p&gt;
+&lt;h2&gt;三、一个通用的提示词结构&lt;/h2&gt;
+&lt;p&gt;日常任务不需要每次都写很长，但可以用下面这套结构检查是否缺项：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 角色（可选）
+你要以什么专业视角处理任务？
+
+# 任务
+请完成什么事情？
+
+# 背景与输入
+你需要使用哪些资料？目标读者是谁？
+
+# 约束
+必须包含什么？不能做什么？长度、语言、语气有什么要求？
+
+# 输出格式
+请用什么结构、字段或 Markdown 格式返回？
+
+# 质量标准
+完成前检查哪些条件？
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;例如，下面是一条比“帮我总结这篇文章”更完整的提示词：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;请总结下面的文章，读者是刚接触这个主题的产品经理。
+
+要求：
+1. 先用一句话说明文章的核心结论；
+2. 再列出 3～5 个关键观点，每点不超过 80 字；
+3. 标出文章中明确的事实、作者的观点和仍然存在的不确定性；
+4. 不要补充原文没有出现的数据；
+5. 如果原文信息不足，请直接写“原文未说明”。
+
+输出格式：
+## 核心结论
+...
+
+## 关键观点
+1. ...
+
+## 不确定性
+...
+
+文章内容：
+&amp;lt;&amp;lt;&amp;lt;
+在这里粘贴文章
+&amp;gt;&amp;gt;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里的 &lt;code&gt;&amp;lt;&amp;lt;&amp;lt;&lt;/code&gt; 和 &lt;code&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/code&gt; 不是必需语法，但能帮助模型分清“指令”和“待处理内容”。当输入很长或包含代码、表格、邮件时，使用清晰的边界尤其重要。&lt;/p&gt;
+&lt;h2&gt;四、角色不是越夸张越好&lt;/h2&gt;
+&lt;p&gt;很多提示词喜欢这样开头：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;你是一位世界顶级、拥有几十年经验的专家……&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这种写法有时能提醒模型采用某种视角，但“顶级”“世界第一”本身并不会自动增加事实准确性。相比夸张的身份，更有用的是明确工作方式：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;你是一名面向初学者的技术编辑。请优先使用准确、易懂的表达；首次出现的专业术语要解释；不确定的事实不要猜测，并单独列出需要核实的内容。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;角色描述适合用于指定视角、语气和判断标准，不应被当成专业能力的替代品。涉及法律、医疗、财务、安全等高风险问题时，还应要求模型说明不确定性，并由人进行最终确认。&lt;/p&gt;
+&lt;h2&gt;五、先给任务，再给资料和规则&lt;/h2&gt;
+&lt;p&gt;提示词的顺序会影响可读性。一个实用的排列方式是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;先说明要完成的任务；&lt;/li&gt;
+&lt;li&gt;再提供背景和原始资料；&lt;/li&gt;
+&lt;li&gt;接着列出约束和禁止事项；&lt;/li&gt;
+&lt;li&gt;最后规定输出格式和检查要求。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;例如，不要把十段背景介绍写完后才在最后一句说“请顺便总结”。可以直接写：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;任务：根据下面的会议记录，整理一份行动清单。
+
+背景：参与者包括产品、设计和开发团队。
+
+要求：
+- 只整理会议中明确达成的事项；
+- 每项包含负责人、截止时间和依赖；
+- 没有提到的信息填写“待确认”；
+- 不要把讨论中的候选方案写成最终决定。
+
+输出格式：Markdown 表格。
+
+会议记录：
+&amp;lt;&amp;lt;&amp;lt;
+...
+&amp;gt;&amp;gt;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这类写法的关键不是“越长越好”，而是让每段内容承担明确的作用。&lt;/p&gt;
+&lt;h2&gt;六、用示例说明你想要的结果&lt;/h2&gt;
+&lt;p&gt;当任务有固定格式或判断标准时，示例往往比长篇解释更有效。这种方法通常称为少样本提示（Few-shot Prompting）。&lt;/p&gt;
+&lt;p&gt;例如，要把用户反馈归类，可以给出一两个输入和期望输出：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;请将每条反馈归入“功能问题”“使用困难”或“功能建议”之一。
+只能选择这三个类别，不要自创类别。
+
+示例：
+输入：点击保存后页面没有任何提示。
+输出：功能问题
+
+输入：我找不到修改通知设置的入口。
+输出：使用困难
+
+现在处理：
+输入：如果能支持深色模式就好了。
+输出：
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;示例至少要满足两个条件：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;示例和真实任务足够相似；&lt;/li&gt;
+&lt;li&gt;示例之间的标签、格式和判断逻辑保持一致。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果示例本身互相矛盾，模型就会学到矛盾的规则。示例不需要很多，先准备一到三个高质量样例，通常比堆十个随意样例更好。&lt;/p&gt;
+&lt;h2&gt;七、让复杂任务分步骤完成&lt;/h2&gt;
+&lt;p&gt;面对研究、写作、代码分析或方案设计等复杂任务，直接要求“一次完成”容易遗漏信息。可以把过程拆成几个可检查的阶段：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;请按以下顺序处理，不要跳过步骤：
+
+1. 提取任务目标和已知条件；
+2. 列出缺失信息和潜在冲突；
+3. 给出方案草稿；
+4. 根据约束检查草稿；
+5. 输出最终方案，并单独列出假设与风险。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;更重要的是，分步不等于要求模型展示所有内部推理。实际使用中，通常只需要让模型输出&lt;strong&gt;可验证的中间结果&lt;/strong&gt;，例如假设清单、检查表、字段映射和测试用例，而不是要求它暴露完整的隐含思考过程。&lt;/p&gt;
+&lt;h3&gt;一个适合写文章的分步模板&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;请为下面的主题设计一篇教程。
+
+第一步：确定目标读者、学习目标和文章边界。
+第二步：给出文章目录，并说明每一节解决什么问题。
+第三步：根据目录撰写正文，每节至少包含一个例子。
+第四步：检查是否有重复、跳步、未经说明的术语和无法执行的建议。
+第五步：输出最终 Markdown，并附上“仍需人工核实”的内容。
+
+主题：...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样做的好处是：你可以在目录阶段纠正方向，而不必等整篇文章写完后才返工。&lt;/p&gt;
+&lt;h2&gt;八、输出格式要写到字段级别&lt;/h2&gt;
+&lt;p&gt;“请整理成表格”还不够具体。最好说明列名、每列的含义和缺失信息如何处理。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;请输出 JSON 数组，每个对象必须包含以下字段：
+- title：标题，字符串；
+- summary：不超过 50 字的摘要；
+- priority：只能是 high、medium、low；
+- evidence：支持该结论的原文摘录；
+- uncertainty：如果没有不确定性，填写空数组。
+
+不要输出 Markdown 代码围栏，不要添加未定义字段。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果结果要被程序读取，最好要求“只输出 JSON”，并在应用层再次进行 JSON 解析、字段校验和长度限制。提示词可以降低格式错误，但不能代替程序的输入验证。&lt;/p&gt;
+&lt;h3&gt;用占位符保护结构&lt;/h3&gt;
+&lt;p&gt;写报告、邮件或代码时，可以先给出模板：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;请按以下模板输出，不要改变标题顺序：
+
+## 结论
+&amp;lt;一句话结论&amp;gt;
+
+## 依据
+- &amp;lt;依据 1&amp;gt;
+- &amp;lt;依据 2&amp;gt;
+
+## 风险与限制
+- &amp;lt;风险或“暂无”&amp;gt;
+
+## 下一步
+1. &amp;lt;动作&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;占位符能减少模型自由发挥的范围，也方便你在多个任务中复用同一结构。&lt;/p&gt;
+&lt;h2&gt;九、否定要求要配合替代方案&lt;/h2&gt;
+&lt;p&gt;只说“不要写得空泛”“不要使用术语”往往不够，因为模型还不知道应该怎么写。更好的方式是同时给出替代行为：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;不要只给出抽象结论。每个结论后面都补充：
+1. 一个具体例子；
+2. 一个适用场景；
+3. 一个可能的限制。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;不要编造缺失数据。如果资料中没有答案，请填写“未提供”，并把这个字段加入“待确认”列表。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;“禁止什么”和“遇到这种情况应该怎么做”最好同时写清楚。&lt;/p&gt;
+&lt;h2&gt;十、把提示词当成可测试的配置&lt;/h2&gt;
+&lt;p&gt;提示词写出来并不代表完成。一个可靠的提示词至少需要经过三类测试：&lt;/p&gt;
+&lt;h3&gt;1. 正常样例&lt;/h3&gt;
+&lt;p&gt;验证模型能否完成最常见的任务，例如一篇结构完整的文章、一条格式正确的记录或一份字段齐全的摘要。&lt;/p&gt;
+&lt;h3&gt;2. 边界样例&lt;/h3&gt;
+&lt;p&gt;主动提供空输入、超长输入、重复内容、格式错误、语言混杂和信息不完整的样例，观察模型是否会胡乱补全。&lt;/p&gt;
+&lt;h3&gt;3. 对抗样例&lt;/h3&gt;
+&lt;p&gt;检查输入资料中出现“忽略之前要求”“泄露系统提示”等文字时，模型是否仍然遵守外层任务的安全规则。尤其是处理网页、邮件、用户评论或外部文档时，要把其中的内容视为数据，而不是新的指令。&lt;/p&gt;
+&lt;p&gt;可以建立一张简单的评估表：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;测试项&lt;/th&gt;
+&lt;th&gt;预期行为&lt;/th&gt;
+&lt;th&gt;实际结果&lt;/th&gt;
+&lt;th&gt;是否通过&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;正常输入&lt;/td&gt;
+&lt;td&gt;输出完整字段&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;缺少日期&lt;/td&gt;
+&lt;td&gt;标记为待确认&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;超长文本&lt;/td&gt;
+&lt;td&gt;保持结构，不遗漏结论&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;含有指令样文字的资料&lt;/td&gt;
+&lt;td&gt;继续按原任务处理&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;如果你经常使用同一个提示词，最好保留一组固定测试样例。修改提示词或更换模型后重新跑一遍，避免“这次看起来不错”被误认为长期稳定。&lt;/p&gt;
+&lt;h2&gt;十一、常见失败写法和改进方式&lt;/h2&gt;
+&lt;h3&gt;失败写法一：一句话塞进所有要求&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;帮我写一个专业详细但简洁有趣适合所有人的方案，最好还有案例和数据。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;问题在于“专业、详细、简洁、有趣、适合所有人”之间可能互相冲突，而且没有说明主题、长度、场景和交付格式。&lt;/p&gt;
+&lt;p&gt;改成可执行的要求：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;请为没有技术背景的项目负责人写一份方案。
+主题：为个人博客增加站内搜索。
+长度：1000～1500 字。
+必须包含：目标、实现思路、风险、上线检查清单。
+语言：通俗，但保留必要的技术名词并解释一次。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;失败写法二：只描述身份，不描述任务&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;你是一位资深专家，请给我建议。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;模型不知道“建议”针对什么，也不知道应该依据哪些资料。角色只能补充视角，不能替代任务定义。&lt;/p&gt;
+&lt;h3&gt;失败写法三：要求模型保证绝对正确&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;请给出绝对准确、没有任何错误的答案。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这不是可执行的质量标准。更有效的是要求列出假设、引用输入中的依据、标记不确定性，并对高风险事实进行人工或外部资料核实。&lt;/p&gt;
+&lt;h3&gt;失败写法四：为了保险写一大段重复规则&lt;/h3&gt;
+&lt;p&gt;过长且重复的提示词会降低维护效率，也可能让规则之间产生冲突。保留最重要的约束，把固定格式抽成模板，把经常变化的内容放进变量区域。&lt;/p&gt;
+&lt;h3&gt;失败写法五：把模型输出直接当成事实或代码执行&lt;/h3&gt;
+&lt;p&gt;模型可以生成看起来合理但实际错误的内容。尤其是代码、命令、数据分析和安全建议，必须经过测试、审阅和权限控制。提示词工程改善的是协作质量，不会消除事实核查和人工负责的必要性。&lt;/p&gt;
+&lt;h2&gt;十二、四个可以直接复用的提示词模板&lt;/h2&gt;
+&lt;h3&gt;1. 写作模板&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;请写一篇关于【主题】的教程文章。
+
+目标读者：【读者画像】
+学习目标：读者读完后能够【具体能力】
+文章用途：【博客 / 内部文档 / 课程讲义】
+篇幅：【字数范围】
+语气：【通俗 / 专业 / 轻松】
+
+必须包含：
+1. 【概念或背景】
+2. 【操作步骤或方法】
+3. 【完整示例】
+4. 【常见错误】
+5. 【检查清单】
+
+写作要求：
+- 首次出现的术语要解释；
+- 不要编造未提供的数据；
+- 对不确定的内容单独标注；
+- 使用 Markdown 标题、列表和代码块。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2. 代码分析模板&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;请审查下面的代码，目标是发现正确性、可维护性和安全性问题。
+
+请按以下顺序输出：
+1. 先概括代码的职责；
+2. 按严重程度列出问题；
+3. 对每个问题给出文件位置、原因、影响和修复建议；
+4. 给出最小修改示例；
+5. 列出仍需通过测试或人工确认的内容。
+
+约束：
+- 不要把风格偏好伪装成缺陷；
+- 如果无法确认，请写出假设；
+- 不要修改未提供的代码。
+
+代码：
+&amp;lt;&amp;lt;&amp;lt;
+...
+&amp;gt;&amp;gt;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3. 信息提取模板&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;请从下面的文本中提取结构化信息。
+
+输出字段：
+- name：名称；
+- date：日期，统一为 YYYY-MM-DD；
+- amount：金额，保留数字和币种；
+- evidence：支持该字段的原文片段。
+
+规则：
+- 找不到字段时填写 null；
+- 不要根据常识推断文本中没有出现的信息；
+- 日期存在歧义时不要自行选择，放入 uncertainty 字段；
+- 只输出 JSON。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;4. 方案比较模板&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;请比较【方案 A】、【方案 B】和【方案 C】。
+
+背景：【项目背景、预算、时间和已有条件】
+评价维度：成本、实施难度、维护成本、扩展性和主要风险。
+
+输出：
+1. 一张对比表；
+2. 每个方案的适用场景；
+3. 在当前背景下的推荐方案；
+4. 如果背景中的某个条件改变，推荐是否会改变；
+5. 需要我补充的关键信息。
+
+不要只给出单一结论，要说明结论依赖的假设。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;十三、从“会写提示词”进阶到“会设计 AI 工作流”&lt;/h2&gt;
+&lt;p&gt;真正高效的 AI 使用方式，通常不是写一条越来越长的提示词，而是把任务拆成多个清晰的步骤：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;原始需求
+   ↓
+需求澄清
+   ↓
+资料整理与检索
+   ↓
+初稿生成
+   ↓
+规则检查
+   ↓
+人工确认
+   ↓
+最终交付
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;每一步都应该有明确输入和输出。例如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;需求澄清阶段输出目标、受众和边界；&lt;/li&gt;
+&lt;li&gt;资料整理阶段输出带来源的事实清单；&lt;/li&gt;
+&lt;li&gt;生成阶段只使用已经确认的资料；&lt;/li&gt;
+&lt;li&gt;检查阶段验证格式、长度、事实和敏感内容；&lt;/li&gt;
+&lt;li&gt;人工确认阶段负责最终决策和发布。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这样做比“让 AI 自己完成所有事情”更容易定位问题，也更适合团队协作和长期维护。&lt;/p&gt;
+&lt;h2&gt;十四、最后的检查清单&lt;/h2&gt;
+&lt;p&gt;每次提交一个重要提示词前，可以快速检查：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;[ ] 任务是否用一个明确的动作描述，例如总结、分类、比较或改写？&lt;/li&gt;
+&lt;li&gt;[ ] 是否说明了目标读者、使用场景和必要背景？&lt;/li&gt;
+&lt;li&gt;[ ] 输入资料和指令之间是否有清晰边界？&lt;/li&gt;
+&lt;li&gt;[ ] 是否写明了长度、语言、语气和输出格式？&lt;/li&gt;
+&lt;li&gt;[ ] 是否说明了信息不足时应该怎么处理？&lt;/li&gt;
+&lt;li&gt;[ ] 是否提供了一个足够接近真实任务的示例？&lt;/li&gt;
+&lt;li&gt;[ ] 是否把“不要做什么”改写成了可执行的替代行为？&lt;/li&gt;
+&lt;li&gt;[ ] 输出是否需要经过 JSON、字段、长度或安全校验？&lt;/li&gt;
+&lt;li&gt;[ ] 是否用正常、边界和异常样例测试过？&lt;/li&gt;
+&lt;li&gt;[ ] 是否保留了人工审核和事实核查环节？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;结语&lt;/h2&gt;
+&lt;p&gt;好的提示词不是一段华丽的咒语，而是一份写给 AI 的清晰任务说明。它至少应该回答五个问题：&lt;strong&gt;要做什么、依据什么、遵守什么规则、以什么格式交付、怎样判断合格。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当你开始把提示词当成可测试、可复用、可维护的配置，而不是一次性的聊天话术，AI 才会从“偶尔给出惊喜的问答工具”，逐渐变成一个更稳定的协作助手。&lt;/p&gt;
+</content:encoded></item><item><title>Web 安全入门指南：从 HTTP 原理到常见漏洞与防御</title><link>https://blog.ishaohao.cn/posts/web-%E5%AE%89%E5%85%A8%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E4%BB%8E-http-%E5%8E%9F%E7%90%86%E5%88%B0%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E%E4%B8%8E%E9%98%B2%E5%BE%A1/</link><guid isPermaLink="true">https://blog.ishaohao.cn/posts/web-%E5%AE%89%E5%85%A8%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E4%BB%8E-http-%E5%8E%9F%E7%90%86%E5%88%B0%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E%E4%B8%8E%E9%98%B2%E5%BE%A1/</guid><description>面向零基础读者的 Web 安全教程：从请求生命周期、认证授权、会话与同源策略讲起，理解 SQL 注入、XSS、CSRF、SSRF 等常见风险，并掌握防御与学习方法。</description><pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;本文参考了 &lt;a href=&quot;https://websec.readthedocs.io/zh/latest/index.html&quot;&gt;Web 安全学习笔记&lt;/a&gt; 的知识框架，并结合 OWASP 与 MDN 的一手资料重新整理。文中的测试只适用于自己拥有的程序、明确授权的测试环境或本地靶场；不要扫描、登录、修改或攻击任何没有得到授权的站点。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;如果你刚接触 Web 安全，最容易遇到的困惑是：教程里同时出现 HTTP、Cookie、SQL、XSS、权限、JWT、SSRF 等词，好像每个词都很重要，却不知道它们之间是什么关系。&lt;/p&gt;
+&lt;p&gt;其实，Web 安全可以先用一句话理解：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;让正确的人，在正确的时间，以正确的方式，访问正确的数据，并且让所有异常行为都能被限制、记录和追踪。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这篇文章不追求把所有工具和漏洞 payload 罗列一遍，而是先建立一张“地图”：网站是怎样工作的，信任边界在哪里，常见漏洞为什么出现，以及开发者和测试者应该如何验证和修复。&lt;/p&gt;
+&lt;h2&gt;一、你将从这篇文章学到什么&lt;/h2&gt;
+&lt;p&gt;读完后，你应该能够：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;看懂一次浏览器访问网站时发生的基本过程；&lt;/li&gt;
+&lt;li&gt;区分认证、授权、会话、Cookie、Token 和 CORS；&lt;/li&gt;
+&lt;li&gt;理解 SQL 注入、XSS、CSRF、SSRF、越权和文件上传风险的根因；&lt;/li&gt;
+&lt;li&gt;知道“过滤一下输入”为什么通常不够，以及更可靠的防御方式；&lt;/li&gt;
+&lt;li&gt;为自己的小项目列出一份基础安全检查清单；&lt;/li&gt;
+&lt;li&gt;在本地靶场中安全地练习，而不是把测试对象误认为互联网上的真实网站。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;二、先理解：浏览器和服务器如何对话&lt;/h2&gt;
+&lt;h3&gt;1. 一次请求经过了什么&lt;/h3&gt;
+&lt;p&gt;当你在浏览器地址栏输入 &lt;code&gt;https://example.com/profile&lt;/code&gt; 时，可以把它简化成下面这条链路：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;浏览器
+  │
+  ├─ DNS：example.com 对应哪个 IP？
+  ├─ TCP/QUIC：建立网络连接
+  ├─ TLS：协商加密并验证证书
+  └─ HTTP：发送请求并接收响应
+          │
+          ├─ 反向代理 / CDN
+          ├─ Web 应用
+          ├─ 数据库
+          └─ 文件存储、缓存、消息队列等其他服务
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;HTTP 是 Web 的应用层协议。浏览器发送的是 request，服务器返回的是 response。一个请求通常包含方法、路径、请求头和请求体；一个响应通常包含状态码、响应头和响应体。&lt;/p&gt;
+&lt;p&gt;例如，下面是一个抽象的登录请求：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;POST /login HTTP/1.1
+Host: example.com
+Content-Type: application/json
+
+{&quot;username&quot;:&quot;alice&quot;,&quot;password&quot;:&quot;用户输入的密码&quot;}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;服务器可能返回：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HTTP/1.1 200 OK
+Set-Cookie: __Host-session=随机会话标识; Path=/; Secure; HttpOnly; SameSite=Lax
+Content-Type: application/json
+
+{&quot;ok&quot;:true}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里有几个重要的安全问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;密码是否只通过 HTTPS 传输？&lt;/li&gt;
+&lt;li&gt;服务端是否真的验证了密码，而不是相信浏览器传来的 &lt;code&gt;isAdmin&lt;/code&gt; 字段？&lt;/li&gt;
+&lt;li&gt;会话 Cookie 是否设置了 &lt;code&gt;Secure&lt;/code&gt;、&lt;code&gt;HttpOnly&lt;/code&gt; 和合适的 &lt;code&gt;SameSite&lt;/code&gt;？&lt;/li&gt;
+&lt;li&gt;登录失败时是否会暴露“用户不存在”还是“密码错误”等过多信息？&lt;/li&gt;
+&lt;li&gt;后端是否限制了登录尝试频率？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这些问题说明，安全不是页面上加一个按钮，而是贯穿请求、业务、存储和部署的完整过程。&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview&quot;&gt;MDN 的 HTTP 概览&lt;/a&gt; 对请求、响应和客户端—服务器模型有更完整的介绍。&lt;/p&gt;
+&lt;h3&gt;2. 资产、威胁、漏洞和风险&lt;/h3&gt;
+&lt;p&gt;初学者可以用四个词分析任何 Web 安全问题：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;词语&lt;/th&gt;
+&lt;th&gt;含义&lt;/th&gt;
+&lt;th&gt;例子&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;资产&lt;/td&gt;
+&lt;td&gt;需要保护的东西&lt;/td&gt;
+&lt;td&gt;用户资料、订单、密码重置链接、服务器凭据&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;威胁&lt;/td&gt;
+&lt;td&gt;可能造成伤害的行为或主体&lt;/td&gt;
+&lt;td&gt;恶意用户、被盗账号、自动化程序&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;漏洞&lt;/td&gt;
+&lt;td&gt;让威胁得以发生的弱点&lt;/td&gt;
+&lt;td&gt;缺少权限检查、拼接 SQL、任意 URL 请求&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;风险&lt;/td&gt;
+&lt;td&gt;漏洞发生后造成的可能损失&lt;/td&gt;
+&lt;td&gt;数据泄露、越权转账、服务器被接管&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;例如，“修改订单地址”是一个资产相关的业务操作；如果后端只根据 URL 里的订单编号查询，却没有检查订单属于当前用户，就形成了越权漏洞。漏洞不在于订单编号是数字，而在于服务端缺少“这个用户是否有权操作这个订单”的决策。&lt;/p&gt;
+&lt;h3&gt;3. 三个安全目标：机密性、完整性、可用性&lt;/h3&gt;
+&lt;p&gt;传统上常用 CIA 三元组描述安全目标：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;机密性（Confidentiality）&lt;/strong&gt;：不该看到的人看不到，例如其他用户的地址和管理员密钥；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;完整性（Integrity）&lt;/strong&gt;：不该修改的数据不能被修改，例如订单金额和权限角色；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可用性（Availability）&lt;/strong&gt;：服务能够正常提供，例如登录接口不能被无限次请求拖垮。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;实际 Web 业务还经常关心身份真实性、可审计性和隐私。做安全分析时，不要只盯着“能不能拿到数据库”，也要关注能否冒充用户、修改业务数据、绕过流程或让服务无法使用。&lt;/p&gt;
+&lt;h2&gt;三、零基础必须掌握的几个概念&lt;/h2&gt;
+&lt;h3&gt;1. 认证不等于授权&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;认证（Authentication）&lt;/strong&gt;：你是谁？例如密码、短信验证码、Passkey、OAuth 登录；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;授权（Authorization）&lt;/strong&gt;：你能做什么？例如普通用户能查看自己的订单，管理员能审核退款；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;会话（Session）&lt;/strong&gt;：服务器如何记住你已经登录？常见方式是 Cookie 携带一个随机会话标识。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;“登录成功”只回答了身份问题，并不意味着用户可以访问所有资源。每个敏感操作都应该在服务端重新做授权判断：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;读取订单
+  1. 从会话中得到当前用户 ID
+  2. 从路径或请求体中得到订单 ID
+  3. 查询订单，并确认订单属于当前用户或当前角色有权限访问
+  4. 通过检查后才返回数据
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;把 &lt;code&gt;userId&lt;/code&gt; 放在隐藏表单字段里、把 &lt;code&gt;role&lt;/code&gt; 放在前端状态里、把“管理员按钮”在页面上隐藏，都不能代替服务端授权。浏览器里的 HTML、JavaScript、请求参数和响应都可以被用户查看或修改。&lt;/p&gt;
+&lt;h3&gt;2. Cookie、Token 和 JWT 不是一回事&lt;/h3&gt;
+&lt;p&gt;Cookie 是浏览器保存并自动发送的一种数据载体；Token 是应用定义的凭证；JWT 是一种规定了结构的 Token 格式。它们经常一起出现，但不能混为一谈。&lt;/p&gt;
+&lt;p&gt;JWT 通常由 header、payload、signature 三部分组成。签名可以帮助服务器验证内容是否被改过，但 JWT 的 payload 默认不是加密内容，因此不要把密码、私钥或不必要的敏感信息放进去。&lt;a href=&quot;https://websec.readthedocs.io/zh/latest/auth/jwt.html&quot;&gt;Web 安全学习笔记的 JWT 章节&lt;/a&gt; 可作为概念补充；真正实现时应优先使用框架和成熟库，并严格校验算法、签发者、受众和过期时间。&lt;/p&gt;
+&lt;h3&gt;3. 同源策略和 CORS&lt;/h3&gt;
+&lt;p&gt;浏览器用“源（origin）”区分网页之间的信任关系。源通常由协议、主机名和端口共同决定，例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;https://app.example.com:443
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;不同源之间的脚本访问会受到浏览器限制。CORS 是服务器通过响应头声明“哪些源可以读取我的响应”的机制，它不是登录系统，也不是服务端授权系统。&lt;/p&gt;
+&lt;p&gt;常见误区是把请求头中的 &lt;code&gt;Origin&lt;/code&gt; 原样反射到 &lt;code&gt;Access-Control-Allow-Origin&lt;/code&gt;。如果接口同时允许携带 Cookie，这可能让不可信站点读取敏感响应。应该使用明确的允许列表，并单独设计跨域接口的认证和授权。&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Guides/CORS&quot;&gt;MDN 的 CORS 指南&lt;/a&gt; 介绍了浏览器对跨源请求的处理方式。&lt;/p&gt;
+&lt;h3&gt;4. 客户端不可信，服务端才是安全边界&lt;/h3&gt;
+&lt;p&gt;以下内容都不能直接当作事实：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;URL、查询参数、表单字段、JSON 请求体；&lt;/li&gt;
+&lt;li&gt;Cookie、localStorage、JWT payload；&lt;/li&gt;
+&lt;li&gt;前端传来的 &lt;code&gt;isAdmin&lt;/code&gt;、价格、折扣、用户 ID；&lt;/li&gt;
+&lt;li&gt;上传文件的扩展名、MIME 类型和文件名；&lt;/li&gt;
+&lt;li&gt;HTTP 的 &lt;code&gt;Referer&lt;/code&gt;、&lt;code&gt;User-Agent&lt;/code&gt; 等可被伪造或缺失的请求头。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;前端校验的主要价值是改善用户体验；安全校验必须在服务端完成。输入校验、输出编码、授权判断和业务规则都应在真正拥有数据访问权限的一侧执行。&lt;/p&gt;
+&lt;h2&gt;四、五条贯穿始终的安全原则&lt;/h2&gt;
+&lt;h3&gt;原则一：先确定信任边界，再处理输入&lt;/h3&gt;
+&lt;p&gt;把浏览器、第三方 API、文件上传、消息队列、数据库和内部服务都画在数据流图上，标出数据从哪里进入、经过哪些组件、最后影响什么资源。跨越信任边界时，要重新验证数据，而不是因为“它来自内部网络”就默认可信。&lt;/p&gt;
+&lt;h3&gt;原则二：验证、规范化、编码是三件事&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;验证（validation）&lt;/strong&gt;：这个值是否符合业务允许的格式、长度和范围？&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;规范化（canonicalization）&lt;/strong&gt;：不同编码、路径或大小写写法是否被统一处理？&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;编码（encoding）&lt;/strong&gt;：把数据放入 HTML、JavaScript、URL、SQL 等不同语境时，是否使用了对应的安全 API？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;“把特殊字符替换掉”不是通用防护。不同语境需要不同的处理方法；SQL 应使用参数化查询，HTML 输出应使用上下文相关的编码，路径应在规范化后检查是否仍位于允许目录内。&lt;/p&gt;
+&lt;h3&gt;原则三：默认拒绝，按最小权限开放&lt;/h3&gt;
+&lt;p&gt;权限系统应该默认拒绝，只有明确满足条件时才允许访问。数据库账号不应拥有应用不需要的管理权限；上传服务不应拥有执行代码的权限；应用服务器不应能随意访问所有内网服务。&lt;/p&gt;
+&lt;h3&gt;原则四：使用分层防御，但不要把 WAF 当万能药&lt;/h3&gt;
+&lt;p&gt;参数化查询、授权检查、Cookie 属性、CSP、网络隔离、速率限制、日志告警和备份，各自解决不同层面的问题。WAF 可以降低部分攻击噪声，但不能修复业务逻辑、越权和错误的服务器授权。&lt;/p&gt;
+&lt;h3&gt;原则五：让安全规则可以被测试&lt;/h3&gt;
+&lt;p&gt;安全要求要写成能验证的条件，例如“普通用户不能读取其他用户的订单”“上传文件不能在 Web 根目录执行”“登录失败必须限速”。只有能写成测试用例的规则，才容易在代码变更后持续保持。&lt;/p&gt;
+&lt;h2&gt;五、常见 Web 漏洞：从根因理解防御&lt;/h2&gt;
+&lt;h3&gt;1. 越权和失效的访问控制&lt;/h3&gt;
+&lt;p&gt;这是最值得优先学习的一类问题。它不一定有复杂 payload，常常只需要修改一个对象编号、HTTP 方法或接口路径。&lt;/p&gt;
+&lt;p&gt;典型场景：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;GET /api/orders/1001   ← 当前用户自己的订单
+GET /api/orders/1002   ← 如果也能返回，就需要检查是否越权
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;服务端不能只检查“用户已经登录”，还要检查“当前用户是否拥有这个订单”。管理员接口同样需要明确的角色、资源和操作判断。对于 &lt;code&gt;GET&lt;/code&gt;、&lt;code&gt;POST&lt;/code&gt;、&lt;code&gt;PUT&lt;/code&gt;、&lt;code&gt;PATCH&lt;/code&gt;、&lt;code&gt;DELETE&lt;/code&gt; 等每种方法，都要验证对应权限，不能因为页面没有按钮就认为接口安全。&lt;/p&gt;
+&lt;p&gt;防御重点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在服务端集中执行授权决策；&lt;/li&gt;
+&lt;li&gt;使用“默认拒绝”和最小权限；&lt;/li&gt;
+&lt;li&gt;对对象级、功能级和字段级权限分别测试；&lt;/li&gt;
+&lt;li&gt;对同一接口分别使用未登录用户、普通用户和管理员测试；&lt;/li&gt;
+&lt;li&gt;不要信任前端隐藏字段、URL 中的角色或客户端计算出的价格。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;OWASP Top 10:2025 仍把 Broken Access Control 放在第一位，建议把它作为任何 Web 项目的首要检查项。&lt;/p&gt;
+&lt;h3&gt;2. SQL 注入：把数据误当成了代码&lt;/h3&gt;
+&lt;p&gt;SQL 注入的根因不是“用户输入很坏”，而是应用把数据拼接进 SQL 语句，导致数据库无法区分“程序结构”和“用户值”。&lt;/p&gt;
+&lt;p&gt;不安全的思路是：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 不要把外部输入直接拼进 SQL 字符串
+const sql = &quot;SELECT * FROM users WHERE name = &apos;&quot; + username + &quot;&apos;&quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;更可靠的方式是参数化查询：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const sql = &quot;SELECT * FROM users WHERE name = ?&quot;;
+const rows = await db.query(sql, [username]);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;参数化查询让数据库把 &lt;code&gt;username&lt;/code&gt; 当作值，而不是 SQL 语法的一部分。不要试图用黑名单过滤几个字符来代替参数化；动态表名、排序字段和列名如果确实需要动态生成，应使用服务端固定的允许列表。详细原则可参考 &lt;a href=&quot;https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html&quot;&gt;OWASP SQL Injection Prevention Cheat Sheet&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;测试时不要在陌生站点尝试注入语句。你可以在本地练习“输入不同内容时，程序是否始终使用参数化查询”，并通过代码审计、单元测试和日志确认实际执行路径。&lt;/p&gt;
+&lt;h3&gt;3. XSS：把不可信内容当成了网页代码&lt;/h3&gt;
+&lt;p&gt;跨站脚本攻击（XSS）的核心是：攻击者控制的内容最终被浏览器当作 HTML、JavaScript 或其他可执行语境解析。&lt;/p&gt;
+&lt;p&gt;常见分类包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;反射型 XSS&lt;/strong&gt;：输入在当前响应中立即反射；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;存储型 XSS&lt;/strong&gt;：输入被保存，之后展示给其他用户；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DOM 型 XSS&lt;/strong&gt;：前端 JavaScript 从 URL、存储等位置读取数据，并写入危险 DOM 接口。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;一个危险的前端写法是：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;element.innerHTML = userInput;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果只是展示文本，应优先使用：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;element.textContent = userInput;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果业务确实允许用户发布格式化内容，则需要使用成熟的 HTML 清理库、严格限制允许的标签和属性，并结合内容安全策略（CSP）。不要只依赖 CSP，也不要把所有输入统一编码后就认为安全：HTML、属性、JavaScript、CSS 和 URL 语境的编码规则不同。&lt;a href=&quot;https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html&quot;&gt;OWASP XSS 防御备忘单&lt;/a&gt; 对这些语境有详细区分。&lt;/p&gt;
+&lt;p&gt;Cookie 设置 &lt;code&gt;HttpOnly&lt;/code&gt; 可以减少脚本直接读取会话 Cookie 的机会，但它不能修复 XSS 本身，也不能阻止 XSS 代表用户发起操作；根本防护仍然是安全输出和安全 DOM API。&lt;/p&gt;
+&lt;h3&gt;4. CSRF：浏览器带着你的身份发出了请求&lt;/h3&gt;
+&lt;p&gt;跨站请求伪造（CSRF）利用的是浏览器自动携带 Cookie 的特性。假设用户已登录某个网站，另一个恶意页面诱导浏览器向该网站发送“修改邮箱”或“转账”的请求，如果服务端只凭 Cookie 认定请求可信，就可能执行不该执行的操作。&lt;/p&gt;
+&lt;p&gt;CSRF 与 XSS 的区别可以这样记：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;XSS 重点是“恶意脚本进入了目标站点的页面并执行”；&lt;/li&gt;
+&lt;li&gt;CSRF 重点是“伪造一个来自已登录用户的请求”。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;基础防御：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对会改变状态的请求使用 CSRF Token，并在服务端验证；&lt;/li&gt;
+&lt;li&gt;设置合适的 &lt;code&gt;SameSite&lt;/code&gt; Cookie 属性；&lt;/li&gt;
+&lt;li&gt;对敏感请求校验 &lt;code&gt;Origin&lt;/code&gt;，必要时检查 &lt;code&gt;Referer&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;不要用 GET 执行修改、删除、转账等有副作用的操作；&lt;/li&gt;
+&lt;li&gt;对高风险操作要求重新认证或二次确认；&lt;/li&gt;
+&lt;li&gt;不要把“接口是 POST”误认为已经防住 CSRF。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;CSRF Token、SameSite 和 Origin 校验应结合应用架构选择，而不是复制一段固定代码。&lt;a href=&quot;https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html&quot;&gt;OWASP CSRF Prevention Cheat Sheet&lt;/a&gt; 和参考文档的 &lt;a href=&quot;https://websec.readthedocs.io/zh/latest/vuln/csrf.html&quot;&gt;CSRF 章节&lt;/a&gt; 都值得阅读。&lt;/p&gt;
+&lt;h3&gt;5. SSRF：让服务器替攻击者访问资源&lt;/h3&gt;
+&lt;p&gt;服务端请求伪造（SSRF）通常出现在“输入一个 URL，服务器帮你抓取内容”的功能中，例如图片导入、网页预览、Webhook、PDF 生成和 URL 检测。&lt;/p&gt;
+&lt;p&gt;风险在于：服务器可能比外部用户更接近内网，能够访问管理面板、云环境元数据、内部 API 或本机服务。攻击者并不一定需要直接进入内网，只要能影响服务器请求的目标，就可能借服务器的网络位置扩大访问范围。&lt;/p&gt;
+&lt;p&gt;安全设计应尽量避免“任意 URL 抓取”。如果业务必须请求远端地址：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只允许 &lt;code&gt;https&lt;/code&gt; 等明确需要的协议，拒绝文件、脚本和其他不必要的协议；&lt;/li&gt;
+&lt;li&gt;对主机名使用允许列表，而不是只靠几个字符串黑名单；&lt;/li&gt;
+&lt;li&gt;DNS 解析后检查 IP，拒绝回环、链路本地、私有网段和其他不应访问的地址；&lt;/li&gt;
+&lt;li&gt;正确处理重定向，并对每次跳转重新校验；&lt;/li&gt;
+&lt;li&gt;限制端口、响应大小、连接时间和重试次数；&lt;/li&gt;
+&lt;li&gt;将抓取服务放在隔离网络中，并使用最小网络权限；&lt;/li&gt;
+&lt;li&gt;不把内部响应原样返回给用户。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;复杂场景还要考虑 DNS 重绑定、IPv6 和解析差异，因此“正则匹配 URL”通常不够。&lt;a href=&quot;https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html&quot;&gt;OWASP SSRF Prevention Cheat Sheet&lt;/a&gt; 提供了更完整的防御思路。参考文档中的 &lt;a href=&quot;https://websec.readthedocs.io/zh/latest/vuln/ssrf.html&quot;&gt;SSRF 章节&lt;/a&gt; 可用于了解风险范围，但其中的利用部分不应在未授权环境尝试。&lt;/p&gt;
+&lt;h3&gt;6. 文件上传、路径穿越和命令注入&lt;/h3&gt;
+&lt;p&gt;这三类问题经常一起出现在“服务端把外部输入交给文件系统或操作系统”的功能里。&lt;/p&gt;
+&lt;h4&gt;文件上传&lt;/h4&gt;
+&lt;p&gt;不要只检查文件名后缀。更稳妥的做法包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;限制大小、数量和上传频率；&lt;/li&gt;
+&lt;li&gt;使用业务允许列表，而不是“不是黑名单后缀就放行”；&lt;/li&gt;
+&lt;li&gt;在服务端检查文件内容与实际类型；&lt;/li&gt;
+&lt;li&gt;使用随机文件名，不保留用户原始文件名作为路径；&lt;/li&gt;
+&lt;li&gt;将文件放在不能直接执行脚本的存储位置，最好不在 Web 根目录；&lt;/li&gt;
+&lt;li&gt;图片需要重新解码、转换或清理元数据时，要考虑解析器风险；&lt;/li&gt;
+&lt;li&gt;下载时设置正确的 &lt;code&gt;Content-Type&lt;/code&gt; 和 &lt;code&gt;Content-Disposition&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;路径穿越&lt;/h4&gt;
+&lt;p&gt;当用户可以指定文件名、模板名或下载路径时，不要直接把字符串拼接到文件系统路径。应先规范化路径，再确认最终路径仍位于预期根目录下，并使用允许列表映射业务 ID 到真实文件，而不是让用户提交任意路径。&lt;/p&gt;
+&lt;h4&gt;命令注入&lt;/h4&gt;
+&lt;p&gt;如果功能可以调用系统命令，优先使用不经过 Shell 的库接口；参数采用固定的参数数组和严格允许列表。不要把用户输入拼进 &lt;code&gt;sh -c&lt;/code&gt;、批处理文件或 PowerShell 字符串。即使输入看起来只允许数字，也要在服务端再次验证长度、范围和格式。&lt;/p&gt;
+&lt;h3&gt;7. 安全配置错误、依赖和敏感信息泄露&lt;/h3&gt;
+&lt;p&gt;有些漏洞不是代码写错，而是部署时留下了不必要的入口：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;默认账号和默认密码没有更换；&lt;/li&gt;
+&lt;li&gt;生产环境开启调试页面或返回堆栈信息；&lt;/li&gt;
+&lt;li&gt;管理接口暴露到公网且没有额外保护；&lt;/li&gt;
+&lt;li&gt;数据库、对象存储或备份文件公开可读；&lt;/li&gt;
+&lt;li&gt;依赖长期不更新，或安装了来源不明的包；&lt;/li&gt;
+&lt;li&gt;API 密钥、Cookie、密码出现在仓库、日志、截图和错误页面中；&lt;/li&gt;
+&lt;li&gt;CORS、反向代理、TLS 或安全响应头配置过于宽松。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;防御不是“上线前改一次配置”就结束，而是要把安全配置写进可重复的部署流程，并在 CI 中检查密钥、依赖、容器镜像、权限和公开文件。错误信息应对用户保持克制，同时把必要的诊断信息写入受访问控制保护的日志系统。&lt;/p&gt;
+&lt;h2&gt;六、账号、密码和会话应该怎样设计&lt;/h2&gt;
+&lt;h3&gt;1. 密码不能用可逆加密或普通哈希保存&lt;/h3&gt;
+&lt;p&gt;密码数据库泄露后，攻击者可以离线猜测密码。因此密码应使用专门的慢速密码哈希算法和唯一盐值，例如 Argon2id、bcrypt 或 scrypt，具体参数应按官方建议和服务器性能评估。不要使用 MD5、SHA-1 或“加盐后快速 SHA-256”来代替密码哈希。&lt;/p&gt;
+&lt;p&gt;应用还应：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只通过 HTTPS 传输密码；&lt;/li&gt;
+&lt;li&gt;设置合理的长度和常见密码拦截策略；&lt;/li&gt;
+&lt;li&gt;登录、注册、找回密码接口限速；&lt;/li&gt;
+&lt;li&gt;找回密码链接使用一次性、短时有效的随机令牌；&lt;/li&gt;
+&lt;li&gt;登录错误信息尽量统一，避免暴露账号是否存在；&lt;/li&gt;
+&lt;li&gt;对高风险操作要求重新认证或多因素认证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可以参考 &lt;a href=&quot;https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html&quot;&gt;OWASP Authentication Cheat Sheet&lt;/a&gt; 和 &lt;a href=&quot;https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html&quot;&gt;Password Storage Cheat Sheet&lt;/a&gt;。&lt;/p&gt;
+&lt;h3&gt;2. 会话 Cookie 的基础安全属性&lt;/h3&gt;
+&lt;p&gt;一个常见的会话 Cookie 形态是：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Set-Cookie: __Host-session=随机值; Path=/; Secure; HttpOnly; SameSite=Lax
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这些属性的作用大致是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Secure&lt;/code&gt;：只通过 HTTPS 发送；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HttpOnly&lt;/code&gt;：禁止普通 JavaScript 直接读取；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;SameSite=Lax&lt;/code&gt; 或 &lt;code&gt;Strict&lt;/code&gt;：限制跨站请求携带 Cookie；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;__Host-&lt;/code&gt; 前缀：在支持的浏览器中要求 Secure、禁止 Domain 并固定 Path，有助于缩小 Cookie 作用范围。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;具体取值要结合登录流程、跨站跳转和嵌入场景决定。&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Cookies&quot;&gt;MDN Cookie 安全实践&lt;/a&gt; 解释了这些属性的行为。&lt;/p&gt;
+&lt;p&gt;登录成功后应刷新会话标识，退出登录、修改密码、权限变化和风险事件发生后应使旧会话失效。不要在 URL、日志或错误页面中暴露会话标识。&lt;/p&gt;
+&lt;h3&gt;3. JWT 的几个常见误解&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;JWT 的签名不等于加密，payload 默认可以被读取；&lt;/li&gt;
+&lt;li&gt;JWT 不是越长越安全，也不是所有场景都比服务端 Session 好；&lt;/li&gt;
+&lt;li&gt;只解码 JWT 而不验证签名、算法、过期时间、签发者和受众是不安全的；&lt;/li&gt;
+&lt;li&gt;JWT 一旦签发，撤销和轮换往往比服务端会话更复杂；&lt;/li&gt;
+&lt;li&gt;不能把用户提交的角色字段直接当作授权结论。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果应用并不需要跨多个独立服务传递声明，服务端会话加安全 Cookie 往往更容易撤销和审计。&lt;/p&gt;
+&lt;h2&gt;七、HTTPS 和安全响应头&lt;/h2&gt;
+&lt;h3&gt;1. HTTPS 解决什么问题&lt;/h3&gt;
+&lt;p&gt;HTTPS 使用 TLS 保护传输中的机密性和完整性，并通过证书帮助客户端验证服务器身份。它不能修复越权、SQL 注入或业务逻辑错误，但没有 HTTPS 时，密码、Cookie 和页面内容可能在传输途中被窃取或篡改。&lt;/p&gt;
+&lt;p&gt;生产环境应：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;全站使用 HTTPS；&lt;/li&gt;
+&lt;li&gt;正确配置证书链和自动续期；&lt;/li&gt;
+&lt;li&gt;将 HTTP 重定向到 HTTPS；&lt;/li&gt;
+&lt;li&gt;对登录和敏感接口禁止明文访问；&lt;/li&gt;
+&lt;li&gt;评估启用 HSTS，避免浏览器反复使用 HTTP。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. 常见安全响应头&lt;/h3&gt;
+&lt;p&gt;响应头不能代替代码修复，但可以减少浏览器侧风险：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;响应头&lt;/th&gt;
+&lt;th&gt;主要目的&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Content-Security-Policy&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;限制脚本、样式、图片等资源来源，降低部分 XSS 影响&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Strict-Transport-Security&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;告诉浏览器后续优先使用 HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;X-Content-Type-Options: nosniff&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;避免浏览器对内容类型进行不必要的猜测&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Referrer-Policy&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;控制 Referer 中泄露的路径信息&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;frame-ancestors&lt;/code&gt; 或 &lt;code&gt;X-Frame-Options&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;限制页面被其他站点嵌入，降低点击劫持风险&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;合理的 CORS 头&lt;/td&gt;
+&lt;td&gt;只允许明确需要的跨源读取&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;配置 CSP 时建议先在报告模式观察违规情况，再逐步收紧；不要为了“让页面不报错”而使用过于宽松的通配符和 &lt;code&gt;unsafe-inline&lt;/code&gt;。&lt;/p&gt;
+&lt;h2&gt;八、把安全放进开发流程&lt;/h2&gt;
+&lt;p&gt;安全最好在设计阶段介入，而不是上线后才做一次扫描。&lt;/p&gt;
+&lt;h3&gt;1. 设计阶段：画数据流和威胁模型&lt;/h3&gt;
+&lt;p&gt;至少回答：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;哪些数据是敏感资产？&lt;/li&gt;
+&lt;li&gt;谁可以读取、创建、修改和删除它们？&lt;/li&gt;
+&lt;li&gt;哪些输入来自浏览器、第三方或上传文件？&lt;/li&gt;
+&lt;li&gt;应用是否会访问内网、执行命令或解析复杂文件？&lt;/li&gt;
+&lt;li&gt;哪些操作需要二次确认、限速或重新认证？&lt;/li&gt;
+&lt;li&gt;失败后如何记录、告警和恢复？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. 编码阶段：优先使用安全抽象&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;使用框架默认的模板转义和成熟认证组件；&lt;/li&gt;
+&lt;li&gt;使用 ORM 的参数化接口，但不要因为使用 ORM 就跳过授权检查；&lt;/li&gt;
+&lt;li&gt;对输出选择正确的安全 API；&lt;/li&gt;
+&lt;li&gt;对敏感配置使用密钥管理或受保护的环境注入；&lt;/li&gt;
+&lt;li&gt;不要复制来源不明的安全代码片段，尤其是密码学和 Token 验证代码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. 测试阶段：按身份和状态覆盖&lt;/h3&gt;
+&lt;p&gt;测试不只看“页面能不能打开”，还要覆盖：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;未登录、普通用户、同组织用户、管理员和已禁用账号；&lt;/li&gt;
+&lt;li&gt;正常输入、空值、超长值、错误类型和边界值；&lt;/li&gt;
+&lt;li&gt;重放请求、重复提交、并发操作和过期会话；&lt;/li&gt;
+&lt;li&gt;直接访问接口、修改对象 ID、改变 HTTP 方法；&lt;/li&gt;
+&lt;li&gt;上传超大文件、错误类型文件和重复文件名；&lt;/li&gt;
+&lt;li&gt;第三方服务不可用、超时、重定向和返回异常数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;OWASP 的 &lt;a href=&quot;https://wstg.owasp.org/stable/2-Introduction/&quot;&gt;Web Security Testing Guide&lt;/a&gt; 提供了从信息收集、身份管理、认证、授权、会话、输入验证到业务逻辑测试的系统框架。测试指南中的方法应只用于已授权的目标。&lt;/p&gt;
+&lt;h3&gt;4. 上线后：日志、告警和响应&lt;/h3&gt;
+&lt;p&gt;安全日志应记录足够的事件上下文，例如时间、请求 ID、用户或服务身份、资源、结果和失败原因，但不要记录密码、完整 Token、Cookie 或不必要的个人数据。&lt;/p&gt;
+&lt;p&gt;还要提前准备：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;密钥泄露时如何撤销和轮换；&lt;/li&gt;
+&lt;li&gt;发现越权或数据泄露后如何隔离影响；&lt;/li&gt;
+&lt;li&gt;如何保留证据并通知相关人员；&lt;/li&gt;
+&lt;li&gt;如何修复、回归测试并确认漏洞没有再次出现；&lt;/li&gt;
+&lt;li&gt;备份是否可恢复，恢复过程是否经过演练。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;九、适合小白的安全学习路线&lt;/h2&gt;
+&lt;p&gt;不要一上来就背工具命令。推荐按下面的顺序学习：&lt;/p&gt;
+&lt;h3&gt;第 1 阶段：补齐 Web 基础&lt;/h3&gt;
+&lt;p&gt;掌握 HTML、CSS、JavaScript、浏览器开发者工具、HTTP 方法与状态码、Cookie、JSON、DNS 和基本 Linux 命令。能看懂一次请求和响应，比记住几十个工具参数更重要。&lt;/p&gt;
+&lt;h3&gt;第 2 阶段：做一个故意简单的本地项目&lt;/h3&gt;
+&lt;p&gt;用自己熟悉的语言做一个最小应用，包含注册、登录、个人资料、订单或留言功能，然后主动检查：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;是否真的区分认证和授权；&lt;/li&gt;
+&lt;li&gt;是否对数据库使用参数化查询；&lt;/li&gt;
+&lt;li&gt;是否安全输出用户内容；&lt;/li&gt;
+&lt;li&gt;是否保护修改操作免受 CSRF；&lt;/li&gt;
+&lt;li&gt;是否限制登录、上传和资源访问频率；&lt;/li&gt;
+&lt;li&gt;是否把错误堆栈、密钥和会话写进日志或响应。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;第 3 阶段：使用合法靶场&lt;/h3&gt;
+&lt;p&gt;选择本地运行、明确用于训练的靶场，例如 OWASP Juice Shop、WebGoat 或其他教学环境。练习时先写下“漏洞根因—影响—修复—回归验证”，再使用工具观察请求变化。不要把真实公司的域名、学校网站、公共 IP 或随机互联网服务当作练习对象。&lt;/p&gt;
+&lt;h3&gt;第 4 阶段：从漏洞转向防御&lt;/h3&gt;
+&lt;p&gt;学习 OWASP Top 10、OWASP ASVS、Cheat Sheet Series 和 Web Security Testing Guide。每学一个漏洞，都回答四个问题：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;哪个输入跨过了哪条信任边界？&lt;/li&gt;
+&lt;li&gt;应用为什么把数据当成了代码、权限或地址？&lt;/li&gt;
+&lt;li&gt;最小可靠修复是什么？&lt;/li&gt;
+&lt;li&gt;如何写一个回归测试证明它仍然安全？&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;第 5 阶段：进入真实项目的安全工程&lt;/h3&gt;
+&lt;p&gt;进一步学习依赖和供应链安全、容器与云权限、密钥管理、日志告警、威胁建模、代码审计和事件响应。此时再学习代理、扫描器和模糊测试工具，才能知道工具结果代表什么，也知道哪些结果需要人工确认。&lt;/p&gt;
+&lt;h2&gt;十、上线前快速检查清单&lt;/h2&gt;
+&lt;h3&gt;身份与权限&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;[ ] 每个敏感接口都在服务端验证身份和资源权限；&lt;/li&gt;
+&lt;li&gt;[ ] 普通用户不能通过修改 ID、路径或 HTTP 方法访问他人资源；&lt;/li&gt;
+&lt;li&gt;[ ] 默认拒绝，管理员权限和服务账号权限都经过最小化；&lt;/li&gt;
+&lt;li&gt;[ ] 登录、找回密码和高风险操作有速率限制或重新认证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;输入与输出&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;[ ] 数据库查询使用参数化接口；&lt;/li&gt;
+&lt;li&gt;[ ] HTML、属性、URL、JavaScript 等语境使用对应安全 API；&lt;/li&gt;
+&lt;li&gt;[ ] 上传文件大小、类型、名称、保存位置和执行权限都有约束；&lt;/li&gt;
+&lt;li&gt;[ ] 文件路径经过规范化，并确认没有离开允许目录；&lt;/li&gt;
+&lt;li&gt;[ ] 不把不可信输入直接交给 Shell、模板引擎或反序列化器。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;会话与传输&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;[ ] 全站和敏感接口使用 HTTPS；&lt;/li&gt;
+&lt;li&gt;[ ] 会话 Cookie 设置 &lt;code&gt;Secure&lt;/code&gt;、&lt;code&gt;HttpOnly&lt;/code&gt; 和合适的 &lt;code&gt;SameSite&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;[ ] 登录、退出、改密和权限变化会刷新或撤销会话；&lt;/li&gt;
+&lt;li&gt;[ ] Token 不出现在 URL、日志和错误页面中；&lt;/li&gt;
+&lt;li&gt;[ ] JWT 按算法、签名、过期时间、签发者和受众完整验证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;部署与运营&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;[ ] 生产环境关闭调试和详细堆栈；&lt;/li&gt;
+&lt;li&gt;[ ] 没有默认账号、公开备份、仓库密钥和不必要的管理端口；&lt;/li&gt;
+&lt;li&gt;[ ] 依赖、容器镜像和基础系统有更新与回滚策略；&lt;/li&gt;
+&lt;li&gt;[ ] 对认证失败、越权、异常上传和服务端请求失败有日志与告警；&lt;/li&gt;
+&lt;li&gt;[ ] 备份、密钥轮换和事件响应流程经过演练。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;十一、最后记住三件事&lt;/h2&gt;
+&lt;p&gt;第一，Web 安全不是“会不会使用某个工具”，而是能不能准确理解数据、身份、权限和信任边界。&lt;/p&gt;
+&lt;p&gt;第二，漏洞名称不是修复方案。看到 SQL 注入，要想到参数化查询；看到 XSS，要想到上下文相关输出编码和安全 DOM API；看到 CSRF，要想到状态变更保护；看到 SSRF，要想到协议、解析结果、重定向和网络出口的共同约束；看到越权，要想到服务端资源级授权。&lt;/p&gt;
+&lt;p&gt;第三，所有测试都应在授权范围内进行。好的安全学习既要理解攻击者如何发现问题，也要知道如何降低影响、修复根因、验证修复并保护真实用户。&lt;/p&gt;
+&lt;h2&gt;延伸阅读&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://websec.readthedocs.io/zh/latest/index.html&quot;&gt;Web 安全学习笔记：目录&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://top10.owasp.org/2025/0x00_2025-Introduction/&quot;&gt;OWASP Top 10:2025&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://cheatsheetseries.owasp.org/&quot;&gt;OWASP Cheat Sheet Series&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://wstg.owasp.org/stable/2-Introduction/&quot;&gt;OWASP Web Security Testing Guide&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview&quot;&gt;MDN：HTTP 概览&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Cookies&quot;&gt;MDN：Cookie 安全实践&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Guides/CORS&quot;&gt;MDN：CORS&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>Kali Linux 渗透基础命令：VMware 扫描自有局域网的 Nmap 入门</title><link>https://blog.ishaohao.cn/posts/kali-linux-%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E5%85%A5%E9%97%A8/</link><guid isPermaLink="true">https://blog.ishaohao.cn/posts/kali-linux-%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E5%85%A5%E9%97%A8/</guid><description>以 VMware 中的 Kali 虚拟机和自己管理的家庭局域网为起点，面向新手学习 Nmap 主机发现、端口枚举、服务识别、脚本检查与结果留存。</description><pubDate>Thu, 01 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;这篇文章面向刚开始接触 Kali Linux 的读者，重点不是系统运维，而是&lt;strong&gt;渗透测试前期最基础的信息收集命令&lt;/strong&gt;。第一轮练习不要求你额外搭建靶机：直接在 VMware 中启动 Kali，先识别自己管理的家庭或个人实验局域网设备；再仅对你自己控制、或已明确获得逐台授权的设备，学习端口与服务识别。&lt;/p&gt;
+&lt;p&gt;所有扫描都会产生网络流量，并可能被记录或触发告警。本文以家庭局域网常见的私有地址网段为例；运行前必须确认路由器与目标设备由你管理，或你已获得明确授权，且授权范围包含目标地址、允许方法、时间窗口和联系人。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本文使用 RFC 1918 私有地址和实验服务输出作为示例。不要对公共 IP、陌生域名、公司网络或他人设备照搬命令。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;1. VMware Kali 接入自己的局域网&lt;/h2&gt;
+&lt;p&gt;本篇以 Windows 上的 VMware Workstation 为例。Kali 官方提供 VMware 预构建虚拟机镜像；下载后校验下载页给出的 SHA256 值，再在 VMware 中打开镜像目录里的 &lt;code&gt;.vmx&lt;/code&gt; 文件。首次启动并完成初始化后，立即为 Kali 创建一个“干净基线”快照，以便实验出错时回退。&lt;/p&gt;
+&lt;p&gt;在 Kali 虚拟机关闭状态下，打开 &lt;strong&gt;虚拟机设置 → 网络适配器&lt;/strong&gt;，完成以下设置：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;选择“桥接（Bridged）”，并在需要时选择实际联网的物理网卡；不要选择不确定用途的 VPN、公司网卡或虚拟网卡。&lt;/li&gt;
+&lt;li&gt;勾选“已连接”和“启动时连接”，然后启动 Kali。&lt;/li&gt;
+&lt;li&gt;在 Kali 终端中确认它已从你自己的路由器取得局域网地址。先执行下面这一条：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;ip -4 -o addr show scope global
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;./kali-check-ip.png&quot; alt=&quot;Kali 虚拟机查看自己的 IPv4 地址&quot; title=&quot;Kali 查看 IPv4 地址&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;红框中的 &lt;code&gt;IP/前缀&lt;/code&gt; 是 Kali 虚拟机自己的地址，例如 &lt;code&gt;192.168.1.50/24&lt;/code&gt;；它不是后续要扫描的目标地址。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;再查看路由表：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ip route
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;./kali-check-route.png&quot; alt=&quot;Kali 虚拟机查看局域网路由&quot; title=&quot;Kali 查看路由网段&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;红框中的网段是后续主机发现的候选范围。请以你的实际输出为准。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;例如，Kali 显示地址为 &lt;code&gt;192.168.1.50/24&lt;/code&gt;、默认路由为 &lt;code&gt;192.168.1.1&lt;/code&gt; 时，局域网可写为 &lt;code&gt;192.168.1.0/24&lt;/code&gt;。这只是地址换算示例；务必以你实际看到的网段为准。先把网段写入变量，后续命令直接使用：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export LAB_CIDR=&apos;192.168.1.0/24&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;继续到第 4 节，先列出目标地址，再做主机发现。这一步不要求你先创建靶机。不要根据在线结果继续对不属于你、或未获得明确授权的设备做端口、服务或脚本扫描。选定一个你自己控制的设备后，再设置 &lt;code&gt;TARGET_IP&lt;/code&gt;，供后文的单主机练习使用：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export TARGET_IP=&apos;192.168.1.1&apos;
+printf &apos;LAN: %s\\nSelected device: %s\\n&apos; &quot;$LAB_CIDR&quot; &quot;$TARGET_IP&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“本机局域网”不自动等于可扫描范围。公司、学校、宿舍、酒店、公共 Wi-Fi 或来源不明的网络均不属于本篇练习范围。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;2. 先确认授权范围&lt;/h2&gt;
+&lt;p&gt;在运行 Nmap 前，先把范围写清楚，而不是先敲命令。一个最小的授权靶场记录应包含：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;项目&lt;/th&gt;
+&lt;th&gt;例子&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;扫描来源&lt;/td&gt;
+&lt;td&gt;自己的 Kali 虚拟机&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;允许目标&lt;/td&gt;
+&lt;td&gt;自己管理的私有网段，或自己控制的单个设备&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;允许方法&lt;/td&gt;
+&lt;td&gt;主机发现、TCP 连接扫描、服务版本识别&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;禁止方法&lt;/td&gt;
+&lt;td&gt;暴力猜测、拒绝服务、漏洞利用、绕过与密码攻击&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;时间窗口&lt;/td&gt;
+&lt;td&gt;约定的实验时间&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;停止条件&lt;/td&gt;
+&lt;td&gt;靶机异常、网络不稳定、授权方要求停止&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;初学阶段先使用上一节的家庭或个人实验局域网，完成主机发现；再只选择一个自己控制的设备作为单主机练习目标。先确认 Kali 本机接入了正确网段：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ip addr
+ip route
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果默认路由、网卡地址或虚拟网卡模式不正确，先修正实验网络，再开始扫描。不要把“扫不到靶机”直接当成某种防护结论。&lt;/p&gt;
+&lt;h2&gt;3. 认识 Nmap 与最小扫描流程&lt;/h2&gt;
+&lt;p&gt;先确认 Nmap 版本和本地帮助：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;nmap --version
+man nmap
+nmap --help
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一次可复现的基础扫描通常遵循这个顺序：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;确认扫描范围是否正确；&lt;/li&gt;
+&lt;li&gt;发现存活主机；&lt;/li&gt;
+&lt;li&gt;对单个已授权主机枚举少量端口；&lt;/li&gt;
+&lt;li&gt;识别已开放服务；&lt;/li&gt;
+&lt;li&gt;仅在授权允许时运行默认脚本；&lt;/li&gt;
+&lt;li&gt;保存命令、原始输出与时间，形成可复查记录。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;不要一上来使用宽泛网段、全端口、高速率或“全功能”组合参数。范围越小、步骤越清楚，结果越容易解释，也越便于在异常时立即停止。&lt;/p&gt;
+&lt;h2&gt;4. 主机发现：先找出靶场中在线的设备&lt;/h2&gt;
+&lt;p&gt;先用 &lt;code&gt;-sL&lt;/code&gt; 列出准备检查的地址。它不会向目标主机发送数据包，可用来再次确认范围：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;nmap -sL -n &quot;$LAB_CIDR&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;./kali-list-targets.png&quot; alt=&quot;Nmap 列出将要检查的局域网地址&quot; title=&quot;Nmap 目标列表&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;红框是你将要处理的网段。若它不是自己的家庭或个人实验网段，立即停止并修正 &lt;code&gt;LAB_CIDR&lt;/code&gt;。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;确认无误后，&lt;code&gt;-sn&lt;/code&gt; 表示“只做主机发现，不进行端口扫描”；&lt;code&gt;-n&lt;/code&gt; 关闭反向 DNS 解析，让输出更聚焦于 IP 地址：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;nmap -sn -n &quot;$LAB_CIDR&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;./kali-host-discovery.png&quot; alt=&quot;Nmap 发现自己管理局域网中的在线设备&quot; title=&quot;Nmap 主机发现&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;红框显示本次发现的在线设备数量；它不等于可继续测试的目标数量。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;常见输出字段：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Host is up&lt;/code&gt;：Nmap 从探测响应判断该地址可达；不表示所有服务都可访问。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;latency&lt;/code&gt;：一次探测观察到的往返延迟，不等同于稳定网络性能。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Nmap done&lt;/code&gt;：扫描的地址数、发现的在线主机数和耗时。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;主机发现不是“无痕”操作，依然会向目标网段发送探测流量；它只是把工作限制在识别在线主机，而不是继续进行端口扫描。&lt;/p&gt;
+&lt;h2&gt;5. 端口枚举：从少量明确端口开始&lt;/h2&gt;
+&lt;p&gt;端口是网络服务监听连接的入口。对已确认且被授权的单个自有设备，先检查少量端口，而不要一次扩大范围：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;nmap -sT -p 22,80 &quot;$TARGET_IP&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;./kali-port-scan.png&quot; alt=&quot;Nmap 检查自有设备的限定端口&quot; title=&quot;Nmap 限定端口扫描&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;红框表示开放的端口与服务名称。示例中的 &lt;code&gt;80/tcp&lt;/code&gt; 是一项观察结果，不代表所有家庭设备都会开放该端口。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;参数含义：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;参数&lt;/th&gt;
+&lt;th&gt;含义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-sT&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;TCP connect 扫描；非特权账户下常用，会建立完整 TCP 连接，因此更容易被服务日志记录&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-p 22,80&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;只检查指定端口；用逗号分隔&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;&quot;$TARGET_IP&quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;已授权的单个设备地址&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Nmap 的端口状态不只会显示 &lt;code&gt;open&lt;/code&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;open&lt;/code&gt;：探测到有服务在监听该端口。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;closed&lt;/code&gt;：目标可达，但该端口当前没有服务监听。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;filtered&lt;/code&gt;：探测结果被防火墙或网络过滤影响，Nmap 无法确认端口状态。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;6. 服务与版本识别：端口号不是最终结论&lt;/h2&gt;
+&lt;p&gt;端口号只能提供初步猜测，服务可能运行在非标准端口。&lt;code&gt;-sV&lt;/code&gt; 会在已发现的开放端口上进行服务与版本识别；&lt;code&gt;--version-light&lt;/code&gt; 降低识别强度，适合先在靶场中学习输出格式：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;nmap -sT -sV --version-light -p 22,80 &quot;$TARGET_IP&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;./kali-service-detection.png&quot; alt=&quot;Nmap 识别自有设备上的服务与版本&quot; title=&quot;Nmap 服务版本识别&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;红框是 Nmap 对服务产品和版本的识别结果，属于待确认信息，不应直接当成绝对结论。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;阅读结果时，把它当作“待验证的观察”，而不是绝对事实：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;输出列&lt;/th&gt;
+&lt;th&gt;应如何理解&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;PORT&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;协议和端口号，例如 &lt;code&gt;22/tcp&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;STATE&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Nmap 对端口状态的判断&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;SERVICE&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;根据端口和探测结果推测的服务类型&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;VERSION&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;探测到的产品、版本或附加信息；可能不完整或有误判&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;服务识别会额外与开放端口交互，因此只应对授权目标运行。它的价值在于帮助你建立下一步的验证计划，例如确认某个服务是否确实属于自己的设备，而不是立即尝试漏洞利用。&lt;/p&gt;
+&lt;h2&gt;7. 默认 NSE 脚本：先读说明，再决定是否运行&lt;/h2&gt;
+&lt;p&gt;Nmap 的 NSE（Nmap Scripting Engine）可以为已发现的服务补充信息。&lt;code&gt;-sC&lt;/code&gt; 等价于 &lt;code&gt;--script=default&lt;/code&gt;，会运行默认脚本集合：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;nmap --script-help default
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;./kali-script-help.png&quot; alt=&quot;Nmap 查看默认脚本说明&quot; title=&quot;Nmap 默认脚本说明&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;红框是脚本分类。先读脚本用途与分类，再判断是否在授权范围内；不要把“默认”理解成“无影响”。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;运行前应阅读每个脚本的说明和可能影响。即使是默认脚本集合，其中也可能存在被视为有侵入性的脚本；不要把 &lt;code&gt;-sC&lt;/code&gt; 或更宽泛的组合参数当成“默认安全”。首次练习到此为止即可，脚本执行应留到范围和影响都被单独确认之后。&lt;/p&gt;
+&lt;p&gt;以下内容不属于本篇基础练习，也不应在没有明确授权时尝试：暴力猜测、拒绝服务、漏洞利用、规避检测、伪造来源或扩大扫描范围。&lt;/p&gt;
+&lt;h2&gt;8. 保存结果：命令、原始输出与时间同样重要&lt;/h2&gt;
+&lt;p&gt;扫描结束后，不能只记住屏幕上的几行结果。应保存本次使用的命令、范围、开始/结束时间、工具版本和原始输出。Nmap 的 &lt;code&gt;-oA&lt;/code&gt; 可同时生成三种格式：普通文本、XML 和 grepable 输出。&lt;/p&gt;
+&lt;p&gt;先执行 &lt;code&gt;mkdir -p ~/engagements/home-lan&lt;/code&gt; 创建结果目录，再对已获授权的单个设备执行并保存：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;nmap -sT -sV --version-light -p 80 \
+  -oA ~/engagements/home-lan/router \
+  &quot;$TARGET_IP&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;./kali-save-results.png&quot; alt=&quot;Nmap 保存自有设备的扫描结果&quot; title=&quot;Nmap 保存扫描结果&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;红框中的三个文件分别保存普通文本、XML 与 grepable 输出；将 &lt;code&gt;router&lt;/code&gt; 改为你自己的设备标识即可。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;上述命令会生成：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;文件&lt;/th&gt;
+&lt;th&gt;用途&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;router.nmap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;便于人工阅读的普通文本输出&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;router.xml&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;便于工具处理和后续转换的结构化输出&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;router.gnmap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;便于快速筛选的 grepable 输出；新流程仍建议优先保留 XML 和普通文本&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;不要为了“好看”手工修改原始扫描结果。若需要写结论，应单独写笔记，把结论与对应的原始证据、命令和时间关联起来。&lt;/p&gt;
+&lt;h2&gt;9. 一次可控的自有局域网练习&lt;/h2&gt;
+&lt;p&gt;确认上一节已经设置好 &lt;code&gt;LAB_CIDR&lt;/code&gt; 与 &lt;code&gt;TARGET_IP&lt;/code&gt; 变量后，按文章中的单命令截图依次练习即可：先看本机 IP，再看路由网段；接着列出目标、进行主机发现；最后只对一个自有设备检查限定端口、识别服务并保存结果。每一步都应确认输出符合预期后，再进入下一步。&lt;/p&gt;
+&lt;p&gt;如果发现目标异常、网络质量明显下降、出现未预期服务、或授权方要求停止，立即按约定停止后续扫描，保留已有记录并通知相关人员。不要通过提高速度、跳过发现阶段或追加更多脚本来“解决”未知结果。&lt;/p&gt;
+&lt;h2&gt;10. 常见误区&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;把在线主机当成可测试目标&lt;/strong&gt;：在线只代表地址有响应，是否可测取决于授权范围。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;把端口号当成服务结论&lt;/strong&gt;：端口映射可能不标准，服务与版本识别也可能存在误判。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;一开始就扫大网段或所有端口&lt;/strong&gt;：这会增加流量、噪声和误操作风险，也不利于理解每个选项的作用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;忽略输出保存&lt;/strong&gt;：没有原始输出、时间与命令，就很难复查结果或形成可靠报告。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;默认脚本等于无影响&lt;/strong&gt;：官方文档明确提示默认脚本中可能包含有侵入性的内容；脚本执行必须包含在授权范围内。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;官方参考&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.kali.org/get-kali/&quot;&gt;Kali Linux：VMware 预构建虚拟机镜像&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://nmap.org/book/man-host-discovery.html&quot;&gt;Nmap：主机发现与 &lt;code&gt;-sn&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://nmap.org/book/scan-methods-connect-scan.html&quot;&gt;Nmap：TCP connect 扫描 &lt;code&gt;-sT&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://nmap.org/book/man-version-detection.html&quot;&gt;Nmap：服务与版本识别 &lt;code&gt;-sV&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://nmap.org/book/nse-usage.html&quot;&gt;Nmap：NSE 脚本使用与风险说明&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://nmap.org/book/man-output.html&quot;&gt;Nmap：输出格式与 &lt;code&gt;-oA&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>Linux 基本命令详解：从文件操作到系统排查的常用命令清单</title><link>https://blog.ishaohao.cn/posts/linux-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</link><guid isPermaLink="true">https://blog.ishaohao.cn/posts/linux-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</guid><description>面向 Linux 新手的常用命令教程：理解终端、目录与文件、权限、进程、网络和日志，并通过一套安全的练习流程建立日常操作习惯。</description><pubDate>Wed, 30 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;这是一篇面向新手的 &lt;strong&gt;Linux 通用基础命令&lt;/strong&gt; 文章，只挑选第一次使用 Linux 时最常遇到、最值得先掌握的命令：定位目录、查看与编辑文件、搜索内容、管理权限、查看进程、检查磁盘内存、确认网络与阅读日志。它不依赖某个特定发行版或某项专业工具，适合作为日常使用 Linux 的第一份命令清单。&lt;/p&gt;
+&lt;p&gt;很多人第一次打开 Linux 终端时，会觉得光标后的那一行字符有些陌生。其实终端并不神秘：它只是用文字向系统发出明确指令的界面。掌握这批高频命令后，查看文件、管理软件、定位故障都会快很多。&lt;/p&gt;
+&lt;p&gt;本文以常见的 Bash / Zsh 环境为例，适用于 Debian、Ubuntu、CentOS Stream、Rocky Linux、AlmaLinux、Arch 等主流发行版。不同发行版的包管理命令会有差异，文件、权限、进程和网络诊断部分则大多通用。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本文中的 &lt;code&gt;$&lt;/code&gt; 表示普通用户提示符，&lt;code&gt;#&lt;/code&gt; 表示 root 用户提示符。复制命令时不要复制前面的提示符。除非确有必要，不建议直接以 root 身份日常操作。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;1. 先认识终端中的几个概念&lt;/h2&gt;
+&lt;p&gt;一条命令通常由三部分组成：&lt;strong&gt;命令名&lt;/strong&gt;、&lt;strong&gt;选项&lt;/strong&gt;和&lt;strong&gt;参数&lt;/strong&gt;。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ls -lah /var/log
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ls&lt;/code&gt;：命令名，用来列出目录内容。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-lah&lt;/code&gt;：选项，改变输出方式；多个短选项经常可以合并。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/var/log&lt;/code&gt;：参数，也就是命令要处理的对象。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;常用快捷键也值得马上记住：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;快捷键&lt;/th&gt;
+&lt;th&gt;作用&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Tab&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;自动补全命令、文件或目录名；按两次可查看候选项&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;↑&lt;/code&gt; / &lt;code&gt;↓&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;浏览历史命令&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Ctrl + C&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;终止当前正在前台执行的命令&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Ctrl + L&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;清屏，等同于 &lt;code&gt;clear&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Ctrl + A&lt;/code&gt; / &lt;code&gt;Ctrl + E&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;跳到当前命令行开头 / 末尾&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Ctrl + R&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;反向搜索历史命令&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;遇到不认识的命令，先看帮助，不要急着在生产服务器上试错：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;命令 --help
+man 命令
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;例如 &lt;code&gt;man ls&lt;/code&gt; 会打开 &lt;code&gt;ls&lt;/code&gt; 的手册页；在手册中输入 &lt;code&gt;/关键词&lt;/code&gt; 搜索，按 &lt;code&gt;n&lt;/code&gt; 查找下一个匹配项，按 &lt;code&gt;q&lt;/code&gt; 退出。&lt;/p&gt;
+&lt;h2&gt;2. 目录与路径：你现在位于哪里&lt;/h2&gt;
+&lt;p&gt;Linux 的目录结构从根目录 &lt;code&gt;/&lt;/code&gt; 开始。与 Windows 的盘符不同，磁盘、U 盘和网络挂载通常都会挂到这棵目录树的某个位置。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pwd                 # 显示当前工作目录
+ls                  # 列出当前目录内容
+ls -la              # 包含隐藏文件（以 . 开头）和详细信息
+cd /etc             # 切换到 /etc
+cd ..               # 返回上一级目录
+cd ~                 # 回到当前用户的家目录
+cd -                # 回到上一次所在目录
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;路径分为两类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;绝对路径&lt;/strong&gt;从 &lt;code&gt;/&lt;/code&gt; 开始，例如 &lt;code&gt;/etc/ssh/sshd_config&lt;/code&gt;，不受当前位置影响。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;相对路径&lt;/strong&gt;从当前目录开始，例如 &lt;code&gt;./scripts/deploy.sh&lt;/code&gt;；其中 &lt;code&gt;.&lt;/code&gt; 代表当前目录，&lt;code&gt;..&lt;/code&gt; 代表上一级目录。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;几个常见顶级目录的用途如下：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;目录&lt;/th&gt;
+&lt;th&gt;常见用途&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/home&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;普通用户的家目录&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/root&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;root 用户的家目录&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/etc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;系统和服务配置文件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/var/log&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;系统与服务日志&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/tmp&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;临时文件，通常会被系统定期清理&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/usr/bin&lt;/code&gt;、&lt;code&gt;/bin&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;大量可执行命令所在的位置&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/opt&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;第三方软件常用安装位置&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;3. 文件与目录操作&lt;/h2&gt;
+&lt;h3&gt;3.1 创建、复制、移动与删除&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;mkdir notes                  # 创建目录
+mkdir -p project/src/assets  # 连同不存在的父目录一起创建
+touch notes/todo.txt         # 创建空文件；文件存在时更新修改时间
+cp todo.txt todo.backup.txt  # 复制文件
+cp -r assets assets.backup   # 递归复制目录
+mv todo.txt done.txt         # 重命名文件
+mv done.txt notes/           # 移动文件
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;删除操作要格外谨慎：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;rm todo.backup.txt           # 删除单个文件
+rmdir empty-dir              # 仅删除空目录
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;rm&lt;/code&gt; 默认不会进入“回收站”，删除后通常难以恢复。尤其要警惕 &lt;code&gt;rm -r&lt;/code&gt;（递归删除目录）与 &lt;code&gt;rm -f&lt;/code&gt;（忽略提示和不存在的文件）。执行递归删除前，建议先用 &lt;code&gt;ls&lt;/code&gt; 确认目标路径，并尽量写出完整路径；不要在不确定变量内容时执行这类命令。&lt;/p&gt;
+&lt;h3&gt;3.2 查看文件内容&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;cat /etc/hostname            # 输出较短文件的全部内容
+less /var/log/syslog         # 分页查看大文件；q 退出
+head -n 20 file.txt          # 查看前 20 行
+tail -n 50 file.txt          # 查看最后 50 行
+tail -f app.log                    # 持续跟踪新增日志；Ctrl + C 结束
+wc -l file.txt               # 统计文件行数
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;cat&lt;/code&gt; 适合小文件；日志或大型配置文件更适合 &lt;code&gt;less&lt;/code&gt;。使用 &lt;code&gt;less&lt;/code&gt; 时可输入 &lt;code&gt;/error&lt;/code&gt; 搜索错误关键词，按 &lt;code&gt;n&lt;/code&gt; 跳到下一个结果。&lt;/p&gt;
+&lt;h3&gt;3.3 查找文件和内容&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;find /var/log -type f -name &quot;*.log&quot;       # 在目录中查找 .log 文件
+find . -type f -mtime -7                    # 查找 7 天内修改过的文件
+grep -n &quot;Listen&quot; /etc/ssh/sshd_config      # 在文件中查找文本并显示行号
+grep -RIn &quot;TODO&quot; ./src                      # 递归查找目录中的文本，忽略大小写
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;find&lt;/code&gt; 负责按名称、类型、时间等条件找文件，&lt;code&gt;grep&lt;/code&gt; 则负责在文件内容中找文本。对无权限目录执行 &lt;code&gt;find&lt;/code&gt; 时看到 “Permission denied” 并不代表命令失败，只表示当前用户无权读取那部分目录。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./terminal-file-navigation.png&quot; alt=&quot;在家目录中创建练习目录、查看文件并用 grep 搜索文本的终端会话&quot; title=&quot;Linux 文件操作终端会话&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;在个人家目录中完成创建目录、查看文件和文本搜索，适合先在安全范围内练习。&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;4. 文本处理与管道：把命令组合起来&lt;/h2&gt;
+&lt;p&gt;管道符 &lt;code&gt;|&lt;/code&gt; 会把左侧命令的输出交给右侧命令继续处理，是命令行效率的关键。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ps aux | grep &quot;进程名&quot;
+df -h | sort -k 5
+journalctl -u 服务名 --since &quot;today&quot; | less
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;常用的文本处理命令：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sort names.txt                 # 排序
+sort -u names.txt              # 排序并去重
+uniq -c names.txt              # 统计相邻重复行；通常先配合 sort
+cut -d: -f1 /etc/passwd        # 以 : 分隔，取第 1 列
+awk &apos;{print $1, $3}&apos; file.txt  # 按空白分列，输出第 1 和第 3 列
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;重定向用于把输出写入文件：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;echo &quot;hello&quot; &amp;gt; hello.txt      # 覆盖写入；原内容会被替换
+echo &quot;world&quot; &amp;gt;&amp;gt; hello.txt     # 追加写入；保留原内容
+command 2&amp;gt; error.log           # 仅把错误输出写入文件
+command &amp;gt; all.log 2&amp;gt;&amp;amp;1         # 把正常输出和错误输出都写入文件
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;&amp;gt;&lt;/code&gt; 会覆盖已有文件，操作前先确认文件名；只是想保留历史内容时，使用 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt;。&lt;/p&gt;
+&lt;h2&gt;5. 用户、权限与 sudo&lt;/h2&gt;
+&lt;h3&gt;5.1 当前身份与切换身份&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;whoami                 # 当前用户名
+id                     # 用户 ID、组 ID 和所属组
+groups                 # 当前用户所属组
+sudo -v                # 刷新 sudo 授权，不执行具体管理操作
+sudo 命令              # 以管理员权限执行一条命令
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;sudo&lt;/code&gt; 的原则是“只给需要的一条命令提权”。例如查看普通日志一般不需要 &lt;code&gt;sudo&lt;/code&gt;，修改 &lt;code&gt;/etc&lt;/code&gt; 下的配置才可能需要。不要把来路不明的整段命令直接加上 &lt;code&gt;sudo&lt;/code&gt; 执行。&lt;/p&gt;
+&lt;h3&gt;5.2 读、写、执行权限&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;ls -l script.sh
+# -rwxr-xr-- 1 alice developers 120 Sep 30 10:00 script.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第一个字符表示文件类型：&lt;code&gt;-&lt;/code&gt; 是普通文件，&lt;code&gt;d&lt;/code&gt; 是目录。后面九个字符按三组划分，依次对应&lt;strong&gt;所有者&lt;/strong&gt;、&lt;strong&gt;所属组&lt;/strong&gt;和&lt;strong&gt;其他用户&lt;/strong&gt;的读（&lt;code&gt;r&lt;/code&gt;）、写（&lt;code&gt;w&lt;/code&gt;）、执行（&lt;code&gt;x&lt;/code&gt;）权限。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chmod u+x script.sh       # 给文件所有者添加执行权限
+chmod 640 config.env      # 所有者可读写，组可读，其他用户无权限
+chown alice:developers app.log  # 修改所有者和所属组（通常需要 sudo）
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;目录的 &lt;code&gt;x&lt;/code&gt; 权限表示“可以进入或访问目录中的已知文件名”，并不单纯是“执行”。修改权限前，先确认应用或服务实际由哪个用户运行；过度使用 &lt;code&gt;chmod 777&lt;/code&gt; 会显著扩大风险，通常不是解决权限问题的正确方法。&lt;/p&gt;
+&lt;h2&gt;6. 软件包管理：先识别发行版&lt;/h2&gt;
+&lt;p&gt;先查看系统信息，再选择对应的包管理器：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat /etc/os-release
+uname -r
+&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;系统家族&lt;/th&gt;
+&lt;th&gt;常见包管理器&lt;/th&gt;
+&lt;th&gt;安装示例&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian、Ubuntu&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;apt&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sudo apt install curl&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;RHEL、Rocky、AlmaLinux、CentOS Stream&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;dnf&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sudo dnf install curl&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;较旧的 RHEL 系系统&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;yum&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sudo yum install curl&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Arch Linux&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;pacman&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sudo pacman -S curl&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;以 Debian / Ubuntu 为例：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo apt update              # 刷新软件包索引
+apt list --upgradable        # 查看可升级的软件
+sudo apt upgrade             # 安装可用升级
+apt search 软件包名          # 搜索软件包
+apt show 软件包名            # 查看软件包信息
+sudo apt remove 软件包名     # 卸载软件包，配置文件可能保留
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;升级服务器前，先阅读变更列表并确认维护窗口。涉及内核、数据库、Web 服务等关键组件时，备份和回滚方案比“立刻执行升级”更重要。&lt;/p&gt;
+&lt;h2&gt;7. 进程、服务与计划任务&lt;/h2&gt;
+&lt;h3&gt;7.1 查看和管理进程&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;ps aux                       # 查看当前进程快照
+ps aux | grep &quot;进程名&quot;      # 按关键字查找进程；结果可能包含 grep 自身
+pgrep -a 进程名              # 按进程名查找并显示完整命令行
+top                          # 实时查看 CPU、内存和进程；q 退出
+free -h                      # 查看内存和交换分区使用情况
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;结束进程时，优先发送可被程序正常处理的终止信号：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;kill PID                     # 默认发送 SIGTERM，请程序自行退出
+kill -9 PID                  # 强制终止；仅用于无响应时的最后手段
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;kill -9&lt;/code&gt; 不会给程序清理资源和写入缓冲数据的机会。若是由 systemd 管理的服务，优先使用 &lt;code&gt;systemctl&lt;/code&gt;，不要直接杀死服务进程。&lt;/p&gt;
+&lt;h3&gt;7.2 使用 systemd 管理服务&lt;/h3&gt;
+&lt;p&gt;多数现代发行版使用 systemd：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl status 服务名             # 查看服务状态和最近日志
+sudo systemctl start 服务名         # 启动服务
+sudo systemctl stop 服务名          # 停止服务
+sudo systemctl restart 服务名       # 重启服务
+sudo systemctl reload 服务名        # 重新加载配置（服务支持时）
+sudo systemctl enable --now 服务名  # 设为开机启动并立即启动
+systemctl is-enabled 服务名         # 检查是否开机启动
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将示例中的“服务名”替换为实际 unit 名称；不同发行版、软件包和服务实现的名称可能不同。修改服务配置后，先查阅该服务的官方文档并运行其提供的配置检查命令，确认通过再 reload 或 restart，能明显降低错误配置导致服务中断的风险。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./terminal-permissions-service.png&quot; alt=&quot;查看脚本权限并添加执行权限的终端会话&quot; title=&quot;Linux 文件权限终端会话&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;通过 &lt;code&gt;ls -l&lt;/code&gt; 观察权限变化，再用 &lt;code&gt;chmod&lt;/code&gt; 做最小范围调整。&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;8. 磁盘、内存与系统信息&lt;/h2&gt;
+&lt;p&gt;系统变慢或服务无法写文件时，先看资源状态，不要直接重启。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;df -h                       # 各文件系统的容量和使用率
+df -i                       # inode 使用率；小文件过多可能先耗尽 inode
+du -sh /var/log             # 查看目录总大小
+du -xh --max-depth=1 /var | sort -h  # 找出 /var 下较大的一级目录
+lsblk                       # 查看磁盘、分区和挂载关系
+mount | column -t           # 查看已挂载的文件系统
+uptime                      # 运行时长、登录用户数和负载均值
+free -h                     # 内存和 swap 使用情况
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Linux 会尽可能使用空闲内存作为缓存，因此不能只看 &lt;code&gt;free&lt;/code&gt; 一列判断“内存是否不足”。结合 &lt;code&gt;available&lt;/code&gt;、swap 使用情况和实际进程占用再作判断。&lt;code&gt;du&lt;/code&gt; 统计较大目录可能需要一些时间，生产机上不要对根目录频繁做全盘扫描。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./terminal-resources-network.png&quot; alt=&quot;使用 df、free 与 ip route 查看磁盘内存和默认路由的终端会话&quot; title=&quot;Linux 资源与网络信息终端会话&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;先读取磁盘、内存与路由信息，再判断资源或网络问题的范围。&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;9. 网络连通性与端口排查&lt;/h2&gt;
+&lt;p&gt;排查网络问题时，建议从“本机配置 → 域名解析 → 路由 → 服务监听”逐层确认。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ip addr                     # 查看网卡和 IP 地址
+ip route                    # 查看路由表和默认网关
+ping -c 4 8.8.8.8           # 测试到 IP 的基本连通性
+ping -c 4 example.com       # 同时验证 DNS 解析和连通性
+getent hosts example.com    # 用系统解析器查询域名
+curl -I https://example.com # 请求 HTTP 响应头
+ss -tulpn                   # 查看正在监听的 TCP/UDP 端口及进程
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果 &lt;code&gt;ping&lt;/code&gt; 不通，不一定代表服务不可用：许多网络设备会禁用 ICMP。对 Web 服务可用 &lt;code&gt;curl&lt;/code&gt; 验证，对端口可用 &lt;code&gt;ss&lt;/code&gt; 确认本机是否监听，再结合防火墙、安全组和上游路由规则排查。&lt;/p&gt;
+&lt;h2&gt;10. 日志是最可靠的线索之一&lt;/h2&gt;
+&lt;p&gt;systemd 系统可通过 &lt;code&gt;journalctl&lt;/code&gt; 查看日志：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -b                    # 本次启动后的系统日志
+journalctl -b -1                 # 上一次启动的日志
+journalctl -u 服务名 --since today # 指定服务今天的日志
+journalctl -u 服务名 -f            # 实时跟踪指定服务的日志
+journalctl -p err..alert -b       # 查看本次启动的高优先级错误
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;排障时，先记录故障发生的时间、受影响服务和报错原文，再围绕时间范围筛选日志。不要因为看到一条错误就立刻修改多个配置；一次只改变一个可验证因素，更容易找到真正原因。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./terminal-logs.png&quot; alt=&quot;使用 journalctl 和 dmesg 查看通用系统日志的终端会话&quot; title=&quot;Linux 系统日志终端会话&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;先按本次启动和优先级筛选系统日志，再按需查看内核消息。&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;11. 一套适合新手的安全练习流程&lt;/h2&gt;
+&lt;p&gt;下面的练习只会在当前用户的家目录中创建一个临时目录，适合先熟悉命令和路径：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mkdir -p ~/linux-command-lab/documents
+cd ~/linux-command-lab
+printf &quot;first line\nsecond line\n&quot; &amp;gt; documents/notes.txt
+pwd
+ls -lah documents
+cat documents/notes.txt
+grep -n &quot;second&quot; documents/notes.txt
+cp documents/notes.txt documents/notes.backup.txt
+mv documents/notes.backup.txt documents/archive.txt
+find . -type f -name &quot;*.txt&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;确认练习文件无误后，如需清理，先查看目标，再删除这个明确创建的目录：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ls -lah ~/linux-command-lab
+rm -r ~/linux-command-lab
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这比一开始就在 &lt;code&gt;/etc&lt;/code&gt;、&lt;code&gt;/var&lt;/code&gt; 等系统目录练习安全得多。&lt;/p&gt;
+&lt;h2&gt;12. 常见误区与下一步&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;看不懂命令就加 &lt;code&gt;sudo&lt;/code&gt;&lt;/strong&gt;：权限变大不会让错误命令变正确，反而会扩大影响范围。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;把网上命令整段粘贴执行&lt;/strong&gt;：先逐段理解变量、路径、重定向和删除操作，再决定是否执行。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;只会重启服务或主机&lt;/strong&gt;：先看 &lt;code&gt;systemctl status&lt;/code&gt;、&lt;code&gt;journalctl&lt;/code&gt;、磁盘和端口，通常能保留更有价值的现场信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;把密码写进命令历史&lt;/strong&gt;：命令行参数、Shell 历史和进程列表都可能暴露敏感信息；优先使用交互式输入、权限受控的配置文件或专门的凭据管理方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;掌握这些基础命令后，建议继续学习 Shell 通配符、正则表达式、SSH、文件同步（如 &lt;code&gt;rsync&lt;/code&gt;）、编辑器（&lt;code&gt;nano&lt;/code&gt; 或 &lt;code&gt;vim&lt;/code&gt;）和脚本编写。真正重要的不是背下所有参数，而是形成固定习惯：先查看、确认目标、再做最小范围的修改，并在修改后验证结果。&lt;/p&gt;
+</content:encoded></item><item><title>Git 完全入门指南：从安装到 VSCode 日常协作</title><link>https://blog.ishaohao.cn/posts/git-%E5%AE%8C%E5%85%A8%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E4%BB%8E%E5%AE%89%E8%A3%85%E5%88%B0-vscode-%E6%97%A5%E5%B8%B8%E5%8D%8F%E4%BD%9C/</link><guid isPermaLink="true">https://blog.ishaohao.cn/posts/git-%E5%AE%8C%E5%85%A8%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E4%BB%8E%E5%AE%89%E8%A3%85%E5%88%B0-vscode-%E6%97%A5%E5%B8%B8%E5%8D%8F%E4%BD%9C/</guid><description>手把手教你安装 Git，并用 VSCode 的可视化操作轻松管理代码版本，再也不怕敲命令。</description><pubDate>Thu, 09 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;封面图片来源：&lt;a href=&quot;https://git-scm.com/&quot;&gt;Git&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;如果你刚开始接触版本控制，或者觉得 Git 命令太复杂，那么这篇文章正是为你准备的。我们将从零开始安装 Git，然后直接进入 &lt;strong&gt;VSCode&lt;/strong&gt; 这一主流编辑器，用鼠标点击完成大部分版本管理操作。同时，我会在文中标注出需要截图的地方，并告诉你如何截取这些关键画面，让你在写博客时也能轻松配图。&lt;/p&gt;
@@ -589,212 +2026,6 @@ server {
 &lt;/ul&gt;
 &lt;p&gt;最舒服的瞬间，莫过于给朋友发一个 5 位数字，对方就能瞬间拿到你准备好的大文件。这种“快递柜”式的体验，真的是用了就回不去！&lt;/p&gt;
 &lt;p&gt;如果你也在折腾 Panther-X2 或者是私有云部署，欢迎在评论区交流心得！&lt;/p&gt;
-</content:encoded></item><item><title>用 Nginx 反向代理 Docker 管理面板 Portainer 完整指南</title><link>https://blog.ishaohao.cn/posts/%E7%94%A8-nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-docker-%E7%AE%A1%E7%90%86%E9%9D%A2%E6%9D%BF-portainer-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/</link><guid isPermaLink="true">https://blog.ishaohao.cn/posts/%E7%94%A8-nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-docker-%E7%AE%A1%E7%90%86%E9%9D%A2%E6%9D%BF-portainer-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/</guid><description>本文详细介绍如何在 ArmBian 系统上使用 Docker Compose 部署 Portainer，并通过 Nginx 反向代理实现通过域名访问，打造干净可扩展的容器管理架构。</description><pubDate>Sun, 08 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
-&lt;p&gt;封面图片来源：&lt;a href=&quot;https://www.portainer.io/&quot;&gt;portainer&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2&gt;1. 简介&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;Portainer&lt;/strong&gt; 是一个轻量级的 Docker 容器管理面板，通过 Web 界面让你像点外卖一样管理容器、镜像、网络和卷，再也不用背那些长长的 Docker 命令。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Nginx&lt;/strong&gt; 作为高性能的反向代理服务器，可以把多个 Web 服务统一通过域名+80/443端口对外暴露，配合 Portainer 简直是绝配。&lt;/p&gt;
-&lt;p&gt;本文带你从零开始，在 &lt;strong&gt;Panther-X2 ArmBian&lt;/strong&gt; 小主机上部署 Portainer + Nginx 反向代理，最终实现通过 &lt;code&gt;http://docker.yourdomain.com&lt;/code&gt; 访问管理面板，并且这套架构可以随时扩展更多服务。&lt;/p&gt;
-&lt;hr /&gt;
-&lt;h2&gt;2. 环境准备&lt;/h2&gt;
-&lt;p&gt;先说说我用的环境，配置对号入座就行：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;硬件设备&lt;/strong&gt;：Rockchip RK3566 盒子（Panther-X2，性能够用功耗低，7x24小时开机不心疼）&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;系统环境&lt;/strong&gt;：Armbian 24.x / Linux 6.x 内核 / Debian trixie（实测稳定运行）&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;前置要求&lt;/strong&gt;：
-&lt;ul&gt;
-&lt;li&gt;Docker 和 Docker Compose 已安装（没装的话参考 &lt;a href=&quot;https://docs.docker.com/engine/install/debian/&quot;&gt;官方文档&lt;/a&gt;）&lt;/li&gt;
-&lt;li&gt;有一个内网域名（比如 &lt;code&gt;docker.lan.com&lt;/code&gt; 或 &lt;code&gt;docker.home&lt;/code&gt;），并在路由器做好 DNS 指向&lt;/li&gt;
-&lt;li&gt;开放 80 端口（用于 Nginx 对外服务）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;小提醒&lt;/strong&gt;：如果你打算外网访问，记得做好安全防护，比如配置 HTTPS 和强密码&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr /&gt;
-&lt;h2&gt;3. 一步步安装部署&lt;/h2&gt;
-&lt;h3&gt;3.1 创建目录结构&lt;/h3&gt;
-&lt;p&gt;好的架构从清晰的目录开始，我们在 &lt;code&gt;/opt/docker&lt;/code&gt; 下分别管理 Nginx 和 Portainer：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# 创建主目录
-mkdir -p /opt/docker/{nginx/conf.d,portainer}
-cd /opt/docker
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;最终目录结构是这样的：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;/opt/docker/
-├── nginx/
-│   ├── nginx.conf          # Nginx 主配置
-│   └── conf.d/              # 站点配置文件
-└── portainer/
-    └── docker-compose.yml   # Portainer 服务配置
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;3.2 部署 Nginx 反向代理&lt;/h3&gt;
-&lt;p&gt;先配置 Nginx，让它成为所有 Web 服务的统一入口。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;创建 Nginx 主配置文件&lt;/strong&gt; &lt;code&gt;/opt/docker/nginx/nginx.conf&lt;/code&gt;：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;user nginx;
-worker_processes auto;
-error_log /var/log/nginx/error.log notice;
-pid /var/run/nginx.pid;
-
-events {
-    worker_connections 1024;
-}
-
-http {
-    include /etc/nginx/mime.types;
-    default_type application/octet-stream;
-
-    log_format main &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;
-                    &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;
-                    &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;
-
-    access_log /var/log/nginx/access.log main;
-    sendfile on;
-    keepalive_timeout 65;
-
-    # 引入所有站点配置，这是扩展性的关键
-    include /etc/nginx/conf.d/*.conf;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;创建 Portainer 的站点配置&lt;/strong&gt; &lt;code&gt;/opt/docker/nginx/conf.d/portainer.conf&lt;/code&gt;：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;server {
-    listen 80;
-    server_name docker.yourdomain.com;  # 换成你的域名
-
-    location / {
-        proxy_pass http://portainer:9000;  # 通过容器名访问
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        
-        # 支持 WebSocket（Portainer 的终端功能需要）
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection &quot;upgrade&quot;;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;创建 Nginx 的 Docker Compose 文件&lt;/strong&gt; &lt;code&gt;/opt/docker/nginx/docker-compose.yml&lt;/code&gt;：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;services:
-  nginx:
-    image: nginx:latest
-    container_name: nginx-proxy
-    restart: always
-    ports:
-      - &quot;80:80&quot;      # HTTP 端口
-      - &quot;443:443&quot;    # HTTPS 端口（后续可以配置证书）
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./conf.d:/etc/nginx/conf.d:ro
-      - ./logs:/var/log/nginx
-    networks:
-      - proxy_network
-
-networks:
-  proxy_network:
-    name: proxy_network
-    driver: bridge
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;3.3 部署 Portainer&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;创建 Portainer 的 Docker Compose 文件&lt;/strong&gt; &lt;code&gt;/opt/docker/portainer/docker-compose.yml&lt;/code&gt;：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;volumes:
-  portainer_data:
-    name: portainer_data
-    external: true
-
-services:
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    command: -H unix:///var/run/docker.sock
-    restart: always
-    ports:
-      - &quot;8000:8000&quot;  # 边缘计算功能，可选
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-    networks:
-      - proxy_network
-
-networks:
-  proxy_network:
-    name: proxy_network
-    external: true  # 使用 Nginx 创建的网络
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;3.4 启动所有服务&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;# 先启动 Nginx（会创建共享网络）
-cd /opt/docker/nginx
-docker-compose up -d
-
-# 再启动 Portainer（连接到已存在的网络）
-cd /opt/docker/portainer
-docker-compose up -d
-
-# 查看运行状态
-docker ps
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;看到两个容器都在运行，就成功了一大半！&lt;/p&gt;
-&lt;h3&gt;3.5 验证部署&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;# 测试 Nginx 配置是否正确
-curl -H &quot;Host: docker.yourdomain.com&quot; http://localhost
-
-# 或者直接访问
-curl http://docker.yourdomain.com
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;打开浏览器访问 &lt;code&gt;http://docker.yourdomain.com&lt;/code&gt;，如果能看到 Portainer 的初始化页面，恭喜你，部署成功！&lt;/p&gt;
-&lt;hr /&gt;
-&lt;h2&gt;4. 常见问题与排错&lt;/h2&gt;
-&lt;h3&gt;Q1：Nginx 启动失败，日志报错&lt;/h3&gt;
-&lt;p&gt;执行 &lt;code&gt;docker logs nginx-proxy&lt;/code&gt; 查看具体错误。最常见的是配置文件语法错误，可以用这个命令检查：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker exec nginx-proxy nginx -t
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;Q2：Portainer 无法访问，报 502 Bad Gateway&lt;/h3&gt;
-&lt;p&gt;检查两点：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Portainer 容器是否正常运行：&lt;code&gt;docker ps | grep portainer&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;网络是否连通：&lt;code&gt;docker network inspect proxy_network&lt;/code&gt; 看两个容器是否都在网络里&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3&gt;Q3：想添加新的 Web 服务怎么办？&lt;/h3&gt;
-&lt;p&gt;这套架构最棒的地方就是扩展性。假设你要添加 NextCloud：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;在新目录 &lt;code&gt;/opt/docker/nextcloud&lt;/code&gt; 创建 docker-compose.yml，确保：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;加入网络 &lt;code&gt;proxy_network&lt;/code&gt;（&lt;code&gt;external: true&lt;/code&gt;）&lt;/li&gt;
-&lt;li&gt;不要映射 80/443 端口&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;在 &lt;code&gt;/opt/docker/nginx/conf.d/&lt;/code&gt; 创建 &lt;code&gt;nextcloud.conf&lt;/code&gt;：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;server {
-    listen 80;
-    server_name nextcloud.yourdomain.com;
-    location / {
-        proxy_pass http://nextcloud:80;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;重新加载 Nginx：&lt;code&gt;docker exec nginx-proxy nginx -s reload&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3&gt;Q4：容器开机不自启？&lt;/h3&gt;
-&lt;p&gt;检查 docker-compose.yml 里是否有 &lt;code&gt;restart: always&lt;/code&gt;，同时确保 Docker 服务开机自启：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl enable docker
-systemctl is-enabled docker
-&lt;/code&gt;&lt;/pre&gt;
-&lt;hr /&gt;
-&lt;h2&gt;5. 总结&lt;/h2&gt;
-&lt;p&gt;通过本文的部署，你得到了一个：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;结构清晰&lt;/strong&gt;：Nginx 独立管理所有反向代理配置，Portainer 独立运行，互不干扰&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;易于扩展&lt;/strong&gt;：想加新服务只需要加配置文件和 conf.d 配置，不用动现有服务&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;规范统一&lt;/strong&gt;：所有 Web 服务统一通过域名+80端口访问，再也不用记那些乱七八糟的端口号&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;这套架构不仅适用于 Portainer，任何需要 Web 访问的 Docker 服务都可以用这种方式接入。从今天起，你的小主机就变成一个专业的、可扩展的家庭服务器了！&lt;/p&gt;
-&lt;p&gt;最后提醒一下：生产环境一定要配置 HTTPS（可以用 Let&apos;s Encrypt），并设置强密码，安全无小事。&lt;/p&gt;
 </content:encoded></item><item><title>如何利用 Docker 自建 RustDesk 远程桌面服务和免费的 RustDesk-API 网页管理页面</title><link>https://blog.ishaohao.cn/posts/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8-docker-%E8%87%AA%E5%BB%BA-rustdesk-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%85%8D%E8%B4%B9%E7%9A%84rustdesk-api%E7%9A%84%E7%BD%91%E9%A1%B5%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2/</link><guid isPermaLink="true">https://blog.ishaohao.cn/posts/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8-docker-%E8%87%AA%E5%BB%BA-rustdesk-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%85%8D%E8%B4%B9%E7%9A%84rustdesk-api%E7%9A%84%E7%BD%91%E9%A1%B5%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2/</guid><description>本文介绍如何在自有小主机上用 Docker 搭建 RustDesk 远程桌面服务和网页 API 管理服务，并通过 Nginx 提供 HTTPS 安全访问。</description><pubDate>Sun, 08 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;封面图片来源：&lt;a href=&quot;https://rustdesk.com/&quot;&gt;rustdesk.com&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1069,6 +2300,212 @@ docker exec -it rustdesk-api ping rustdesk-hbbr
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;特别感谢&lt;/strong&gt;：本文根据实际部署经验修订，确保步骤准确、无遗漏。如有问题，欢迎留言交流。&lt;/p&gt;
 &lt;/blockquote&gt;
+</content:encoded></item><item><title>用 Nginx 反向代理 Docker 管理面板 Portainer 完整指南</title><link>https://blog.ishaohao.cn/posts/%E7%94%A8-nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-docker-%E7%AE%A1%E7%90%86%E9%9D%A2%E6%9D%BF-portainer-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/</link><guid isPermaLink="true">https://blog.ishaohao.cn/posts/%E7%94%A8-nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-docker-%E7%AE%A1%E7%90%86%E9%9D%A2%E6%9D%BF-portainer-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/</guid><description>本文详细介绍如何在 ArmBian 系统上使用 Docker Compose 部署 Portainer，并通过 Nginx 反向代理实现通过域名访问，打造干净可扩展的容器管理架构。</description><pubDate>Sun, 08 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;封面图片来源：&lt;a href=&quot;https://www.portainer.io/&quot;&gt;portainer&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;1. 简介&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Portainer&lt;/strong&gt; 是一个轻量级的 Docker 容器管理面板，通过 Web 界面让你像点外卖一样管理容器、镜像、网络和卷，再也不用背那些长长的 Docker 命令。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Nginx&lt;/strong&gt; 作为高性能的反向代理服务器，可以把多个 Web 服务统一通过域名+80/443端口对外暴露，配合 Portainer 简直是绝配。&lt;/p&gt;
+&lt;p&gt;本文带你从零开始，在 &lt;strong&gt;Panther-X2 ArmBian&lt;/strong&gt; 小主机上部署 Portainer + Nginx 反向代理，最终实现通过 &lt;code&gt;http://docker.yourdomain.com&lt;/code&gt; 访问管理面板，并且这套架构可以随时扩展更多服务。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;2. 环境准备&lt;/h2&gt;
+&lt;p&gt;先说说我用的环境，配置对号入座就行：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;硬件设备&lt;/strong&gt;：Rockchip RK3566 盒子（Panther-X2，性能够用功耗低，7x24小时开机不心疼）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;系统环境&lt;/strong&gt;：Armbian 24.x / Linux 6.x 内核 / Debian trixie（实测稳定运行）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;前置要求&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;Docker 和 Docker Compose 已安装（没装的话参考 &lt;a href=&quot;https://docs.docker.com/engine/install/debian/&quot;&gt;官方文档&lt;/a&gt;）&lt;/li&gt;
+&lt;li&gt;有一个内网域名（比如 &lt;code&gt;docker.lan.com&lt;/code&gt; 或 &lt;code&gt;docker.home&lt;/code&gt;），并在路由器做好 DNS 指向&lt;/li&gt;
+&lt;li&gt;开放 80 端口（用于 Nginx 对外服务）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;小提醒&lt;/strong&gt;：如果你打算外网访问，记得做好安全防护，比如配置 HTTPS 和强密码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;3. 一步步安装部署&lt;/h2&gt;
+&lt;h3&gt;3.1 创建目录结构&lt;/h3&gt;
+&lt;p&gt;好的架构从清晰的目录开始，我们在 &lt;code&gt;/opt/docker&lt;/code&gt; 下分别管理 Nginx 和 Portainer：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 创建主目录
+mkdir -p /opt/docker/{nginx/conf.d,portainer}
+cd /opt/docker
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;最终目录结构是这样的：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/opt/docker/
+├── nginx/
+│   ├── nginx.conf          # Nginx 主配置
+│   └── conf.d/              # 站点配置文件
+└── portainer/
+    └── docker-compose.yml   # Portainer 服务配置
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.2 部署 Nginx 反向代理&lt;/h3&gt;
+&lt;p&gt;先配置 Nginx，让它成为所有 Web 服务的统一入口。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;创建 Nginx 主配置文件&lt;/strong&gt; &lt;code&gt;/opt/docker/nginx/nginx.conf&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log notice;
+pid /var/run/nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    log_format main &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;
+                    &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;
+                    &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;
+
+    access_log /var/log/nginx/access.log main;
+    sendfile on;
+    keepalive_timeout 65;
+
+    # 引入所有站点配置，这是扩展性的关键
+    include /etc/nginx/conf.d/*.conf;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;创建 Portainer 的站点配置&lt;/strong&gt; &lt;code&gt;/opt/docker/nginx/conf.d/portainer.conf&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server {
+    listen 80;
+    server_name docker.yourdomain.com;  # 换成你的域名
+
+    location / {
+        proxy_pass http://portainer:9000;  # 通过容器名访问
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 支持 WebSocket（Portainer 的终端功能需要）
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection &quot;upgrade&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;创建 Nginx 的 Docker Compose 文件&lt;/strong&gt; &lt;code&gt;/opt/docker/nginx/docker-compose.yml&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - &quot;80:80&quot;      # HTTP 端口
+      - &quot;443:443&quot;    # HTTPS 端口（后续可以配置证书）
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./conf.d:/etc/nginx/conf.d:ro
+      - ./logs:/var/log/nginx
+    networks:
+      - proxy_network
+
+networks:
+  proxy_network:
+    name: proxy_network
+    driver: bridge
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.3 部署 Portainer&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;创建 Portainer 的 Docker Compose 文件&lt;/strong&gt; &lt;code&gt;/opt/docker/portainer/docker-compose.yml&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;volumes:
+  portainer_data:
+    name: portainer_data
+    external: true
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+      - &quot;8000:8000&quot;  # 边缘计算功能，可选
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - proxy_network
+
+networks:
+  proxy_network:
+    name: proxy_network
+    external: true  # 使用 Nginx 创建的网络
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.4 启动所有服务&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 先启动 Nginx（会创建共享网络）
+cd /opt/docker/nginx
+docker-compose up -d
+
+# 再启动 Portainer（连接到已存在的网络）
+cd /opt/docker/portainer
+docker-compose up -d
+
+# 查看运行状态
+docker ps
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;看到两个容器都在运行，就成功了一大半！&lt;/p&gt;
+&lt;h3&gt;3.5 验证部署&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 测试 Nginx 配置是否正确
+curl -H &quot;Host: docker.yourdomain.com&quot; http://localhost
+
+# 或者直接访问
+curl http://docker.yourdomain.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;打开浏览器访问 &lt;code&gt;http://docker.yourdomain.com&lt;/code&gt;，如果能看到 Portainer 的初始化页面，恭喜你，部署成功！&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;4. 常见问题与排错&lt;/h2&gt;
+&lt;h3&gt;Q1：Nginx 启动失败，日志报错&lt;/h3&gt;
+&lt;p&gt;执行 &lt;code&gt;docker logs nginx-proxy&lt;/code&gt; 查看具体错误。最常见的是配置文件语法错误，可以用这个命令检查：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker exec nginx-proxy nginx -t
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Q2：Portainer 无法访问，报 502 Bad Gateway&lt;/h3&gt;
+&lt;p&gt;检查两点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Portainer 容器是否正常运行：&lt;code&gt;docker ps | grep portainer&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;网络是否连通：&lt;code&gt;docker network inspect proxy_network&lt;/code&gt; 看两个容器是否都在网络里&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Q3：想添加新的 Web 服务怎么办？&lt;/h3&gt;
+&lt;p&gt;这套架构最棒的地方就是扩展性。假设你要添加 NextCloud：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;在新目录 &lt;code&gt;/opt/docker/nextcloud&lt;/code&gt; 创建 docker-compose.yml，确保：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;加入网络 &lt;code&gt;proxy_network&lt;/code&gt;（&lt;code&gt;external: true&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;不要映射 80/443 端口&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在 &lt;code&gt;/opt/docker/nginx/conf.d/&lt;/code&gt; 创建 &lt;code&gt;nextcloud.conf&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server {
+    listen 80;
+    server_name nextcloud.yourdomain.com;
+    location / {
+        proxy_pass http://nextcloud:80;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重新加载 Nginx：&lt;code&gt;docker exec nginx-proxy nginx -s reload&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Q4：容器开机不自启？&lt;/h3&gt;
+&lt;p&gt;检查 docker-compose.yml 里是否有 &lt;code&gt;restart: always&lt;/code&gt;，同时确保 Docker 服务开机自启：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl enable docker
+systemctl is-enabled docker
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h2&gt;5. 总结&lt;/h2&gt;
+&lt;p&gt;通过本文的部署，你得到了一个：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;结构清晰&lt;/strong&gt;：Nginx 独立管理所有反向代理配置，Portainer 独立运行，互不干扰&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;易于扩展&lt;/strong&gt;：想加新服务只需要加配置文件和 conf.d 配置，不用动现有服务&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;规范统一&lt;/strong&gt;：所有 Web 服务统一通过域名+80端口访问，再也不用记那些乱七八糟的端口号&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这套架构不仅适用于 Portainer，任何需要 Web 访问的 Docker 服务都可以用这种方式接入。从今天起，你的小主机就变成一个专业的、可扩展的家庭服务器了！&lt;/p&gt;
+&lt;p&gt;最后提醒一下：生产环境一定要配置 HTTPS（可以用 Let&apos;s Encrypt），并设置强密码，安全无小事。&lt;/p&gt;
 </content:encoded></item><item><title>动态公网 IP 下使用域名部署 Screego 屏幕共享教程</title><link>https://blog.ishaohao.cn/posts/%E5%8A%A8%E6%80%81%E5%85%AC%E7%BD%91-ip-%E4%B8%8B%E4%BD%BF%E7%94%A8%E5%9F%9F%E5%90%8D%E9%83%A8%E7%BD%B2-screego-%E5%B1%8F%E5%B9%95%E5%85%B1%E4%BA%AB%E6%95%99%E7%A8%8B/</link><guid isPermaLink="true">https://blog.ishaohao.cn/posts/%E5%8A%A8%E6%80%81%E5%85%AC%E7%BD%91-ip-%E4%B8%8B%E4%BD%BF%E7%94%A8%E5%9F%9F%E5%90%8D%E9%83%A8%E7%BD%B2-screego-%E5%B1%8F%E5%B9%95%E5%85%B1%E4%BA%AB%E6%95%99%E7%A8%8B/</guid><description>本文介绍如何在没有 80/443 端口且 IP 动态变化的情况下，利用 Armbian 设备从零搭建高性能 WebRTC 屏幕共享系统。</description><pubDate>Thu, 26 Feb 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;封面图片来源：&lt;a href=&quot;https://github.com/screego/server/raw/master/docs/logo.png&quot;&gt;Screego/server&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;

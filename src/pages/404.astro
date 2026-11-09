@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { url } from "../utils/url-utils";
+---
+
+<Layout title="404">
+    <main class="min-h-screen flex items-center justify-center px-4 py-10">
+        <div class="relative card-base gradient-border overflow-hidden w-full max-w-2xl onload-animation">
+            <!-- aurora 流动光斑背景 -->
+            <div class="aurora">
+                <div class="aurora-blob"></div>
+                <div class="aurora-blob"></div>
+                <div class="aurora-blob"></div>
+            </div>
+
+            <div class="relative z-10 flex flex-col items-center gap-5 px-8 py-14 text-center">
+                <div
+                    class="font-display text-gradient text-gradient-animate text-[6rem] md:text-[8rem] font-black leading-none animate-float-soft select-none"
+                    aria-hidden="true"
+                >
+                    404
+                </div>
+
+                <h1 class="text-xl md:text-2xl font-bold text-90 transition">
+                    这个页面迷失在网络的星海里了
+                </h1>
+                <p class="text-50 text-sm md:text-base transition">
+                    你要找的页面不存在,可能已被移动或删除。
+                </p>
+
+                <div class="flex gap-3 mt-2">
+                    <a href={url("/")} class="btn-regular rounded-lg h-11 px-6 font-bold active:scale-95">
+                        回到首页
+                    </a>
+                    <a href={url("/archive/")} class="btn-plain rounded-lg h-11 px-6 font-bold active:scale-95">
+                        浏览归档
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>

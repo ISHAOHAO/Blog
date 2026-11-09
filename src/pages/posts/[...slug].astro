@@ -1,83 +1,67 @@
 ---
+import { render } from "astro:content";
 import path from "node:path";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getRelatedPosts, getSeriesPosts, getSortedPosts } from "@utils/content-utils";
-import { getPostDirectory, getPostUrlBySlug } from "@utils/url-utils";
+import {
+	getRelatedPosts,
+	getSeriesPosts,
+	getSortedPosts,
+} from "@utils/content-utils";
+import { getPostDirectory, getPostUrlBySlug, url } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
-import { getImage } from "astro:assets";
-import { render } from "astro:content";
 import { licenseConfig } from "src/config";
+import Comment from "../../components/Comment.astro";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
-import { profileConfig, siteConfig } from "../../config";
-import Comment from "../../components/Comment.astro";
+import PostRating from "../../components/PostRating.svelte";
 import RelatedPosts from "../../components/RelatedPosts.astro";
+import RSSPromo from "../../components/RSSPromo.astro";
 import SeriesNav from "../../components/SeriesNav.astro";
 import ShareButtons from "../../components/ShareButtons.astro";
-import PostRating from "../../components/PostRating.svelte";
-import RSSPromo from "../../components/RSSPromo.astro";
+import { profileConfig, siteConfig } from "../../config";
 
 export async function getStaticPaths() {
-    const blogEntries = await getSortedPosts();
-    return blogEntries.map((entry) => ({
-        params: { slug: entry.id },
-        props: { entry },
-    }));
+	const blogEntries = await getSortedPosts();
+	return blogEntries.map((entry) => ({
+		params: { slug: entry.id },
+		props: { entry },
+	}));
 }
 
 const { entry } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(entry);
-const postImageModules = import.meta.glob<ImageMetadata>(
-    "../../content/posts/**/*.{avif,gif,jpeg,jpg,png,webp}",
-    { eager: true, import: "default" },
-);
 
-let socialImage: string | undefined;
-if (entry.data.image) {
-    const imageName = entry.data.image.replace(/^\.\//, "");
-    const imageKey = path.posix
-        .join("../../content/posts", getPostDirectory(entry.filePath, entry.id), imageName)
-        .replace(/\\/g, "/");
-    const source = postImageModules[imageKey];
-    if (source) {
-        const optimized = await getImage({
-            src: source,
-            width: 1200,
-            height: 630,
-            fit: "cover",
-        });
-        socialImage = new URL(optimized.src, Astro.site).href;
-    }
-}
+// 使用构建时生成的 OG 分享卡片图(见 src/pages/og/[...route].ts)
+const socialImage = new URL(url(`/og/posts/${entry.id}.png`), Astro.site).href;
 
 const modifiedDate = entry.data.updated ?? entry.data.lastVerified;
 const postUrl = new URL(getPostUrlBySlug(entry.id), Astro.site).href;
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: entry.data.title,
-    description: entry.data.description || entry.data.title,
-    keywords: entry.data.tags,
-    author: {
-        "@type": "Person",
-        name: profileConfig.name,
-        url: Astro.site,
-    },
-    datePublished: entry.data.published.toISOString(),
-    dateModified: (modifiedDate ?? entry.data.published).toISOString(),
-    image: socialImage,
-    mainEntityOfPage: {
-        "@type": "WebPage",
-        "@id": postUrl,
-    },
-    inLanguage: entry.data.lang
-        ? entry.data.lang.replace("_", "-")
-        : siteConfig.lang.replace("_", "-"),
+	"@context": "https://schema.org",
+	"@type": "BlogPosting",
+	headline: entry.data.title,
+	description: entry.data.description || entry.data.title,
+	keywords: entry.data.tags,
+	author: {
+		"@type": "Person",
+		name: profileConfig.name,
+		url: Astro.site,
+	},
+	datePublished: entry.data.published.toISOString(),
+	dateModified: (modifiedDate ?? entry.data.published).toISOString(),
+	image: socialImage,
+	mainEntityOfPage: {
+		"@type": "WebPage",
+		"@id": postUrl,
+	},
+	inLanguage: entry.data.lang
+		? entry.data.lang.replace("_", "-")
+		: siteConfig.lang.replace("_", "-"),
 };
 
 const relatedPosts = await getRelatedPosts(entry.id, 3);
@@ -154,7 +138,7 @@ const seriesInfo = await getSeriesPosts(entry.data.series || "");
                 <h1
                     data-pagefind-weight="10"
                     data-pagefind-meta="title"
-                    class="transition w-full block font-bold mb-3
+                    class="transition font-display w-full block font-bold mb-3
                     text-3xl md:text-[2.25rem]/[2.75rem]
                     text-black/90 dark:text-white/90
                     md:before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]

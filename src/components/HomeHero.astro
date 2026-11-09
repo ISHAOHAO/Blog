@@ -1,0 +1,96 @@
+---
+import { profileConfig, siteConfig } from "../config";
+
+// 打字机轮换的关键词,可按内容方向调整
+const typingWords = ["网络安全", "Linux 玩机", "自托管服务", "AI 提示词工程"];
+---
+
+<div class="relative card-base gradient-border overflow-hidden mb-4" id="home-hero">
+    <!-- aurora 流动光斑背景 -->
+    <div class="aurora">
+        <div class="aurora-blob"></div>
+        <div class="aurora-blob"></div>
+        <div class="aurora-blob"></div>
+    </div>
+
+    <!-- 内容 -->
+    <div class="relative z-10 px-6 md:px-10 pt-12 md:pt-16 pb-10 md:pb-14 flex flex-col gap-4">
+        <p class="text-sm md:text-base text-50 font-medium transition">
+            <span class="inline-block animate-float-soft">👋</span> 你好,欢迎来到我的博客
+        </p>
+
+        <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+            <span class="text-gradient text-gradient-animate">{siteConfig.title}</span>
+            <span class="sr-only">:技术教程与折腾笔记</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-75 transition">
+            记录
+            <span
+                id="hero-typing"
+                class="font-bold text-[var(--primary)] transition"
+                data-words={typingWords.join("|")}
+            >{typingWords[0]}</span><span class="typing-caret" aria-hidden="true"></span>
+        </p>
+
+        <p class="text-sm md:text-base text-30 transition">{profileConfig.bio}</p>
+    </div>
+</div>
+
+<script>
+    let activeTimeout: number | undefined;
+
+    function typeLoop(el: HTMLElement, words: string[]) {
+        let wordIndex = 0;
+        let charIndex = words[0].length;
+        let deleting = true; // 首个词已完整展示,先进入删除节奏
+
+        const tick = () => {
+            if (!el.isConnected) return; // 页面已被 Swup 换掉,停止循环
+            const word = words[wordIndex];
+            if (!deleting) {
+                charIndex++;
+                el.textContent = word.slice(0, charIndex);
+                if (charIndex >= word.length) {
+                    deleting = true;
+                    activeTimeout = window.setTimeout(tick, 1800);
+                    return;
+                }
+                activeTimeout = window.setTimeout(tick, 120 + Math.random() * 80);
+            } else {
+                charIndex--;
+                el.textContent = word.slice(0, charIndex);
+                if (charIndex <= 0) {
+                    deleting = false;
+                    wordIndex = (wordIndex + 1) % words.length;
+                    activeTimeout = window.setTimeout(tick, 400);
+                    return;
+                }
+                activeTimeout = window.setTimeout(tick, 60);
+            }
+        };
+        tick();
+    }
+
+    function initHeroTyping() {
+        const el = document.getElementById("hero-typing");
+        if (!el) return;
+        const words = (el.dataset.words || "").split("|").filter(Boolean);
+        if (words.length < 2) return;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            el.textContent = words[0];
+            return;
+        }
+
+        if (activeTimeout) window.clearTimeout(activeTimeout);
+        typeLoop(el, words);
+    }
+
+    initHeroTyping();
+    if (window.swup?.hooks) {
+        window.swup.hooks.on("page:view", initHeroTyping);
+    } else {
+        document.addEventListener("swup:enable", initHeroTyping);
+    }
+</script>

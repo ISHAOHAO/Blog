@@ -1,0 +1,366 @@
+@reference "./tailwind.css";
+
+/* ============================================================
+   Modern visual & motion layer
+   渐变文字 / spotlight / reveal / aurora / 玻璃拟态 / 噪点纹理
+   ============================================================ */
+
+/* ---------- 标题展示字体 ---------- */
+.font-display {
+	font-family:
+		"Space Grotesk Variable",
+		"Roboto",
+		"PingFang SC",
+		"Hiragino Sans GB",
+		"Microsoft YaHei",
+		sans-serif;
+}
+
+/* ---------- 渐变文字 ---------- */
+.text-gradient {
+	background-image: linear-gradient(
+		120deg,
+		oklch(0.68 0.16 calc(var(--hue) - 20)),
+		oklch(0.75 0.15 var(--hue)),
+		oklch(0.68 0.16 calc(var(--hue) + 45))
+	);
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	background-size: 200% 200%;
+}
+
+.text-gradient-animate {
+	animation: gradient-shift 8s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+	0%,
+	100% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+}
+
+/* ---------- 渐变描边卡片边框 ---------- */
+.gradient-border {
+	position: relative;
+	border: none;
+}
+
+.gradient-border::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	border-radius: inherit;
+	padding: 1px;
+	background: linear-gradient(
+		135deg,
+		oklch(0.75 0.14 var(--hue) / 0.55),
+		oklch(0.75 0.14 var(--hue) / 0.08) 40%,
+		oklch(0.75 0.14 var(--hue) / 0.08) 60%,
+		oklch(0.72 0.16 calc(var(--hue) + 50) / 0.45)
+	);
+	-webkit-mask:
+		linear-gradient(#fff 0 0) content-box,
+		linear-gradient(#fff 0 0);
+	-webkit-mask-composite: xor;
+	mask:
+		linear-gradient(#fff 0 0) content-box,
+		linear-gradient(#fff 0 0);
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+/* ---------- 卡片 spotlight(鼠标跟随光斑) ---------- */
+.spotlight-card {
+	position: relative;
+}
+
+.spotlight-card::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	border-radius: inherit;
+	background: radial-gradient(
+		420px circle at var(--mx, 50%) var(--my, 50%),
+		oklch(0.72 0.15 var(--hue) / 0.09),
+		transparent 65%
+	);
+	opacity: 0;
+	transition: opacity 400ms ease;
+	pointer-events: none;
+}
+
+.spotlight-card:hover::after {
+	opacity: 1;
+}
+
+/* ---------- 卡片悬浮提升 ---------- */
+.card-lift {
+	transition:
+		transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+		box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-lift:hover {
+	transform: translateY(-4px);
+	box-shadow:
+		0 16px 40px -16px oklch(0 0 0 / 0.18),
+		0 4px 12px -4px oklch(0 0 0 / 0.08);
+}
+
+html.dark .card-lift:hover {
+	box-shadow:
+		0 16px 48px -12px oklch(0 0 0 / 0.55),
+		0 0 24px -8px oklch(0.72 0.15 var(--hue) / 0.12);
+}
+
+/* ---------- 滚动渐入 reveal ---------- */
+.reveal {
+	opacity: 0;
+	transform: translateY(1.25rem);
+	transition:
+		opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+		transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+	transition-delay: var(--reveal-delay, 0ms);
+	will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+	opacity: 1;
+	transform: none;
+}
+
+/* ---------- aurora 流动光斑背景 ---------- */
+.aurora {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	border-radius: inherit;
+	pointer-events: none;
+}
+
+.aurora-blob {
+	position: absolute;
+	border-radius: 9999px;
+	filter: blur(64px);
+	will-change: transform;
+}
+
+.aurora-blob:nth-child(1) {
+	width: 55%;
+	height: 90%;
+	left: -10%;
+	top: -45%;
+	background: oklch(0.75 0.16 var(--hue) / 0.35);
+	animation: aurora-drift-1 22s ease-in-out infinite;
+}
+
+.aurora-blob:nth-child(2) {
+	width: 45%;
+	height: 80%;
+	right: -8%;
+	top: -30%;
+	background: oklch(0.78 0.14 calc(var(--hue) + 60) / 0.28);
+	animation: aurora-drift-2 26s ease-in-out infinite;
+}
+
+.aurora-blob:nth-child(3) {
+	width: 40%;
+	height: 70%;
+	left: 30%;
+	bottom: -40%;
+	background: oklch(0.8 0.12 calc(var(--hue) - 50) / 0.25);
+	animation: aurora-drift-3 30s ease-in-out infinite;
+}
+
+html.dark .aurora-blob:nth-child(1) {
+	background: oklch(0.55 0.17 var(--hue) / 0.3);
+}
+html.dark .aurora-blob:nth-child(2) {
+	background: oklch(0.55 0.15 calc(var(--hue) + 60) / 0.24);
+}
+html.dark .aurora-blob:nth-child(3) {
+	background: oklch(0.55 0.13 calc(var(--hue) - 50) / 0.2);
+}
+
+@keyframes aurora-drift-1 {
+	0%,
+	100% {
+		transform: translate(0, 0) scale(1);
+	}
+	33% {
+		transform: translate(6%, 8%) scale(1.1);
+	}
+	66% {
+		transform: translate(-4%, 4%) scale(0.94);
+	}
+}
+
+@keyframes aurora-drift-2 {
+	0%,
+	100% {
+		transform: translate(0, 0) scale(1);
+	}
+	33% {
+		transform: translate(-8%, 10%) scale(0.92);
+	}
+	66% {
+		transform: translate(4%, -4%) scale(1.08);
+	}
+}
+
+@keyframes aurora-drift-3 {
+	0%,
+	100% {
+		transform: translate(0, 0) scale(1);
+	}
+	50% {
+		transform: translate(-6%, -10%) scale(1.12);
+	}
+}
+
+/* ---------- 玻璃拟态 ---------- */
+.glass-panel {
+	background: color-mix(in oklab, var(--card-bg) 76%, transparent);
+	backdrop-filter: blur(18px) saturate(1.5);
+	-webkit-backdrop-filter: blur(18px) saturate(1.5);
+}
+
+#navbar-card.navbar-glass {
+	background: color-mix(in oklab, var(--card-bg) 76%, transparent);
+	backdrop-filter: blur(18px) saturate(1.5);
+	-webkit-backdrop-filter: blur(18px) saturate(1.5);
+	box-shadow:
+		0 8px 30px -12px oklch(0 0 0 / 0.12),
+		inset 0 1px 0 oklch(1 0 0 / 0.12);
+}
+
+html.dark #navbar-card.navbar-glass {
+	box-shadow:
+		0 8px 30px -10px oklch(0 0 0 / 0.45),
+		inset 0 1px 0 oklch(1 0 0 / 0.06);
+}
+
+/* 浮动面板(搜索/设置/菜单)统一毛玻璃化,覆盖 main.css 中的不透明背景 */
+.float-panel {
+	background: color-mix(in oklab, var(--float-panel-bg) 84%, transparent);
+	backdrop-filter: blur(18px) saturate(1.5);
+	-webkit-backdrop-filter: blur(18px) saturate(1.5);
+}
+
+/* ---------- 全局噪点纹理 ---------- */
+body::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: 70;
+	pointer-events: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+	opacity: 0.028;
+}
+
+html.dark body::after {
+	opacity: 0.045;
+}
+
+/* ---------- 打字机光标 ---------- */
+.typing-caret {
+	display: inline-block;
+	width: 2px;
+	height: 1em;
+	margin-left: 2px;
+	vertical-align: text-bottom;
+	background: var(--primary);
+	animation: caret-blink 1s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+}
+
+/* ---------- 键盘按键提示 ---------- */
+.kbd-hint {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+	padding: 1px 5px;
+	border-radius: 4px;
+	font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+	font-size: 0.65rem;
+	font-weight: 600;
+	line-height: 1.2;
+	color: var(--btn-content);
+	background: var(--btn-regular-bg);
+	box-shadow:
+		inset 0 -1px 0 oklch(0 0 0 / 0.12),
+		inset 0 1px 0 oklch(1 0 0 / 0.3);
+}
+
+/* ---------- 404 浮动动画 ---------- */
+@keyframes float-soft {
+	0%,
+	100% {
+		transform: translateY(0) rotate(-2deg);
+	}
+	50% {
+		transform: translateY(-10px) rotate(2deg);
+	}
+}
+
+.animate-float-soft {
+	animation: float-soft 5s ease-in-out infinite;
+}
+
+/* ---------- View Transitions:主题切换圆形扩散 ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+	z-index: 1;
+}
+
+::view-transition-new(root) {
+	z-index: 2147483647;
+}
+
+/* ---------- 尊重减弱动效偏好 ---------- */
+@media (prefers-reduced-motion: reduce) {
+	.reveal,
+	.text-gradient-animate,
+	.animate-float-soft,
+	.typing-caret {
+		animation: none !important;
+		transition: none !important;
+	}
+
+	.reveal {
+		opacity: 1;
+		transform: none;
+	}
+
+	.aurora-blob,
+	.onload-animation {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+	}
+
+	.spotlight-card::after,
+	.card-lift {
+		display: none;
+	}
+}
